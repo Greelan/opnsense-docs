@@ -1,12 +1,12 @@
 Hwprobe
 ~~~~~~~
 
-.. csv-table:: Service (GeneralController.php)
+.. csv-table:: Resources (GeneralController.php)
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
     "``GET``","hwprobe","general","get",""
-    "``GET``","hwprobe","general","set",""
+    "``POST``","hwprobe","general","set",""
 
     "``<<uses>>``", "", "", "", "*model* `General.xml <https://github.com/opnsense/plugins/blob/master/sysutils/hw-probe/src/opnsense/mvc/app/models/OPNsense/Hwprobe/General.xml>`__"
 
@@ -14,11 +14,9 @@ Hwprobe
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``GET``","hwprobe","service","reconfigure",""
+    "``POST``","hwprobe","service","reconfigure",""
     "``GET``","hwprobe","service","report",""
-    "``GET``","hwprobe","service","restart",""
-    "``GET``","hwprobe","service","start",""
+    "``POST``","hwprobe","service","restart",""
+    "``POST``","hwprobe","service","start",""
     "``GET``","hwprobe","service","status",""
-    "``GET``","hwprobe","service","stop",""
-
-    "``<<uses>>``", "", "", "", "*model* `General.xml <https://github.com/opnsense/plugins/blob/master/sysutils/hw-probe/src/opnsense/mvc/app/models/OPNsense/Hwprobe/General.xml>`__"
+    "``POST``","hwprobe","service","stop",""

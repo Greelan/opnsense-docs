@@ -111,7 +111,7 @@ Here are the full patch notes:
 * ports: phpseclib 2.0.23 `[11] <https://github.com/phpseclib/phpseclib/releases/tag/2.0.23>`__ 
 * ports: python 3.7.6 `[12] <https://docs.python.org/release/3.7.6/whatsnew/changelog.html>`__ 
 * ports: strongswan 5.8.2 `[13] <https://wiki.strongswan.org/versions/75>`__ 
-* ports: sudo 1.8.30 `[14] <https://www.sudo.ws/stable.html#1.8.30>`__ 
+* ports: sudo 1.8.30 `[14] <https://www.sudo.ws/releases/legacy/#1.8.30>`__ 
 * ports: unbound 1.9.6 `[15] <https://nlnetlabs.nl/projects/unbound/download/>`__ 
 
 A hotfix release was issued as 19.7.9_1:
@@ -215,7 +215,7 @@ Here are the full patch notes:
 * src: import tzdata 2019c `[7] <https://www.freebsd.org/security/advisories/FreeBSD-EN-19:18.tzdata.asc>`__ 
 * ports: curl 7.67.0 `[8] <https://curl.haxx.se/changes.html>`__ 
 * ports: libressl 3.0.2 `[9] <https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.0.2-relnotes.txt>`__ 
-* ports: openvpn 2.4.8 `[10] <https://github.com/OpenVPN/openvpn/blob/release/2.4/Changes.rst#version-248>`__ 
+* ports: openvpn 2.4.8 `[10] <https://github.com/OpenVPN/openvpn/blob/v2.4.8/Changes.rst>`__ 
 * ports: perl 5.30.1 `[11] <https://perldoc.perl.org/5.30.1/perldelta>`__ 
 * ports: phalcon 3.4.5 `[12] <https://github.com/phalcon/cphalcon/releases/tag/v3.4.5>`__ 
 * ports: sqlite 3.30.1 `[13] <https://sqlite.org/releaselog/3_30_1.html>`__ 
@@ -266,7 +266,7 @@ Here are the full patch notes:
 * ports: ca_root_nss 3.47
 * ports: php 7.2.24 `[4] <https://www.php.net/ChangeLog-7.php#7.2.24>`__ 
 * ports: python 3.7.5 `[5] <https://docs.python.org/release/3.7.5/whatsnew/changelog.html>`__ 
-* ports: sudo 1.8.29 `[6] <https://www.sudo.ws/legacy.html#1.8.29>`__ 
+* ports: sudo 1.8.29 `[6] <https://www.sudo.ws/releases/legacy/#1.8.29>`__ 
 
 
 
@@ -365,8 +365,8 @@ Here are the full patch notes:
 * plugins: os-theme-cicada 1.20 (contributed by Team Rebellion)
 * plugins: os-theme-tukan 1.20 (contributed by Team Rebellion)
 * ports: ca_root_nss 3.46
-* ports: ldns 1.7.1 `[5] <https://raw.githubusercontent.com/NLnetLabs/ldns/release-1.7.1/Changelog>`__ 
-* ports: pcre2 10.33 `[6] <https://www.pcre.org/changelog.txt>`__ 
+* ports: ldns 1.7.1 `[5] <https://github.com/NLnetLabs/ldns/blob/release-1.7.1/Changelog>`__ 
+* ports: pcre2 10.33 `[6] <https://github.com/PCRE2Project/pcre2/releases/tag/pcre2-10.33>`__ 
 * ports: php 7.2.22 `[7] <https://www.php.net/ChangeLog-7.php#7.2.22>`__ 
 * ports: phpseclib 2.0.21 `[8] <https://github.com/phpseclib/phpseclib/releases/tag/2.0.21>`__ 
 * ports: unbound 1.9.3 `[9] <https://nlnetlabs.nl/projects/unbound/download/#unbound-1-9-3>`__ 
@@ -431,17 +431,17 @@ Here is the full list of changes:
 * src: fix multiple vulnerabilities in bzip2 `[8] <https://www.freebsd.org/security/advisories/FreeBSD-SA-19:18.bzip2.asc>`__ 
 * src: fix ICMPv6 / MLDv2 out-of-bounds memory access `[9] <https://www.freebsd.org/security/advisories/FreeBSD-SA-19:19.mldv2.asc>`__ 
 * src: fix insufficient message length validation in bsnmp library `[10] <https://www.freebsd.org/security/advisories/FreeBSD-SA-19:20.bsnmp.asc>`__ 
-* src: fix insufficient validation of guest-supplied data (e1000 device) `[11] <https://www.freebsd.org/security/advisories/FreeBSD-SA-19:21.bhyve.asc>`__ 
+* src: fix insufficient validation of guest-supplied data on the e1000 device `[11] <https://www.freebsd.org/security/advisories/FreeBSD-SA-19:21.bhyve.asc>`__ 
 * src: fix IPv6 remote denial of service `[12] <https://www.freebsd.org/security/advisories/FreeBSD-SA-19:22.mbuf.asc>`__ 
 * src: fix kernel memory disclosure from /dev/midistat `[13] <https://www.freebsd.org/security/advisories/FreeBSD-SA-19:23.midi.asc>`__ 
 * src: fix reference count overflow in mqueuefs 32-bit compat `[14] <https://www.freebsd.org/security/advisories/FreeBSD-SA-19:24.mqueuefs.asc>`__ 
 * ports: hostapd 2.9 `[15] <https://w1.fi/cgit/hostap/plain/hostapd/ChangeLog>`__ 
 * ports: nghttp2 1.39.2 `[16] <https://github.com/nghttp2/nghttp2/releases/tag/v1.39.2>`__ 
-* ports: openldap 2.4.48 `[17] <https://www.openldap.org/software/release/changes.html>`__ 
+* ports: openldap 2.4.48 `[17] <https://www.openldap.org/software/release/changes_lts.html>`__ 
 * ports: perl 5.30.0 `[18] <https://perldoc.perl.org/5.30.0/perldelta>`__ 
 * ports: php 7.2.21 `[19] <https://www.php.net/ChangeLog-7.php#7.2.21>`__ 
 * ports: py-openssl 19.0.0 `[20] <https://www.pyopenssl.org/en/stable/changelog.html>`__ 
-* ports: syslog-ng 3.22.1 `[21] <https://github.com/balabit/syslog-ng/releases/tag/syslog-ng-3.22.1>`__ 
+* ports: syslog-ng 3.22.1 `[21] <https://github.com/syslog-ng/syslog-ng/releases/tag/syslog-ng-3.22.1>`__ 
 * ports: wpa_supplicant 2.9 `[22] <https://w1.fi/cgit/hostap/plain/wpa_supplicant/ChangeLog>`__ 
 
 
@@ -487,7 +487,7 @@ Here are the full patch notes:
 * src: fix reference count overflow in mqueuefs `[9] <https://www.freebsd.org/security/advisories/FreeBSD-SA-19:15.mqueuefs.asc>`__ 
 * src: fix byhve out-of-bounds read in XHCI device `[10] <https://www.freebsd.org/security/advisories/FreeBSD-SA-19:16.bhyve.asc>`__ 
 * src: fix file descriptor reference count leak `[11] <https://www.freebsd.org/security/advisories/FreeBSD-SA-19:17.fd.asc>`__ 
-* ports: libevent 2.1.11 `[12] <https://raw.githubusercontent.com/libevent/libevent/release-2.1.11-stable/ChangeLog>`__ 
+* ports: libevent 2.1.11 `[12] <https://github.com/libevent/libevent/releases/tag/release-2.1.11-stable>`__ 
 
 
 
@@ -704,7 +704,7 @@ Here are the full changes against version 19.1.10:
 
 * system: new remote syslog setup via Syslog-ng
 * system: gateway handling rewrite
-* system: default gateway switching priority control (sponsored by m.a.x. it `[2] <https://www.max-it.de/>`__ )
+* system: default gateway switching priority control `[2] <https://www.max-it.de/>`__  (sponsored by m.a.x. it)
 * system: dpinger ported to plugin framework
 * system: bring back PHP warning log level
 * system: use authentication factory for user import
@@ -764,7 +764,7 @@ Here are the full changes against version 19.1.10:
 * src: netmap VirtIO, VLAN child and vmxnet support
 * src: fix races in tun(4)/tap(4) drivers
 * ports: squid 4.7 `[4] <http://squid.mirror.colo-serv.net/archive/4/squid-4.0.7-RELEASENOTES.html>`__ 
-* ports: syslog-ng 3.21.1 `[5] <https://github.com/balabit/syslog-ng/releases/tag/syslog-ng-3.21.1>`__ 
+* ports: syslog-ng 3.21.1 `[5] <https://github.com/syslog-ng/syslog-ng/releases/tag/syslog-ng-3.21.1>`__ 
 
 Known issues and limitations:
 

@@ -5,14 +5,14 @@ Udpbroadcastrelay
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``POST``","udpbroadcastrelay","service","config",""
+    "``GET``","udpbroadcastrelay","service","config",""
     "``GET``","udpbroadcastrelay","service","get",""
-    "``POST``","udpbroadcastrelay","service","reload",""
-    "``POST``","udpbroadcastrelay","service","restart","$uuid"
-    "``GET``","udpbroadcastrelay","service","set",""
-    "``POST``","udpbroadcastrelay","service","start","$uuid"
-    "``POST``","udpbroadcastrelay","service","status","$uuid"
-    "``POST``","udpbroadcastrelay","service","stop","$uuid"
+    "``GET``","udpbroadcastrelay","service","reload",""
+    "``GET``","udpbroadcastrelay","service","restart","$uuid"
+    "``POST``","udpbroadcastrelay","service","set",""
+    "``GET``","udpbroadcastrelay","service","start","$uuid"
+    "``GET``","udpbroadcastrelay","service","status","$uuid"
+    "``GET``","udpbroadcastrelay","service","stop","$uuid"
 
     "``<<uses>>``", "", "", "", "*model* `UDPBroadcastRelay.xml <https://github.com/opnsense/plugins/blob/master/net/udpbroadcastrelay/src/opnsense/mvc/app/models/OPNsense/UDPBroadcastRelay/UDPBroadcastRelay.xml>`__"
 
@@ -20,11 +20,13 @@ Udpbroadcastrelay
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``POST``","udpbroadcastrelay","settings","addRelay",""
-    "``POST``","udpbroadcastrelay","settings","delRelay","$uuid"
+    "``POST``","udpbroadcastrelay","settings","add_relay",""
+    "``POST``","udpbroadcastrelay","settings","del_relay","$uuid"
     "``GET``","udpbroadcastrelay","settings","get",""
-    "``GET``","udpbroadcastrelay","settings","getRelay","$uuid=null"
-    "``GET``","udpbroadcastrelay","settings","searchRelay",""
-    "``GET``","udpbroadcastrelay","settings","set",""
-    "``POST``","udpbroadcastrelay","settings","setRelay","$uuid"
-    "``POST``","udpbroadcastrelay","settings","toggleRelay","$uuid"
+    "``GET``","udpbroadcastrelay","settings","get_relay","$uuid=null"
+    "``GET``","udpbroadcastrelay","settings","search_relay",""
+    "``POST``","udpbroadcastrelay","settings","set",""
+    "``POST``","udpbroadcastrelay","settings","set_relay","$uuid"
+    "``POST``","udpbroadcastrelay","settings","toggle_relay","$uuid"
+
+    "``<<uses>>``", "", "", "", "*model* `UDPBroadcastRelay.xml <https://github.com/opnsense/plugins/blob/master/net/udpbroadcastrelay/src/opnsense/mvc/app/models/OPNsense/UDPBroadcastRelay/UDPBroadcastRelay.xml>`__"

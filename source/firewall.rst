@@ -21,7 +21,6 @@ These are all combined in the firewall section.
    manual/firewall_categories
    manual/firewall_groups
    manual/nat
-   manual/nptv6
    manual/firewall
    manual/shaping
    manual/firewall_settings
@@ -40,4 +39,5 @@ Setup guides
    :titlesonly:
 
    manual/how-tos/fwcategory
-   manual/how-tos/edrop
+   manual/how-tos/drop
+   manual/how-tos/security-zones

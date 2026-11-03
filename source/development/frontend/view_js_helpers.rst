@@ -127,16 +127,42 @@ saveFormToEndpoint
 
 :code:`saveFormToEndpoint(url, formid, callback_ok, disable_dialog, callback_fail)` is the opposite of :code:`mapDataToFormUI()`
 and retrieves the data from the form and sends it to the configured (url) endpoint as json structure.
+Underneath this function uses :code:`getFormData(parent)` defined in `opnsense.js` which is responsible for extracting values from
+different form types such as :code:`<input>` and :code:`<select>` types. When the attributes should be type safe
+(e.g. an *integer* in json format should be presented as :code:`1` and not as :code:`"1"`),
+there is the possibility to "cleanse" the data first using a filter.  In this case define an attribute on the input tag with the name :code:`type_formatter`
+containing the function to call.
+
+
+.. code-block:: html
+
+    <input type="text" type_formatter="my_convert_to_int_function" id="myform.myintval">
+
+Which could be implemented in the form javascript as:
+
+.. code-block:: javascript
+
+    function my_convert_to_int_function(payload)
+    {
+        if (/^[+-]?[0-9]*$/.test(payload)) {
+            return  parseInt(payload);
+        } else {
+            return payload;
+        }
+    }
 
 The response data looks similar to the example data in mapDataToFormUI, but more condensed since selections will
 be returned as single (separated) values, such as :code:`lan,wan` if both options where set.
+
+Using the example with the function above, a valid integer would offer a json object similar to :code:`{"myform": {"myintval": 1}}`,
+unparsable data would look like :code:`{"myform": {"myintval": "1x"}}`, in which case backend validations are able to feedback validation results.
 
 
 ----------------------------
 updateServiceControlUI
 ----------------------------
 
-The code:`updateServiceControlUI(serviceName)` function hooks the service control on top of the standard template, where you can find
+The :code:`updateServiceControlUI(serviceName)` function hooks the service control on top of the standard template, where you can find
 the [re]start, stop and status of the service.
 
 It assumes the following endpoints exists for the module:
@@ -156,7 +182,7 @@ Dialog wrappers
 ----------------------------
 
 We are using `BootstrapDialog <https://nakupanda.github.io/bootstrap3-dialog/>`__ to display standard dialogs, to limit
-the boilerplates needed to show these dialog we added the following wrapper funcitons:
+the boilerplates needed to show these dialog we added the following wrapper functions:
 
 
 stdDialogInform(title, message, close, callback, type, cssClass)
@@ -168,7 +194,7 @@ Informational dialog with a single close button, using the following parameters:
 *   message: :code:`string` dialog message
 *   close:  :code:`string` close button text
 *   callback: :code:`function()` to be called after close
-*   type: :code:`string` dialog type. one of : danger, default, info, primary, success, warning
+*   type: :code:`string` dialog type. one of: danger, default, info, primary, success, warning
 *   cssClass: :code:`string`  css class to use
 
 
@@ -182,7 +208,7 @@ Ok/Cancel dialog type using the following parameters:
 *   accept:  :code:`string` accept button text
 *   decline:  :code:`string` decline button text
 *   callback: :code:`function()` to be called after close
-*   type: :code:`string` dialog type. one of : danger, default, info, primary, success, warning
+*   type: :code:`string` dialog type. one of: danger, default, info, primary, success, warning
 
 
 
@@ -190,6 +216,8 @@ stdDialogRemoveItem(message, callback)
 ..............................................................................................
 
 Simple remove item (warning) dialog, using a message and optionally a callback.
+
+.. _simpleactionbutton:
 
 ----------------------------
 $.SimpleActionButton
@@ -200,12 +228,12 @@ will call the selected endpoint and show a progress animation (spinner) to the u
 
 The following parameters can be supplied as data attributes on the target object:
 
-* endpoint : endpoint to call (e.g. :code:`/api/my/action`)
-* label : button label text
-* service-widget : the service widget to refresh after execution, see :code:`updateServiceControlUI()`
-* error-title : error dialog title
+* endpoint: endpoint to call (e.g. :code:`/api/my/action`)
+* label: button label text
+* service-widget: the service widget to refresh after execution, see :code:`updateServiceControlUI()`
+* error-title: error dialog title
 
-The method itself can be feed with callbacks to call before (:code:`onPreAction()`) and after (:code:`onAction()`) execution.
+The method itself can be fed with callbacks to call before (:code:`onPreAction()`) and after (:code:`onAction()`) execution.
 
 An example of a button could look like this:
 
@@ -234,86 +262,42 @@ To utilize the callbacks, one could use:
         }
     });
 
+``SimpleActionButton`` will also show a reminder to the user to save their settings if prompted. To do so,
+simply call :code:`$(document).trigger("settings-changed");`.
+
+.. _simplefileuploaddlg:
 
 ----------------------------
-$.UIBootgrid
+$.SimpleFileUploadDlg
 ----------------------------
 
-The UIBootgrid jQuery extension is a wrappper around a slightly modified `jquery-bootgrid <http://www.jquery-bootgrid.com/>`__
-component, the pattern we implement with our wrapper is inspired by `this <http://www.jquery-bootgrid.com/Examples#command-buttons>`__ example.
+The simple file upload dialog can be used to select a file and upload it to a specified endpoint.
 
-
-Defining the html table is best explained in the jquery-bootgrid examples, our wrapper eases the implementation of the javascript code.
-
-The minimal implementation contains a reference to the search endpoint which should return a json resultset containing :code:`rows`
-and pagination data (:code:`current`, :code:`rowCount`, :code:`total`).
+To define a button sending data to `/api/path/to/import_controller`, the following code could be used:
 
 .. code-block:: html
 
-  $("#my_grid").UIBootgrid(
-      {   search:'/api/path/to/search',
-          get:'/api/path/to/get',
-          set:'/api/path/to/set',
-          add:'/api/path/to/add',
-          del:'/api/path/to/del',
-          toggle:'/api/path/to/toggle',
-          info:'/api/path/to/info'
-      }
-  );
+    <button
+        id="upload"
+        type="button"
+        data-title="Import"
+        data-endpoint='/api/path/to/import_controller'
+        class="btn btn-xs"
+    ><span class="fa fa-fw fa-table"></span></button>
 
 
-The other optional endpoints are either used to populate a form, as defined in the :code:`data-editDialog` property on the table or
-can be used to feed actions, such as **set** (set new values, return validation errors), **add** a new record, **del**  an existing record
-or **toggle** if the record should be enabled or disabled.  :code:`info` endpoints are not used very often (and can safely be omitted), these are mainly intended as simple trigger to display an info dialog.
+.. Note::
 
+    The structure of this :code:`POST` contains a :code:`payload` and a :code:`filename` property.
 
-A full example of a basic grid is available in our  :doc:`../examples/using_grids` example
-
-In some cases the developer wants to signal the user about the fact that changes need to be applied in order to be active, for this scenario one can use the :code:`data-editAlert`
-property of the table, which offers the ability to show an alert after changes. Below example would be shown when the table tag contains :code:`data-editAlert="exampleChangeMessage"`
+Initializing this button could be done using:
 
 .. code-block:: html
 
-    <div id="exampleChangeMessage" class="alert alert-info" style="display: none" role="alert">
-        {{ lang._('After changing settings, please remember to apply them with the button below') }}
-    </div>
+    $("#upload").SimpleFileUploadDlg();
 
 
 .. Tip::
 
-    You can access the general settings of the jquery-bootgrid plugin using the :code:`options` property, which can be convenient when you would like to change
-    requests or responses as being exchanged with the server. The available options are described `here <http://www.jquery-bootgrid.com/Documentation#table>`__
+    The :code:`SimpleFileUploadDlg` action supports an :code:`onAction` handler similar to the one described in :code:`$.SimpleActionButton`
 
-
-OPNsense settings
-.......................
-
-We added a couple of settings to the list, which help to extend our plugin a bit more easily. Below we will explain which settings (within the options tag) are added by us:
-
-*   useRequestHandlerOnGet
-
-    *   Boolean value which enables the use of the request handler when a :code:`get` request is executed ot fetch data for the dialog. This can be used to add parameters to the request.
-
-*   onBeforeRenderDialog
-
-    *   function handler which will be called before an edit dialog is being displayed, can be used to change the otherwise static dialogs. Should return a $.Deferred() object. (e.g. :code:`return (new $.Deferred()).resolve();`)
-
-
-Formatters
-.......................
-
-Formatters can be used in the grid heading to choose the presentation of an attribute, we include a couple of standard formatters which are:
-
-*   commands (commands list, edit,copy and delete)
-*   commandsWithInfo (same as commands, but with an info button as well)
-*   rowtoggle (show enabled status and act as toggle button)
-*   boolean (show boolean value)
-
-
-
-Visible columns
-......................
-
-jquery-bootgrid offers the ability to add columns which are not visible by default using the :code:`data-visible` tag. When
-using our wrapper, these can be used to set defaults as well,
-but the users last selection is also recorded in its local browser storage as well as the number of results shown in the grid when opening the same page again.

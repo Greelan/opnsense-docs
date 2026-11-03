@@ -12,6 +12,7 @@ Before we can take a look at the GUI options we need to login.
 The default user is root and the password is opnsense.
 
 .. image:: images/login.png
+   :width: 50%
 
 
 ----------------------------
@@ -54,10 +55,26 @@ In the following sample you see a screenshot of the Category **System**, with:
 
 .. image:: images/submenu.png
 
-Quick Navigation
-----------------
-A faster way to navigate trough the GUI is by using the quick navigation/search box
-on the upper right corner of the screen. Either click on it or hit tab to select it.
+Favorites
+---------
+Frequently used menu items can be added to a Favorites menu. This applies to
+Configuration level items, or Function level items if the Configuration level does
+not exist.
+
+To add or remove a Favorites menu item, hover over the page title with your mouse
+or tap it on a touch device. A favorite (star) icon will appear. Click or tap this
+icon to toggle the menu item as a favorite.
+
+Favorites are shown in the Favorites menu item at the top of the menu area, where
+they can be selected for quick access.
+
+.. image:: images/favorites.png
+    :width: 500px
+
+Search Navigation
+-----------------
+Another way to navigate through the GUI is by using the search box on the upper
+right corner of the screen. Either click on it or hit tab to select it.
 
 The search field is a type-ahead field, meaning that it will guess what you are
 looking for and fill up while typing. Hit Enter or click on an option to select
@@ -66,9 +83,29 @@ and navigate directly to the right page.
 .. image:: images/quick-navigation.png
 
 
+System Status
+-------------
+In the upper right corner of the screen is also a small indication of the system status.
+In a normal situation this will be greyed out, but it will display a color if something is
+wrong. You can click on it to review any of the pending messages, if any:
+
+.. image:: images/gui_system_status.png
+
+The colors indicate the severity of the issue. They are:
+
+* Red. Indicates that an error has occurred during system operation. Click it to go to the
+  relevant page. In most cases this will be the crash reporter, which you can use
+  to send us information about the crash.
+
+.. image:: images/gui_system_status_error.png
+
+* Yellow. Indicates a warning.
+* Blue. Indicates an informational message.
+* Grey. Everything is working as normal.
+
 User & Local domain
 -------------------
-In the right corner just to the left of the quick navigation you will see your
+In the right corner just to the left of the system status you will see your
 username and the full domain name the firewall is configured with
 (to change firewall name, go to :menuselection:`System --> Setting --> General`).
 
@@ -159,6 +196,14 @@ Filter and limit
     a selection for the number of rows to show at once on a page. Often the search input will be instantly applied, but
     in some cases a reload is needed if the action can't be processed fast enough.
     <br/><br/>
+    When using the filter in log files, you will find a <i class="fa fa-arrow-right"></i> <b>Go to page</b> action
+    behind every record. This will jump to the corresponding page and show you all surrounding records so you can see
+    the context of a log message.
+    <br/><br/>
+
+The search input tokenizes space-delimited words, causing the filter to return records matching all of the
+clauses included in the search phrase.
+
 
 Actions
 -------------------
@@ -183,10 +228,12 @@ Page Navigation
 The navigation buttons :code:`« ‹ [1,2,..] › »` help scroll through the different pages that are available for the
 selected data.
 
+
+
 .. Note::
 
     Although the page numbers and last page button (:code:`»`) are always visible, they can only be used when the size
     of the dataset is known upfront. In case of large datasets, such as intrusion alerts and log views the number of records
-    is not known upfront, since there's no relation between the size of the underlaying data and the number of records.
+    is not known upfront, since there's no relation between the size of the underlying data and the number of records.
 
     The record count in these cases is more or less a guestimate based on the number of records already shown.

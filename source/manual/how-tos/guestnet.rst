@@ -13,6 +13,26 @@ hotels, RV Parks or businesses.
     actual guest network switch or access point. This tutorial does not explain
     how to setup a wireless network.
 
+.. admonition:: Security considerations
+    :class: attention
+
+    The Captive portal functionality operates entirely on the information
+    available in the network. Protocols such as ARP or NDP do not provide any
+    inherent proof of ownership. Since the portal has no control over the client,
+    it is impossible to cryptographically prove a relationship between identity
+    and device. Therefore, to improve security, the layer 2 network(s) attached
+    to the portal must be properly isolated on the access point/switch level.
+
+    These features are often called "layer 2 isolation" for access points or
+    "port isolation" for switches and prevent direct client-to-client communication.
+    These features cannot prevent spoofing, but lower visibility in the network.
+
+    If stronger identity is a requirement, the Captive Portal likely isn't
+    for you. Consider using 802.1X network access control backed by a RADIUS/
+    policy server instead.
+
+    Note that this is less relevant if you use a layer 3 network such as WireGuard.
+
 ----------
 Businesses
 ----------
@@ -31,18 +51,11 @@ vouchers and can easily create them on the fly. With this example we will show
 you how to setup the Guest Network for this purpose and setup a reception account
 for creating new vouchers.
 
---------
-Advanced
---------
-The Captive portal can also be combined with the category based web filtering of
-the proxy. This tutorial will explain how to combine both features.
-
 -------------
 Prerequisites
 -------------
-We will start configuration with a fresh OPNsense install, updated to the latest
-patch level (16.1.5_1 in our example). You will need a system with a minimum of
-3 ports (LAN/WAN/GUESTNET) for this tutorial.
+We will start configuration with a fresh OPNsense installation.
+You will need a system with a minimum of 3 ports (LAN/WAN/GUESTNET) for this tutorial.
 
 ------------
 Good to know
@@ -54,12 +67,8 @@ with that and after finishing add/change the specifics to match the Hotel Guest 
 Step 1 - Configure Interface
 ----------------------------
 For the Guest Network we will add a new interface.
-Go to :menuselection:`Interfaces --> Assignments` And use the **+** to add a new interface.
-Press **Save**. The new interface will be called **OPT1**, click on [OPT1] in the
-left menu to change its settings.
-
-
-Select **Enable Interface** and fill in the following data for our example:
+Go to :menuselection:`Interfaces --> Assignments` and click **Add** to add a new interface.
+The new interface will be called **OPT1**. Select its device, select **Enabled** and fill in the following data:
 
 ============================== ================= ==============================================
  **Description**                GUESTNET          *A descriptive name for the interface*
@@ -67,15 +76,15 @@ Select **Enable Interface** and fill in the following data for our example:
  **Block bogon networks**       unselected
  **IPv4 Configuration Type**    Static IPv4       *Set a static IPv4 address for the example*
  **IPv6 configuration Type**    None
- **MAC address**                (Leave Blank)
+ **MAC address (spoof)**        (Leave Blank)
  **MTU**                        (Leave Blank)
  **MSS**                        (Leave Blank)
- **Speed and duplex**           Default           *You may also select the speed when known*
- **Static IPv4 address**        192.168.200.1/24  *We will use this segment for our guests*
- **IPv4 Upstream Gateway**      Auto-detect
+ **Media (speed and duplex)**   Default           *You may also select the speed when known*
+ **IPv4 address**               192.168.200.1/24  *We will use this segment for our guests*
+ **IPv4 gateway rules**         Default
 ============================== ================= ==============================================
 
-Press **Save** and then **Apply changes**.
+Press **Save** and then **Apply**.
 
 ------------------------------
 Step 2 - Configure DHCP Server
@@ -87,7 +96,7 @@ Fill in the following to setup the DHCP server for our guest net (leave everythi
 
 
 ================ ==================================== =======================================
- **Enable**       Checked                               *Enable the DCHP server on GUESTNET*
+ **Enable**       Checked                               *Enable the DHCP server on GUESTNET*
  **Range**        192.168.200.100 to 192.168.200.200    *Serve IPs from this range*
  **DNS servers**  192.168.200.1                         *Supply a DNS with the lease*
  **Gateway**      192.168.200.1                         *Supply a gateway with the lease*
@@ -98,44 +107,16 @@ Click **Save**.
 ---------------------------
 Step 3 - Add Firewall Rules
 ---------------------------
+
+.. Note::
+    Rules to allow DNS and access to the captive portal zone webserver are installed automatically.
+    If you are overriding this behavior, install the rules as listed in
+    `Captive Portal firewall rules <../captiveportal.html#captive-portal-firewall-rules>`__
+    before any other rules.
+
 Go to :menuselection:`Firewall --> Rules` to add a new rule.
 
 Now add the following rules (in order of prevalence):
-
-Allow DNS
----------
-Allow the guests access to the DNS forwarder.
-Rule content (leave all other options default):
-
-============================ ===================== =====================================
- **Action**                   Pass                  *Allow this traffic*
- **Interface**                GUESTNET              *The GuestNet Interface*
- **Protocol**                 TCP/UDP
- **Source**                   GUESTNET net
- **Destination**              GUESTNET address
- **Destination port range**   DNS/DNS               *from DNS to DNS*
- **Category**                 GuestNet Basic Rules  *Category used for grouping rules*
- **Description**              Allow DNS
-============================ ===================== =====================================
-
-Click **Save**.
-
-
-Allow Captive Portal Login
---------------------------
-
-============================ ============================ =====================================
- **Action**                   Pass                         *Allow this traffic*
- **Interface**                GUESTNET                     *The GuestNet Interface*
- **Protocol**                 TCP
- **Source**                   GUESTNET net
- **Destination**              GUESTNET address
- **Destination port range**   8000/10000                   *(other) used for the cp zones*
- **Category**                 GuestNet Basic Rules         *Category used for grouping rules*
- **Description**              Allow Captive Portal Login
-============================ ============================ =====================================
-
-Click **Save**.
 
 
 Block Local Networks
@@ -158,7 +139,7 @@ Click **Save**.
  **Interface**                GUESTNET                     *The GuestNet Interface*
  **Protocol**                 any
  **Source**                   GUESTNET net
- **Destination**              GUESTNET address
+ **Destination**              This Firewall
  **Category**                 GuestNet Basic Rules         *Category used for grouping rules*
  **Description**              Block Firewall Access
 ============================ ============================ =====================================
@@ -186,12 +167,6 @@ Allow Guest Networks
 ============================ ===================== =====================================
 
 Click **Save** and then **Apply changes**
-
-Your rules should look similar to the screenshot below:
-
-.. image:: images/guestnet_fwrules.png
-    :width: 100%
-
 
 ------------------------------
 Step 4 - Create Captive Portal
@@ -265,7 +240,7 @@ Let's make the following changes to the template:
 
 Find the following part:
 
-.. code-block:: guess
+.. code-block:: html
 
   <header class="page-head">
   <nav class="navbar navbar-default" >
@@ -281,7 +256,7 @@ Find the following part:
 
 And change to:
 
-.. code-block:: guess
+.. code-block:: html
 
     <header class="page-head">
         <div align="center">
@@ -289,7 +264,7 @@ And change to:
               <img class="brand-logo" src="images/company-logo.png">
           </a>
           <h1>Welcome to My Company Guest Network.</h1>
-          <h2>Feel free to use the guest network for profesional usage</h2>
+          <h2>Feel free to use the guest network for professional usage</h2>
           <h3>See our website for more details: <a href="https://www.opnsense.org">My Company</a></h3>
         </div>
     </header>
@@ -304,7 +279,7 @@ Enter a **Template Name**, for this example we use **Company**.
 Hit Upload ( |upload| )
 
 .. |download| image:: images/btn_download.png
-      :width: 100%
+    :width: 30px
 
 .. |upload| image:: images/btn_upload.png
 
@@ -438,7 +413,7 @@ For the example we create 10 vouchers. Click on **Generate**.
 A file will be generated called **Wi-Fi day pass.csv**.
 The content of this file looks like this:
 
-.. code-block:: guess
+.. code-block::
 
     username,password,vouchergroup,validity
     "IgJw@Pqf","MLi+Sb7Ak#","Wi-Fi day pass","86400"
@@ -540,7 +515,7 @@ Logout. For this feature we will use OPNsense's built-in API calls.
 
 In particular we will use the following API call (for zone id 0):
 
-.. code-block:: guess
+.. code-block::
 
   /api/captiveportal/access/status/0/
 
@@ -590,7 +565,7 @@ For this example we will use the cli to list the status off all active sessions.
 
 Type the following on the cli prompt to do so (for zone id 0):
 
-.. code-block:: guess
+.. code-block::
 
   configctl captiveportal list_clients 0
 

@@ -1,30 +1,30 @@
 Maltrail
 ~~~~~~~~
 
-.. csv-table:: Service (GeneralController.php)
+.. csv-table:: Resources (GeneralController.php)
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
     "``GET``","maltrail","general","get",""
-    "``GET``","maltrail","general","set",""
+    "``POST``","maltrail","general","set",""
 
     "``<<uses>>``", "", "", "", "*model* `General.xml <https://github.com/opnsense/plugins/blob/master/security/maltrail/src/opnsense/mvc/app/models/OPNsense/Maltrail/General.xml>`__"
 
-.. csv-table:: Service (SensorController.php)
+.. csv-table:: Resources (SensorController.php)
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
     "``GET``","maltrail","sensor","get",""
-    "``GET``","maltrail","sensor","set",""
+    "``POST``","maltrail","sensor","set",""
 
     "``<<uses>>``", "", "", "", "*model* `Sensor.xml <https://github.com/opnsense/plugins/blob/master/security/maltrail/src/opnsense/mvc/app/models/OPNsense/Maltrail/Sensor.xml>`__"
 
-.. csv-table:: Service (ServerController.php)
+.. csv-table:: Resources (ServerController.php)
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
     "``GET``","maltrail","server","get",""
-    "``GET``","maltrail","server","set",""
+    "``POST``","maltrail","server","set",""
 
     "``<<uses>>``", "", "", "", "*model* `Server.xml <https://github.com/opnsense/plugins/blob/master/security/maltrail/src/opnsense/mvc/app/models/OPNsense/Maltrail/Server.xml>`__"
 
@@ -32,22 +32,18 @@ Maltrail
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``GET``","maltrail","serverservice","reconfigure",""
-    "``GET``","maltrail","serverservice","restart",""
-    "``GET``","maltrail","serverservice","start",""
+    "``POST``","maltrail","serverservice","reconfigure",""
+    "``POST``","maltrail","serverservice","restart",""
+    "``POST``","maltrail","serverservice","start",""
     "``GET``","maltrail","serverservice","status",""
-    "``GET``","maltrail","serverservice","stop",""
-
-    "``<<uses>>``", "", "", "", "*model* `Server.xml <https://github.com/opnsense/plugins/blob/master/security/maltrail/src/opnsense/mvc/app/models/OPNsense/Maltrail/Server.xml>`__"
+    "``POST``","maltrail","serverservice","stop",""
 
 .. csv-table:: Service (ServiceController.php)
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``GET``","maltrail","service","reconfigure",""
-    "``GET``","maltrail","service","restart",""
-    "``GET``","maltrail","service","start",""
+    "``POST``","maltrail","service","reconfigure",""
+    "``POST``","maltrail","service","restart",""
+    "``POST``","maltrail","service","start",""
     "``GET``","maltrail","service","status",""
-    "``GET``","maltrail","service","stop",""
-
-    "``<<uses>>``", "", "", "", "*model* `Sensor.xml <https://github.com/opnsense/plugins/blob/master/security/maltrail/src/opnsense/mvc/app/models/OPNsense/Maltrail/Sensor.xml>`__"
+    "``POST``","maltrail","service","stop",""

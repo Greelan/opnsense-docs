@@ -8,8 +8,8 @@ Community Edition
     :width: 600px
     :align: center
 
-As of January 2015 there have been *217* releases leading to the latest version *22.1*
-named "Observant Owl".
+As of January 2015 there have been *355* releases leading to the latest version *26.7.8*
+named "Xenial Xenops".
 
 
 
@@ -20,6 +20,15 @@ The list below contains all releases, ordered by version number categorized by m
    :titlesonly:
    :glob:
 
+   releases/CE_26.7
+   releases/CE_26.1
+   releases/CE_25.7
+   releases/CE_25.1
+   releases/CE_24.7
+   releases/CE_24.1
+   releases/CE_23.7
+   releases/CE_23.1
+   releases/CE_22.7
    releases/CE_22.1
    releases/CE_21.7
    releases/CE_21.1

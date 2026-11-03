@@ -5,20 +5,20 @@ Ftpproxy
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``POST``","ftpproxy","service","config",""
-    "``POST``","ftpproxy","service","reload",""
-    "``POST``","ftpproxy","service","restart","$uuid"
-    "``POST``","ftpproxy","service","start","$uuid"
-    "``POST``","ftpproxy","service","status","$uuid"
-    "``POST``","ftpproxy","service","stop","$uuid"
+    "``GET``","ftpproxy","service","config",""
+    "``GET``","ftpproxy","service","reload",""
+    "``GET``","ftpproxy","service","restart","$uuid"
+    "``GET``","ftpproxy","service","start","$uuid"
+    "``GET``","ftpproxy","service","status","$uuid"
+    "``GET``","ftpproxy","service","stop","$uuid"
 
 .. csv-table:: Resources (SettingsController.php)
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``POST``","ftpproxy","settings","addProxy",""
-    "``POST``","ftpproxy","settings","delProxy","$uuid"
-    "``GET``","ftpproxy","settings","getProxy","$uuid=null"
-    "``GET``","ftpproxy","settings","searchProxy",""
-    "``POST``","ftpproxy","settings","setProxy","$uuid"
-    "``POST``","ftpproxy","settings","toggleProxy","$uuid"
+    "``POST``","ftpproxy","settings","add_proxy",""
+    "``POST``","ftpproxy","settings","del_proxy","$uuid"
+    "``GET``","ftpproxy","settings","get_proxy","$uuid=null"
+    "``GET``","ftpproxy","settings","search_proxy",""
+    "``POST``","ftpproxy","settings","set_proxy","$uuid"
+    "``POST``","ftpproxy","settings","toggle_proxy","$uuid"

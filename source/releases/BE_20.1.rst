@@ -118,7 +118,7 @@ Here are the full patch notes:
 * ports: php 7.3.19 `[15] <https://www.php.net/ChangeLog-7.php#7.3.19>`__ 
 * ports: python CVE-2019-18348 and CVE-2020-8492
 * ports: sqlite 3.32.2 `[16] <https://sqlite.org/releaselog/3_32_2.html>`__ 
-* ports: sudo 1.9.1 `[17] <https://www.sudo.ws/stable.html#1.9.1>`__ 
+* ports: sudo 1.9.1 `[17] <https://www.sudo.ws/releases/stable/#1.9.1>`__ 
 * ports: unbound 1.10.1 `[18] <https://nlnetlabs.nl/projects/unbound/download/#unbound-1-10-1>`__ 
 
 A hotfix release was issued as 20.1.8_1:
@@ -153,17 +153,17 @@ Here are the full patch notes:
 * src: added Novatel Wireless MiFi 8800/8000 support (contributed by rootless4real)
 * src: fix pf shared forwarding on non-existing interfaces
 * src: patch in tty 3wire autologin support
-* src: fix insufficient packet length validation in libalias `[1] <FREEBSD:FreeBSD-SA-20:12.libalias>`__ 
-* src: fix memory disclosure vulnerability in libalias `[2] <FREEBSD:FreeBSD-SA-20:13.libalias>`__ 
-* src: fix improper checking in SCTP-AUTH shared key update `[3] <FREEBSD:FreeBSD-SA-20:14.sctp>`__ 
-* src: fix use after free in cryptodev module `[4] <FREEBSD:FreeBSD-SA-20:15.cryptodev>`__ 
-* src: update to tzdata 2020a `[5] <FREEBSD:FreeBSD-EN-20:08.tzdata>`__ 
+* src: fix insufficient packet length validation in libalias `[1] <https://www.freebsd.org/security/advisories/FreeBSD-SA-20:12.libalias.asc>`__ 
+* src: fix memory disclosure vulnerability in libalias `[2] <https://www.freebsd.org/security/advisories/FreeBSD-SA-20:13.libalias.asc>`__ 
+* src: fix improper checking in SCTP-AUTH shared key update `[3] <https://www.freebsd.org/security/advisories/FreeBSD-SA-20:14.sctp.asc>`__ 
+* src: fix use after free in cryptodev module `[4] <https://www.freebsd.org/security/advisories/FreeBSD-SA-20:15.cryptodev.asc>`__ 
+* src: update to tzdata 2020a `[5] <https://www.freebsd.org/security/advisories/FreeBSD-EN-20:08.tzdata.asc>`__ 
 * ports: ca_root_nss 3.52
 * ports: curl 7.70.0 `[6] <https://curl.se/changes.html#7_70_0>`__ 
-* ports: dhcp6c v20200512
+* ports: dhcp6c 20200512
 * ports: hyperscan 5.2.1 `[7] <https://github.com/intel/hyperscan/releases/tag/v5.2.1>`__ 
-* ports: openldap 2.4.50 `[8] <https://www.openldap.org/software/release/changes.html>`__ 
-* ports: pcre2 10.35 `[9] <https://www.pcre.org/changelog.txt>`__ 
+* ports: openldap 2.4.50 `[8] <https://www.openldap.org/software/release/changes_lts.html>`__ 
+* ports: pcre2 10.35 `[9] <https://github.com/PCRE2Project/pcre2/releases/tag/pcre2-10.35>`__ 
 * ports: php 7.3.18 `[10] <https://www.php.net/ChangeLog-7.php#7.3.18>`__ 
 
 
@@ -242,7 +242,7 @@ Here are the full patch notes:
 * ports: ca_root_nss 3.51.1
 * ports: dnsmasq 2.81 `[4] <https://www.thekelleys.org.uk/dnsmasq/CHANGELOG>`__ 
 * ports: krb5 1.18.1 `[5] <https://web.mit.edu/kerberos/krb5-1.18/>`__ 
-* ports: openvpn 2.4.9 `[6] <https://community.openvpn.net/openvpn/wiki/ChangesInOpenvpn24#OpenVPN2.4.9>`__ 
+* ports: openvpn 2.4.9 `[6] <https://github.com/OpenVPN/openvpn/blob/v2.4.9/Changes.rst>`__ 
 * ports: php 7.2.30 `[7] <https://www.php.net/ChangeLog-7.php#7.2.30>`__ 
 * ports: py-certifi 2020.4.5.1
 * ports: strongswan 5.8.4 `[8] <https://wiki.strongswan.org/versions/77>`__ 
@@ -302,12 +302,12 @@ Here are the full patch notes:
 * ports: curl 7.69.1 `[15] <https://curl.se/changes.html#7_69_1>`__ 
 * ports: krb5 1.18 `[16] <https://web.mit.edu/kerberos/krb5-1.18/>`__ 
 * ports: openssh 8.2p1 `[17] <https://www.openssh.com/txt/release-8.2>`__ 
-* ports: openssl 1.1.1f `[18] <https://www.openssl.org/news/openssl-1.1.1-notes.html>`__ 
+* ports: openssl 1.1.1f `[18] <https://github.com/openssl/openssl/blob/openssl-3.0/CHANGES.md>`__ 
 * ports: perl 5.30.2 `[19] <https://perldoc.perl.org/5.30.2/perldelta>`__ 
 * ports: php 7.2.29 `[20] <https://www.php.net/ChangeLog-7.php#7.2.29>`__ 
 * ports: python 3.7.7 `[21] <https://docs.python.org/release/3.7.7/whatsnew/changelog.html>`__ 
 * ports: strongswan 5.8.3 `[22] <https://wiki.strongswan.org/versions/76>`__ 
-* ports: sudo 1.8.31p1 `[23] <https://www.sudo.ws/legacy.html#1.8.31p1>`__ 
+* ports: sudo 1.8.31p1 `[23] <https://www.sudo.ws/releases/legacy/#1.8.31p1>`__ 
 
 
 
@@ -342,7 +342,7 @@ Here are the full patch notes:
 * ui: add jQuery plugin to support a simple service reload/action button
 * ui: hook bootgrid javascript texts
 * plugins: os-munin-node 1.0 (contributed by Michael Muenz)
-* plugins: os-sunnyvalley 1.2 (contributed by Sunny Valley
+* plugins: os-sunnyvalley 1.2 (contributed by Sunny Valley Networks)
 * plugins: os-wol: relax MAC address validation (contributed by Mikael Falkvidd)
 * ports: ca_root_nss 3.51
 * ports: ntp 4.2.8p14 `[1] <https://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ChangeLog-stable>`__ 
@@ -375,8 +375,8 @@ Here are the full patch notes:
 * unbound: minor changes while scanning ACL subnets
 * web proxy: work around to skip passing additional auth properties
 * backend: allow pluginctl to return config.xml values
-* console: improve type checks in set address function
 * rc: join CARP early startup scripts
+* shell: improve type checks in set address function
 * plugins: os-dnscrypt-proxy fix for setup.sh on reboot
 * plugins: os-dyndns 1.20 fixes verify restrictions, GratisDNS and missing break for Linode (contributed by NOYB, Johan Pramming, Andrew Gunnerson)
 * plugins: os-maltrail 1.4 `[1] <https://github.com/opnsense/plugins/blob/master/security/maltrail/pkg-descr>`__ 
@@ -417,9 +417,9 @@ Here are the full patch notes:
 * plugins: os-nginx 1.18 `[3] <https://github.com/opnsense/plugins/blob/master/www/nginx/pkg-descr>`__ 
 * plugins: os-theme-vicuna 1.0 (contributed by Team Rebellion)
 * ports: lighttpd 1.4.55 `[4] <https://www.lighttpd.net/2020/1/31/1.4.55/>`__ 
-* ports: openldap 2.4.49 `[5] <https://www.openldap.org/software/release/changes.html>`__ 
+* ports: openldap 2.4.49 `[5] <https://www.openldap.org/software/release/changes_lts.html>`__ 
 * ports: pkg libfetch security fix `[6] <https://github.com/freebsd/freebsd-ports/commit/eec0b5c>`__ 
-* ports: sudo 1.8.31 `[7] <https://www.sudo.ws/legacy.html#1.8.31>`__ 
+* ports: sudo 1.8.31 `[7] <https://www.sudo.ws/releases/legacy/#1.8.31>`__ 
 
 
 
@@ -487,8 +487,8 @@ And here are the full patch notes against version 20.1-RC1:
 Known issues and limitations:
 
 * HardenedBSD 12.1 has been postponed to the next major release
-* Legacy MPD5 plugins os-l2tp, os-pppoe and os-pptp have been deprecated and will no longer receive updates
-* To prevent stale configuration files for remote syslog we advise to setup the new targets first `[9] <https://docs.opnsense.org/manual/settingsmenu.html#logging-targets>`__  and disable the old ones under System: Settings: Logging
+* Legacy MPD plugins os-l2tp, os-pppoe and os-pptp have been deprecated and will no longer receive updates
+* To prevent stale configuration files for remote syslog we advise to setup the new targets first `[9] <https://docs.opnsense.org/manual/settingsmenu.html>`__  and disable the old ones under System: Settings: Logging
 * i386 has not been deprecated for the time being ;)
 
 The public key for the 20.1 series is:
@@ -564,7 +564,7 @@ Here are the full patch notes against 19.7.9_1:
 * interfaces: VXLAN device support
 * interfaces: first steps toward fully pluggable device infrastructure
 * interfaces: remove default load of netgraph framework on bootup
-* interfaces: interfaces: move description into top block and rename titles
+* interfaces: move description into top block and rename titles
 * interfaces: only trigger newwanip event for affected interfaces
 * firmware: revoke 19.1, trust 20.1 fingerprint
 * firmware: new mirror in Zurich, CH contributed by ServerBase AG
@@ -580,14 +580,14 @@ Here are the full patch notes against 19.7.9_1:
 * plugins: os-zabbix-agent 1.7 `[3] <https://github.com/opnsense/plugins/pull/1578>`__  `[4] <https://github.com/opnsense/plugins/pull/1618>`__ 
 * ports: ca_root_nss 3.49.1
 * ports: curl 7.68.0 `[5] <https://curl.se/changes.html#7_68_0>`__ 
-* ports: openssl 1.1.1d `[6] <https://www.openssl.org/news/openssl-1.1.1-notes.html>`__ 
+* ports: openssl 1.1.1d `[6] <https://github.com/openssl/openssl/blob/openssl-3.0/CHANGES.md>`__ 
 
 Known issues and limitations:
 
 * HardenedBSD 12.1 has been postponed to the next major release
 * Nano growfs does not work on this release candidate, but a fix for 20.1 already exists
 * Installer still advertises 19.7, but a fix for 20.1 already exists
-* Legacy MPD5 plugins os-l2tp, os-pppoe and os-pptp have been deprecated and will no longer receive updates
+* Legacy MPD plugins os-l2tp, os-pppoe and os-pptp have been deprecated and will no longer receive updates
 * i386 has not been deprecated for the time being ;)
 
 The public key for the 20.1 series is:

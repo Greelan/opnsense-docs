@@ -5,23 +5,23 @@ Bind
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``POST``","bind","acl","addAcl",""
-    "``POST``","bind","acl","delAcl","$uuid"
+    "``POST``","bind","acl","add_acl",""
+    "``POST``","bind","acl","del_acl","$uuid"
     "``GET``","bind","acl","get",""
-    "``GET``","bind","acl","getAcl","$uuid=null"
-    "``*``","bind","acl","searchAcl",""
-    "``GET``","bind","acl","set",""
-    "``POST``","bind","acl","setAcl","$uuid"
-    "``POST``","bind","acl","toggleAcl","$uuid"
+    "``GET``","bind","acl","get_acl","$uuid=null"
+    "``GET,POST``","bind","acl","search_acl",""
+    "``POST``","bind","acl","set",""
+    "``POST``","bind","acl","set_acl","$uuid"
+    "``POST``","bind","acl","toggle_acl","$uuid"
 
     "``<<uses>>``", "", "", "", "*model* `Acl.xml <https://github.com/opnsense/plugins/blob/master/dns/bind/src/opnsense/mvc/app/models/OPNsense/Bind/Acl.xml>`__"
 
-.. csv-table:: Service (DnsblController.php)
+.. csv-table:: Resources (DnsblController.php)
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
     "``GET``","bind","dnsbl","get",""
-    "``GET``","bind","dnsbl","set",""
+    "``POST``","bind","dnsbl","set",""
 
     "``<<uses>>``", "", "", "", "*model* `Dnsbl.xml <https://github.com/opnsense/plugins/blob/master/dns/bind/src/opnsense/mvc/app/models/OPNsense/Bind/Dnsbl.xml>`__"
 
@@ -29,23 +29,31 @@ Bind
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``POST``","bind","domain","addDomain","$uuid=null"
-    "``POST``","bind","domain","delDomain","$uuid"
+    "``POST``","bind","domain","add_forward_domain","$uuid=null"
+    "``POST``","bind","domain","add_primary_domain","$uuid=null"
+    "``POST``","bind","domain","add_secondary_domain","$uuid=null"
+    "``POST``","bind","domain","del_domain","$uuid"
     "``GET``","bind","domain","get",""
-    "``GET``","bind","domain","getDomain","$uuid=null"
-    "``*``","bind","domain","searchDomain",""
-    "``GET``","bind","domain","set",""
-    "``POST``","bind","domain","setDomain","$uuid=null"
-    "``POST``","bind","domain","toggleDomain","$uuid"
+    "``GET``","bind","domain","get_domain","$uuid=null"
+    "``GET,POST``","bind","domain","search_forward_domain",""
+    "``GET``","bind","domain","search_master_domain",""
+    "``GET,POST``","bind","domain","search_primary_domain",""
+    "``GET,POST``","bind","domain","search_secondary_domain",""
+    "``GET``","bind","domain","search_slave_domain",""
+    "``POST``","bind","domain","set",""
+    "``POST``","bind","domain","set_domain","$uuid=null"
+    "``POST``","bind","domain","toggle_domain","$uuid"
 
     "``<<uses>>``", "", "", "", "*model* `Domain.xml <https://github.com/opnsense/plugins/blob/master/dns/bind/src/opnsense/mvc/app/models/OPNsense/Bind/Domain.xml>`__"
 
-.. csv-table:: Service (GeneralController.php)
+.. csv-table:: Resources (GeneralController.php)
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
     "``GET``","bind","general","get",""
-    "``GET``","bind","general","set",""
+    "``POST``","bind","general","set",""
+    "``GET``","bind","general","zoneshow","$zonename=null"
+    "``GET``","bind","general","zonetest","$zonename=null"
 
     "``<<uses>>``", "", "", "", "*model* `General.xml <https://github.com/opnsense/plugins/blob/master/dns/bind/src/opnsense/mvc/app/models/OPNsense/Bind/General.xml>`__"
 
@@ -53,14 +61,14 @@ Bind
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``POST``","bind","record","addRecord",""
-    "``POST``","bind","record","delRecord","$uuid"
+    "``POST``","bind","record","add_record",""
+    "``POST``","bind","record","del_record","$uuid"
     "``GET``","bind","record","get",""
-    "``GET``","bind","record","getRecord","$uuid=null"
-    "``*``","bind","record","searchRecord",""
-    "``GET``","bind","record","set",""
-    "``POST``","bind","record","setRecord","$uuid=null"
-    "``POST``","bind","record","toggleRecord","$uuid"
+    "``GET``","bind","record","get_record","$uuid=null"
+    "``GET,POST``","bind","record","search_record",""
+    "``POST``","bind","record","set",""
+    "``POST``","bind","record","set_record","$uuid=null"
+    "``POST``","bind","record","toggle_record","$uuid"
 
     "``<<uses>>``", "", "", "", "*model* `Record.xml <https://github.com/opnsense/plugins/blob/master/dns/bind/src/opnsense/mvc/app/models/OPNsense/Bind/Record.xml>`__"
 
@@ -69,10 +77,8 @@ Bind
    :widths: 4, 15, 15, 30, 40
 
     "``GET``","bind","service","dnsbl",""
-    "``GET``","bind","service","reconfigure",""
-    "``GET``","bind","service","restart",""
-    "``GET``","bind","service","start",""
+    "``POST``","bind","service","reconfigure",""
+    "``POST``","bind","service","restart",""
+    "``POST``","bind","service","start",""
     "``GET``","bind","service","status",""
-    "``GET``","bind","service","stop",""
-
-    "``<<uses>>``", "", "", "", "*model* `General.xml <https://github.com/opnsense/plugins/blob/master/dns/bind/src/opnsense/mvc/app/models/OPNsense/Bind/General.xml>`__"
+    "``POST``","bind","service","stop",""

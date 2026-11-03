@@ -22,7 +22,7 @@ Goal
 
 The goal of the "Hello world" module we're creating in the example is to
 control a program on our system named "testConnection.py", which is part
-of the example package available on GitHub. It will try to send an email
+of :ref:`the example package available on GitHub <example-source>`. It will try to send an email
 using plain smtp and will respond with a json text message about the
 result of that attempt.
 
@@ -57,7 +57,7 @@ In our sample case this will be: OPNsense/HelloWorld
 PHP code
 --------
 
-Please use PSR-2 style (http://www.php-fig.org/psr/psr-2/) for all new
+Please use PSR-12 style (https://www.php-fig.org/psr/psr-12/) for all new
 code.
 
 
@@ -77,7 +77,49 @@ are already there.
 
 If you follow this basic rules, you're automatically building a command
 structure for the system administrators and provide a connector to third
-party tools to the API of your component (as of version 16.1).
+party tools to the API of your component.
+
+Directory structure
+-------------------
+
+We will build our HelloWorld example step by step and create several files.
+Here is the directory structure and the files which will get created:
+
+.. code-block::
+
+    ./src/opnsense/
+      ├── mvc/
+      |   └── app/
+      |       ├── controllers/
+      |       |   └── OPNsense/HelloWorld/
+      |       |       ├── IndexController.php
+      |       |       ├── Api/
+      |       |       |   ├── ServiceController.php
+      |       |       |   ├── SettingsController.php
+      |       |       └── forms/
+      |       |           └── general.xml
+      |       ├── models/
+      |       |   └── OPNsense/HelloWorld/
+      |       |       ├── HelloWorld.php
+      |       |       ├── HelloWorld.xml
+      |       |       ├── ACL/
+      |       |       |   └── ACL.xml
+      |       |       └── Menu/
+      |       |           └── Menu.xml
+      |       └── views/
+      |           └── OPNsense/HelloWorld/
+      |               └── index.volt
+      ├── scripts/
+      |   └── helloworld/
+      |       └── testConnection.py
+      └── service/
+          ├── templates/
+          |   └── OPNsense/HelloWorld/
+          |       ├── +TARGETS
+          |       └── helloworld.conf
+          └── conf/actions.d/
+              └── actions_helloworld.conf
+
 
 --------
 Skeleton
@@ -87,7 +129,9 @@ Skeleton
    :name: setup-a-skeleton-for-the-frontend-middleware
 
 First step for our project is to build a skeleton which holds the
-structure for our frontend/middleware.
+structure for our frontend/middleware. Do keep in mind to only
+build the structure, if you add empty files this will
+cause errors.
 
 Model
 -----
@@ -119,6 +163,12 @@ Not all modules contain additional code in the PHP class, sometimes all
 the standard behaviour is already sufficient for your
 modules/application.
 
+.. Note::
+
+    When stored data has derivatives, the model is usually the place to build these. Good examples are
+    a flag to figure out if a service is enabled in cases where it depends on structures inside the data.
+    (such as a list of interfaces which can all be enabled and/or disabled)
+
 Which is the model XML template, our skeleton starts with something like
 this:
 
@@ -127,10 +177,9 @@ this:
 
     <model>
         <mount>//OPNsense/helloworld</mount>
-        <description>
-            the OPNsense "Hello World" application
-        </description>
+        <description>the OPNsense "Hello World" application</description>
         <items>
+            <!-- container -->
         </items>
     </model>
 
@@ -216,8 +265,7 @@ extend the corresponding class.
 
 For our modules we create two API controllers, one for controlling
 settings and one for performing service actions. (Named
-SettingsController.php and ServiceController.php) Both should look like
-this (replace Settings with Service for the other one):
+SettingsController.php and ServiceController.php)
 
 .. code-block:: php
     :caption: /usr/local/opnsense/mvc/app/controllers/OPNsense/HelloWorld/Api/SettingsController.php
@@ -225,10 +273,26 @@ this (replace Settings with Service for the other one):
     <?php
     namespace OPNsense\HelloWorld\Api;
      
-    use \OPNsense\Base\ApiControllerBase;
-    class SettingsController extends ApiControllerBase
+    use \OPNsense\Base\ApiMutableModelControllerBase;
+    class SettingsController extends ApiMutableModelControllerBase
     {
     }
+
+.. code-block:: php
+    :caption: /usr/local/opnsense/mvc/app/controllers/OPNsense/HelloWorld/Api/ServiceController.php
+
+    <?php
+    namespace OPNsense\HelloWorld\Api;
+     
+    use \OPNsense\Base\ApiMutableServiceControllerBase;
+    class ServiceController extends ApiMutableServiceControllerBase
+    {
+    }
+
+.. Note::
+    For the sake of simplicity we use :code:`ApiMutableModelControllerBase` in our example, in practice this
+    class derives from :code:`ApiControllerBase` which is the essential requirement for an api endpoint.
+    Using :code:`ApiMutableModelControllerBase` prevents duplicating boilerplate code.
 
 
 ----------------
@@ -273,6 +337,7 @@ should contain a field type to identify and validate it’s content. The
 list of attributes for our application can be translated to this:
 
 .. code-block:: xml
+    :caption: /usr/local/opnsense/mvc/app/models/OPNsense/HelloWorld/HelloWorld.xml
 
     ………
     <items>
@@ -305,6 +370,9 @@ models/OPNsense/Base/FieldTypes directory. If specific field types
 support additional parameters, for example for validation, they should
 be registered in the model as well (just like the default tag in
 Enabled).
+
+.. Tip::
+    Read more about field types in :doc:`Creating Models <../frontend/models>`.
 
 Presentation XML
 ----------------
@@ -392,126 +460,82 @@ Create API calls
 
 The framework provides some helpful utilities to get and set data from
 and to the configuration XML by using your defined model. First step in
-binding your model to the system is to add a method to the
-SettingsController to fetch the data from our configuration (or provide
-the defaults if there is no content).
-
-We start by adding the model to our SettingsController, by adding this
-in the “use” section:
+binding your model to the system is to point the :code:`SettingsController` to the model and teach it how
+it should return the data.  For this we add two lines to the controller created earlier:
 
 .. code-block:: php
+   :caption: /usr/local/opnsense/mvc/app/controllers/OPNsense/HelloWorld/Api/SettingsController.php
 
-    use \OPNsense\HelloWorld\HelloWorld;
-
-Which includes our model into the controller. Next we create an action
-to get data from our system, and put it into a json object for the
-client (browser) to parse, by using the wrappers already in our model.
-
-.. code-block:: php
-    :caption: /usr/local/opnsense/mvc/app/controllers/OPNsense/HelloWorld/Api/SettingsController.php
-
-    * retrieve HelloWorld general settings
-     * @return array general settings
-     */
-    public function getAction()
+    class SettingsController extends ApiMutableModelControllerBase
     {
-        // define list of configurable settings
-        $result = array();
-        if ($this->request->isGet()) {
-            $mdlHelloWorld = new HelloWorld();
-            $result['helloworld'] = $mdlHelloWorld->getNodes();
+        protected static $internalModelClass = 'OPNsense\HelloWorld\HelloWorld';
+        protected static $internalModelName = 'helloworld';
+
+        public function getAction()
+        {
+            $data = parent::getAction();
+            $data[self::$internalModelName]['general']['%ToEmail'] = gettext('Enter recipient here');
+
+            return $data;
         }
-        return $result;
     }
 
-You will probably notice the return value of the action, it's a standard
-array which uses "helloworld" for all attributes from getNodes() which
-will automatically be converted by the framework to a json object for
-the client. The getNodes method itself returns a tree a values, as
-defined by your model.
 
-You can test the result (while logged in as root), by going to this
-address:
+.. Note::
+    The :code:`getAction()` function can add dynamic extra information to data fetches. When we get to fetching the data 
+    this will be further explained. 
+
+
+The :code:`$internalModelClass` creates the model for you, so you don't have to create one manually (and define get and
+set actions), :code:`$internalModelName` names the response container.
+
+Similarly, we will do this for the :code:`ServiceController` as well
+
+.. code-block:: php
+   :caption: /usr/local/opnsense/mvc/app/controllers/OPNsense/HelloWorld/Api/SettingsController.php
+
+    class ServiceController extends ApiMutableServiceControllerBase
+    {
+        protected static $internalServiceClass = 'OPNsense\HelloWorld\HelloWorld';
+        protected static $internalServiceClass = 'helloworld';
+    }
+
+You can test the result (while logged in as root), by going to this address:
 
 ::
 
     http[s]://<your ip>/api/helloworld/settings/get
 
-For saving the data back, we need a similar kind of call, let’s name it
-“set” and add this to the same php file:
 
-.. code-block:: php
-    :caption: /usr/local/opnsense/mvc/app/controllers/OPNsense/HelloWorld/Api/SettingsController.php
+Which will output a json structure in your browser like:
 
-    /**
-     * update HelloWorld settings
-     * @return array status
-     */
-    public function setAction()
+.. code-block:: json
+
     {
-        $result = array("result"=>"failed");
-        if ($this->request->isPost()) {
-            // load model and update with provided data
-            $mdlHelloWorld = new HelloWorld();
-            $mdlHelloWorld->setNodes($this->request->getPost("helloworld"));
-     
-            // perform validation
-            $valMsgs = $mdlHelloWorld->performValidation();
-            foreach ($valMsgs as $field => $msg) {
-                if (!array_key_exists("validations", $result)) {
-                    $result["validations"] = array();
-                }
-                $result["validations"]["general.".$msg->getField()] = $msg->getMessage();
-            }
-     
-            // serialize model to config and save
-            if ($valMsgs->count() == 0) {
-                $mdlHelloWorld->serializeToConfig();
-                Config::getInstance()->save();
-                $result["result"] = "saved";
+        "helloworld": {
+            "general": {
+            "Enabled": "1",
+            "SMTPHost": "",
+            "FromEmail": "sample@example.com",
+            "ToEmail": "",
+            "%ToEmail": "Enter recipient here",
+            "Description": ""
             }
         }
-        return $result;
     }
-
-
-And include the Config class from our base system by adding this to the
-“use” section:
-
-.. code-block:: php
-
-    use \OPNsense\Core\Config;
-
-
-[Create API calls] Simplify a recurring pattern
-.................................................
-
-As one can imagine, retrieving and setting data is a pattern that is used quite often and for which we would like to
-minimize the amount of work needed to incorporate.
-
-The API example can be simplified by using one of our base classes (:code:`ApiMutableModelControllerBase`), which would
-lead to the same result. For comparison we have added a different endpoint in :code:`SimplifiedSettingsController.php`
-
-.. code-block:: php
-
-    class SimplifiedSettingsController extends ApiMutableModelControllerBase
-    {
-        protected static $internalModelName = 'helloworld';
-        protected static $internalModelClass = 'OPNsense\HelloWorld\HelloWorld';
-    }
-
-
-The "magic" is hidden underneath, but equals the example previously given. :code:`$internalModelName` declares the root
-of the returned array structure, :code:`$internalModelClass` tells the controller which model it should use.
-
-We recommend using (:code:`ApiMutableModelControllerBase`) in most cases,
-but to better understand the components and their responsibilities we choose to explain the separate steps.
-
 
 .. Note::
+    The outer container is named "helloworld" and contains all fields defined in the model.
 
-      :code:`ApiMutableModelControllerBase` contains more shared functionality for grid like operations as well, most of
-      our api controllers use this as a base.
+.. Note::
+    :code:`ApiMutableModelControllerBase` contains more shared functionality for grid like operations as well, most of
+    our api controllers use this as a base. When interested in the internals of the get action itself, search
+    for :code:`getAction` in :code:`ApiMutableModelControllerBase.php`.
+
+.. Note::
+    :code:`%ToEmail` is similar to :code:`<hint>Enter recipient here</hint>` except that it can be used to generate
+    a dynamic hint during data fetch. Fields with a :code:`%` prefix cannot be stored and are not relevant to the
+    model data, but do refer to the respective field type without the prefix.
 
 Support jQuery API calls
 ------------------------
@@ -527,21 +551,19 @@ Add this to the index.volt template from the HelloWorld module:
 
 .. code-block:: html
 
+
     <script type="text/javascript">
         $( document ).ready(function() {
-            var data_get_map = {'frm_GeneralSettings':"/api/helloworld/settings/get"};
-            mapDataToFormUI(data_get_map).done(function(data){
+            mapDataToFormUI({'frm_GeneralSettings':"/api/helloworld/settings/get"}).done(function(data){
                 // place actions to run after load, for example update form styles.
             });
-     
+
             // link save button to API set action
             $("#saveAct").click(function(){
-                saveFormToEndpoint(url="/api/helloworld/settings/set",formid='frm_GeneralSettings',callback_ok=function(){
+                saveFormToEndpoint("/api/helloworld/settings/set",'frm_GeneralSettings',function(){
                     // action to run after successful save, for example reconfigure service.
                 });
             });
-     
-     
         });
     </script>
      
@@ -562,19 +584,17 @@ messages, just edit the model XML and add your message in the
 ValidationMessage tag. For example:
 
 .. code-block:: xml
+    :caption: /usr/local/opnsense/mvc/app/models/OPNsense/HelloWorld/HelloWorld.xml
 
     <ToEmail type="EmailField">
         <Required>Y</Required>
-        <ValidationMessage>please specify a valid email address</ValidationMessage>
+        <ValidationMessage>Please specify a valid email address.</ValidationMessage>
     </ToEmail>
 
-Changes the “email address invalid” into “please specify a valid email
-address”
-
-.. Tip::
-
-    replace :code:`/api/helloworld/settings` with :code:`/api/helloworld/simplifiedsettings` to use the simplified
-    api controller as explained in  "Simplify a recurring pattern" earlier.
+Changes the “Email address is invalid.” into “Please specify a valid email
+address.” when an invalid email address is provided.  Since this field is
+required the validation message for an empty field will always be
+“A value is required.” instead.
 
 Add actions
 -----------
@@ -621,8 +641,9 @@ our data into an ini file structured configuration, when the module is
 enabled.
 
 .. code-block:: html+jinja
+    :caption: /usr/local/opnsense/service/templates/OPNsense/HelloWorld/helloworld.conf
 
-    {% if helpers.exists('OPNsense.helloworld.general') and OPNsense.helloworld.general.Enabled|default("0") == "1" %}
+    {% if not helpers.empty('OPNsense.helloworld.general.Enabled') %}
     [general]
     SMTPHost={{ OPNsense.helloworld.general.SMTPHost|default("") }}
     FromEmail={{ OPNsense.helloworld.general.FromEmail|default("") }}
@@ -652,13 +673,9 @@ code:
     {
         $status = "failed";
         if ($this->request->isPost()) {
-            $backend = new Backend();
-            $bckresult = trim($backend->configdRun("template reload OPNsense/HelloWorld"));
-            if ($bckresult == "OK") {
-                $status = "ok";
-            }
+            $status = strtolower(trim((new Backend())->configdRun('template reload OPNsense/HelloWorld')));
         }
-        return array("status" => $status);
+        return ["status" => $status];
     }
 
 This validates the type of action (it should always be POST to enable
@@ -672,6 +689,7 @@ action, we will go back to the index.volt view and add the following
 jQuery / framework code between the braces of “saveFormToEndPoint”.
 
 .. code-block:: javascript
+    :caption: /usr/local/opnsense/mvc/app/views/OPNsense/HelloWorld/index.volt
 
     ajaxCall(url="/api/helloworld/service/reload", sendData={},callback=function(data,status) {
         // action to run after reload
@@ -734,7 +752,7 @@ And add a command to the template like this:
 ::
 
     [test]
-    command:/usr/local/opnsense/scripts/OPNsense/HelloWorld/testConnection.py
+    command:/usr/local/opnsense/scripts/helloworld/testConnection.py
     parameters:
     type:script_output
     message:hello world module test
@@ -764,14 +782,13 @@ type request.
     public function testAction()
     {
         if ($this->request->isPost()) {
-            $backend = new Backend();
-            $bckresult = json_decode(trim($backend->configdRun("helloworld test")), true);
+            $bckresult = json_decode(trim((new Backend())->configdRun("helloworld test")), true);
             if ($bckresult !== null) {
                 // only return valid json type responses
                 return $bckresult;
             }
         }
-        return array("message" => "unable to run config action");
+        return ["message" => "unable to run config action"];
     }
 
 
@@ -783,14 +800,14 @@ elements:
 | (in script section)
 
 .. code-block:: javascript
+    :caption: /usr/local/opnsense/mvc/app/views/OPNsense/HelloWorld/index.volt
 
-    $("#testAct").click(function(){
-        $("#responseMsg").removeClass("hidden");
-        ajaxCall(url="/api/helloworld/service/test", sendData={},callback=function(data,status) {
-            // action to run after reload
-            $("#responseMsg").html(data['message']);
-        });
+    $("#testAct").SimpleActionButton({
+        onAction: function(data) {
+            $("#responseMsg").removeClass("hidden").html(data['message']);
+        }
     });
+
 
 (in HTML section)
 
@@ -800,8 +817,12 @@ elements:
     <div class="alert alert-info hidden" role="alert" id="responseMsg">
      
     </div>
-    <button class="btn btn-primary"  id="testAct" type="button"><b>{{ lang._('Test') }}</b></button>
+    <button class="btn btn-primary" id="testAct" data-endpoint="/api/helloworld/service/test" data-label="{{ lang._('Test') }}"></button>
 
+
+.. Tip::
+    As you might have noticed the :code:`testAct` button uses a different method to call an endpoint, it uses the `SimpleActionButton <../frontend/view_js_helpers.html#simpleactionbutton>`__
+    wrapper which eases the implementation of simple actions
 
 Now go back to the page and save some data using the save button, next
 press test to see some results.
@@ -859,20 +880,21 @@ easily arrange that by creating a Menu.xml definition for your module in
 the model directory under Menu/Menu.xml.
 
 Now let’s register our “hello world” in the user section of our menu, by
-adding this content into the menu.xml:
+adding this content into the Menu.xml:
 
 .. code-block:: xml
+    :caption: /usr/local/opnsense/mvc/app/models/OPNsense/HelloWorld/Menu/Menu.xml
 
     <menu>
-        <!-- Plugin HelloWorld menu -->
-        <User order="999">
-            <HelloWorld VisibleName="Hello World!" url="/ui/helloworld/"/>
-        </User>
+        <Lobby>
+            <HelloWorld VisibleName="Hello World!" cssClass="fa fa-comment-o fa-fw" url="/ui/helloworld"/>
+        </Lobby>
     </menu>
 
-
-When you refresh your page now, you should notice the menu system
-automatically picks up this new information.
+The menu system is subject to caching, so you may not see your changes
+in the UI yet. Delete the ``/tmp/opnsense_menu_cache.xml`` file, if it
+exists. Now, when you refresh your page, you should notice the menu
+system automatically picks up the new information.
 
 |menu registration|
 
@@ -886,6 +908,7 @@ XML file in the model directory name ACL/ACL.xml and place the following
 content in it:
 
 .. code-block:: xml
+    :caption: /usr/local/opnsense/mvc/app/models/OPNsense/HelloWorld/ACL/ACL.xml
 
     <acl>
         <!-- unique acl key, must be globally unique for all ACLs  -->
@@ -903,6 +926,11 @@ This creates an ACL key named “page-user-helloworld” which authorizes
 access to both the ui and API urls of this application. You can now
 grant access to this module from the system user manager.
 
+The ACL system is subject to caching, so you may not see your changes
+in the user manager page yet. Delete the
+``/tmp/opnsense_acl_cache.json`` file, if it exists. Now, when you
+refresh the user manager page, you should see that the new ACL is
+available to be assigned.
 
 ----------------------------
 Create an installable plugin
@@ -948,7 +976,6 @@ directory, which results in the following file listing:
 
     src/opnsense/mvc/app/controllers/OPNsense/HelloWorld/Api/ServiceController.php
     src/opnsense/mvc/app/controllers/OPNsense/HelloWorld/Api/SettingsController.php
-    src/opnsense/mvc/app/controllers/OPNsense/HelloWorld/Api/SimplifiedSettingsController.php
     src/opnsense/mvc/app/controllers/OPNsense/HelloWorld/IndexController.php
     src/opnsense/mvc/app/controllers/OPNsense/HelloWorld/forms/general.xml
     src/opnsense/mvc/app/models/OPNsense/HelloWorld/ACL/ACL.xml
@@ -956,7 +983,7 @@ directory, which results in the following file listing:
     src/opnsense/mvc/app/models/OPNsense/HelloWorld/HelloWorld.xml
     src/opnsense/mvc/app/models/OPNsense/HelloWorld/Menu/Menu.xml
     src/opnsense/mvc/app/views/OPNsense/HelloWorld/index.volt
-    src/opnsense/scripts/OPNsense/HelloWorld/testConnection.py
+    src/opnsense/scripts/helloworld/testConnection.py
     src/opnsense/service/templates/OPNsense/HelloWorld/+TARGETS
     src/opnsense/service/templates/OPNsense/HelloWorld/helloworld.conf
     src/opnsense/service/conf/actions.d/actions_helloworld.conf
@@ -975,15 +1002,15 @@ prefixed with os-, our new package file will be called:
 
 .. rubric:: Reference
    :name: reference
-
+.. _example-source:
 -  source of this example :
    https://github.com/opnsense/plugins/tree/master/devel/helloworld
 -  build instructions : https://github.com/opnsense/tools
 -  practical frontend development : https://github.com/opnsense/ui_devtools
 -  frontend template language reference (Volt) :
-   https://docs.phalconphp.com/en/latest/reference/volt.html
+   https://docs.phalcon.io/latest/volt/
 -  configuration template language reference (mostly the same as Volt) :
-   http://jinja.pocoo.org/docs/dev/
+   https://jinja.palletsprojects.com/en/stable/
 -  OPNsense architecture :doc:`Architecture <../architecture>`
 -  OPNsense creating models
    `Develop:Frontend/Creating\_models </index.php/Develop:Frontend/Creating_models>`__
@@ -992,16 +1019,11 @@ prefixed with os-, our new package file will be called:
    :width: 700px
 .. |Serving the first "hello world" page| image:: images/HelloWorld_Empty_template.png
    :width: 884px
-   :height: 605px
 .. |Template with fields without content| image:: images/HelloWorld_Template_no_content.png
    :width: 889px
-   :height: 535px
 .. |Form with validation errors| image:: images/HelloWorld_form_validation_error.png
-   :width: 1098px
-   :height: 525px
+   :width: 889px
 .. |test the application action| image:: images/HelloWorld_first_test_action.png
-   :width: 1403px
-   :height: 624px
+   :width: 889px
 .. |menu registration| image:: images/HelloWorld_menu_registration.png
-   :width: 1400px
-   :height: 639px
+   :width: 240px

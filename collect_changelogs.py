@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/env python3
 """
     Copyright (c) 2020-2021 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
@@ -57,12 +57,11 @@ def parse_change_log(payload, this_version, links):
     all_token_links = dict()
     first_line = False
     prelude_line = this_version.count(".") == 1
-    rst_content = list()
     lines = payload.split("\n")
     for idx, line in enumerate(lines):
         content_line = None
         # general cleanups
-        line = line.replace('*', '\*')
+        line = line.replace('*', r'\*')
         if line.find('`') > -1:
             line = re.sub(r'(`)([^`|\']*)([`|\'])', r':code:`\2`', line)
         #
@@ -109,7 +108,7 @@ def parse_change_log(payload, this_version, links):
     for section in ['content', 'prelude']:
         for token in all_token_links:
             target_uri = all_token_links[token]
-            tmp = all_token_links[token].split(':')
+            tmp = all_token_links[token].split(':', 1)
             if tmp[0] in links and len(tmp) == 2:
                 target_uri = links[tmp[0]]['url']
                 version = tmp[1]
@@ -117,11 +116,15 @@ def parse_change_log(payload, this_version, links):
                     match = re.match(r"s/(.+)/(.*)/(\w*)", links[tmp[0]]['regex'])
                     if match:
                         count = 0 if match.group(3).startswith('g') else 1
-                        version = re.sub(match.group(1), match.group(2), tmp[1], count=count)
+                        search = match.group(1)
+                        replace = match.group(2)
+                        if replace == "$1":
+                            replace = r"\1"
+                        version = re.sub(search, replace, tmp[1], count=count)
                 if target_uri.find('%s') > -1:
                     target_uri = target_uri % version
-
             result[section] = result[section].replace(token, " `%s <%s>`__ " % (token, target_uri))
+
     return result
 
 
@@ -195,6 +198,11 @@ if __name__ == '__main__':
                         template_data['nicknames'][my_version] =  m.groupdict()['nickname']
 
             # root menu index
+            tmp = list(template_data['versions'].keys())
+            while tmp[0].find('r') > 0:
+                to_drop = tmp.pop(0)
+                del template_data['versions'][to_drop]
+
             with open("%s/source/%s_releases.rst" % (root_dir, version_prefix), 'w') as f_out:
                 template = Template(open("%s/source/releases.rst.in" % root_dir, "r").read())
                 f_out.write(template.render(template_data))

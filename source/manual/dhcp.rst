@@ -1,70 +1,110 @@
-====
+========================
 DHCP
-====
+========================
 
 DHCP is used to automatically provide clients with an IP address (instead of clients having to set one themselves).
 DHCP is available for both IPv4 and IPv6 clients, referred to as DHCPv4 and DHCPv6, respectively.
 
+---------------------------
+Available Options
+---------------------------
+
+There are different DHCP servers/relays to choose from:
+
+    - :ref:`Dnsmasq <dnsmasq-dhcp>` (default)
+    - :ref:`KEA <kea-dhcp>`
+    - :ref:`Dhcrelay <dhcrelay>`
+    - :ref:`ISC <isc-dhcp>` (EOL)
+
+For DHCPv6 these services can offer Router Advertisements:
+
+    - :doc:`radvd </manual/radvd>`
+    - :ref:`Dnsmasq <dnsmasq-dhcp>`
+
+.. _dnsmasq-dhcp:
+
+
+Dnsmasq DNS & DHCP
+--------------------
+
+:doc:`Dnsmasq Manual </manual/dnsmasq>`
+
+Dnsmasq is a lightweight DNS, router advertisement and DHCP server.
+It is intended to provide coupled DNS and DHCP service to a LAN.
+Dnsmasq accepts DNS queries and either answers them from a small, local, cache or forwards them to a real, recursive, DNS server.
+
+The dnsmasq DHCP server supports static address assignments and multiple networks.
+It automatically sends a sensible default set of DHCP options, and can be configured to send any desired set of DHCP options, including vendor-encapsulated options.
+
+The dnsmasq DHCPv6 server provides the same set of features as the DHCPv4 server, and in addition, it includes router advertisements and a
+neat feature which allows naming for clients which use DHCPv4 and stateless autoconfiguration only for IPv6 configuration.
+There is support for doing address allocation (both DHCPv6 and RA) from subnets which are dynamically delegated via DHCPv6 prefix delegation.
+
+.. Tip::
+
+    `Dnsmasq` is the perfect DNS & DHCP server for small and medium sized setups (less than 1000 unique clients).
+    It is the default for DHCPv4, DHCPv6 and Router Advertisements out of the box.
+
+.. _kea-dhcp:
+
+
+KEA DHCP
+--------------------
+
+:doc:`KEA Manual </manual/kea>`
+
+KEA is a modern, modular, and high-performance DHCP server developed by ISC to succeed the legacy ISC DHCP server.
+It supports both DHCPv4 and DHCPv6 and is designed for scalable and high-availability environments.
+
+KEA does not include DNS or router advertisement features, and is typically integrated with external services (such as `Unbound` DNS and `radvd` Router Advertisement Daemon) to provide full-stack DNS/DHCP/RA functionality.
+
+Please note that there is no dynamic DNS lease registration functionality via Unbound implemented.
+
+.. Tip:: `KEA` is the perfect DHCP server for medium to large sized HA setups (more than 1000 unique clients) or environments requiring dynamic configuration via API.
+
+.. _isc-dhcp:
+
+
+ISC DHCP
 -----------------
-Settings overview
+
+:doc:`ISC Manual </manual/isc>`
+
+ISC DHCP was the DHCP server developed and maintained by the Internet Systems Consortium (ISC).
+It supported both DHCPv4 and DHCPv6 and was widely used across a broad range of systems and distributions for many years.
+
+While it provided reliable service for static and dynamic address assignments, its monolithic architecture and limited extensibility led to challenges in modern, dynamic, or high-availability environments.
+Support for ISC DHCP has officially ended, and it has been fully replaced by KEA DHCP in most setups.
+
+.. Attention:: ISC DHCP is end-of-life and no longer receives updates or security patches. It is strongly recommended to migrate to KEA or Dnsmasq.
+
+.. _dhcrelay:
+
+
+DHCRelay
 -----------------
 
-DHCPv4 settings can be found at :menuselection:`Services --> DHCPv4`. DHCPv6 settings can be found at :menuselection:`Services --> DHCPv6`.
+:doc:`DHCrelay Manual </manual/dhcrelay>`
 
-The DHCPv4 submenu further consists of:
+DHCP relaying is the forwarding of DHCP requests received on one interface to a DHCP server on another network.
+This is useful when the DHCP server is not on the same broadcast domain as the client.
 
-* An entry per interface of general settings, like a toggle to enable/disable DHCPv4 for this interface, DHCP range, DNS servers…
-* **Relay**: DHCP requests can be “forwarded” to a DHCP server on another interface. This is called relaying.
-* **Leases**: Shows all IP addresses that are handed out to clients (can be filtered to only show active and static leases).
-* **Log File**: Shows the log file of the DHCPv4 server.
+The `dhcrelay` service supports both DHCPv4 and DHCPv6 and can forward requests to multiple upstream servers.
+It is lightweight and suitable for setups where centralized DHCP servers serve multiple network segments.
 
-The DHCPv6 submenu further consists of:
+.. Note:: DHCrelay binds to port 67 like other available DHCP servers. To run multiple servers side by side, use strict interface binding if available.
 
-* **Relay**: DHCP requests can be “forwarded” to a DHCP server on another interface. This is called relaying.
-* **Leases**: Shows all IP addresses that are handed out to clients (can be filtered to only show active and static leases).
 
-------------
-Using DHCPv4
-------------
+-----------------
+Reservations
+-----------------
 
-A typical DHCPv4 usage scenario is using it on your LAN with an IP range of 192.168.1.x, where x can be a number from 1
-through 254. This means a subnet mask of 255.255.255.0. The range can also be written as 192.168.1.0/24. (The “1” in
-the third group can also be another number, and there are also other ranges available for private use. These are
-described in `RFC 1918 <https://tools.ietf.org/html/rfc1918#section-3>`_.)
+ISC, KEA and Dnsmasq offer the possibility to reserve an IP address for a specific client. This is useful when a client
+needs to have the same IP address every time it connects to the network. All services also offer the ability to define reservations
+inside and outside of the assigned pool of dynamic IP addresses.
 
-The LAN IP of the OPNsense device that serves DHCP to the LAN should fall in the same DHCP IP range. Typically, it gets
-the address ending in .1 (so 192.168.1.1 in this example).
+For **Dnsmasq**, you should define reservations **inside of the pool**. The IP address will be completely reserved inside the dynamic range,
+meaning the reserved IP will not be offered to dynamic clients.
 
-To set the LAN IP, go to :menuselection:`Interfaces --> [LAN]`, set “IPv4 Configuration Type” to “Static”, and under
-“Static IPv4 configuration”, set “IPv4 address” to ``192.168.1.1`` and the subnet dropdown to “24”. Then click Save.
-
-To set the DHCP settings, go to :menuselection:`Services --> DHCPv4 --> [LAN]`. Under “Gateway”, put ``192.168.1.1``. Under range,
-put ``192.168.1.100`` as the start address and ``192.168.1.200`` as the end address. Then click Save. After saving,
-click the “Apply Settings” button.
-
-.. _dhcp-relaying:
-
--------------
-DHCP relaying
--------------
-
-DHCP relaying is the forwarding of DHCP requests received on one interface to the DHCP server on another. DHCP
-relaying is available for both DHCPv4 and DHCPv6. The DHCPv4 settings can be found at
-:menuselection:`Services --> DHCPv4 --> Relay`. The DHCPv6 settings can be found at
-:menuselection:`Services --> DHCPv6 --> Relay`.
-
-When setting up DHCP relaying (both DHCPv4 and DHCPv6 relaying have the same settings), the following options are
-available:
-
-+-----------------------+----------------------------------------------------------------------------------------------+
-| Setting               | Explanation                                                                                  |
-+=======================+==============================================================================================+
-| Enable                |                                                                                              |
-+-----------------------+----------------------------------------------------------------------------------------------+
-| Interface(s)          | Which interfaces to apply relaying to. Only interfaces with an IP can be selected.           |
-+-----------------------+----------------------------------------------------------------------------------------------+
-| Append circuit ID and | If this is checked, the DHCP relay will append the circuit ID (interface number) and the     |
-| agent ID to requests  | agent ID to the DHCP request.                                                                |
-+-----------------------+----------------------------------------------------------------------------------------------+
-| Destination servers   | A comma separated list of IPs to which the requests should be forwarded.                     |
-+-----------------------+----------------------------------------------------------------------------------------------+
+For **ISC and KEA**, you should only define reservations **outside of the pool**. Unless you can guarantee that this client is online at all
+times when the reservation is in the dynamic range, the DHCP server is free to offer this IP address to a different client when the first client goes offline.

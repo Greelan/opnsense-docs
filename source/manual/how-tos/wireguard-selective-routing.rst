@@ -6,25 +6,25 @@ WireGuard Selective Routing to External VPN Endpoint
 Introduction
 ------------
 
-This how-to is designed to assist with setting up WireGuard on OPNsense to use selective routing to an external VPN endpoint - most commonly to an external VPN provider.
+This how-to is designed to assist with setting up WireGuard on OPNsense to use selective routing to an external VPN peer - most commonly to an external VPN provider.
 
 These circumstances may apply where only certain local hosts are intended to use the VPN tunnel. Or it could apply where multiple connections to the VPN provider are desired, with each connection intended to be used by different specific local hosts.
 
 This how-to focuses on the configuration of OPNsense. You will also have to configure the peer at your VPN provider - consult your VPN provider’s documentation as to how to do that.
 
-Your OPNsense local public key will need to be registered with your VPN provider, and you will need to get your VPN provider’s endpoint public key and the VPN tunnel IP provided for your local peer by your VPN provider. In some cases, you will not be able to get the endpoint public key and VPN tunnel IP until you register your local public key. In that case, create the OPNsense local configuration first, using a dummy tunnel IP and no peer selected, so that the public key is generated, and then update the configuration later once the other information is known.
+Your OPNsense WireGuard Instance public key will need to be registered with your VPN provider, and you will need to get your VPN provider’s endpoint public key and the VPN tunnel IP provided for your WireGuard Instance by your VPN provider. In some cases, you will not be able to get the Peer public key and VPN tunnel IP until you register your WireGuard Instance public key. In that case, create the OPNsense Instance configuration first, using a dummy tunnel IP and no peer selected, so that the public key is generated, and then update the configuration later once the other information is known.
 
 For an example of configuring the peer at a VPN provider (Mullvad), see Step 1 of the how-to :doc:`wireguard-client-mullvad`.
 
 This how-to primarily focuses on IPv4 configuration. It can be readily adapted for IPv6 as well. See :ref:`configuring-ipv6` below.
 
 -------------------------------
-Step 1 - Configure the endpoint
+Step 1 - Configure the peer
 -------------------------------
 
-- Go to :menuselection:`VPN --> WireGuard --> Endpoints`
-- Click **+** to add a new Endpoint
-- Configure the Endpoint as follows (if an option is not mentioned below, leave it as the default):
+- Go to :menuselection:`VPN --> WireGuard --> Peers`
+- Click **+** to add a new Peer
+- Configure the Peer as follows (if an option is not mentioned below, leave it as the default):
 
     ====================== ====================================================================================================
      **Enabled**            *Checked*
@@ -36,16 +36,16 @@ Step 1 - Configure the endpoint
      **Keepalive**          *25*
     ====================== ====================================================================================================
 
-- **Save** the Endpoint configuration, and then click **Save** again
+- **Save** the Peer configuration, and then click **Save** again
 
----------------------------------
-Step 2 - Configure the local peer
----------------------------------
+--------------------------------------------
+Step 2 - Configure the WireGuard Instance
+--------------------------------------------
 
-- Go to :menuselection:`VPN --> WireGuard --> Local`
-- Click **+** to add a new Local configuration
+- Go to :menuselection:`VPN --> WireGuard --> Instances`
+- Click **+** to add a new Instance configuration
 - Turn on “advanced mode"
-- Configure the Local configuration as follows (if an option is not mentioned below, leave it as the default):
+- Configure the Instance configuration as follows (if an option is not mentioned below, leave it as the default):
 
     ===================== ===============================================================================================
      **Enabled**           *Checked*
@@ -54,8 +54,8 @@ Step 2 - Configure the local peer
      **Private Key**       *This will initially be blank; it will be populated once the configuration is saved*
      **Listen Port**       *51820 or a higher numbered unique port*
      **DNS Server**        *Leave this blank, otherwise WireGuard will overwrite OPNsense's DNS configuration*
-     **Tunnel Address**    *Insert the local VPN tunnel IP provided by your VPN provider, in CIDR format, eg 10.24.24.10/32*
-     **Peers**             *In the dropdown, select the Endpoint you configured above*
+     **Tunnel Address**    *Insert the WireGuard Instance VPN tunnel IP provided by your VPN provider, in CIDR format, eg 10.24.24.10/32*
+     **Peers**             *In the dropdown, select the Peer you configured above*
      **Disable Routes**    *Checked*
      **Gateway**           *Specify an IP that is 1 number below your VPN tunnel IP, eg 10.24.24.9 - see note below*
     ===================== ===============================================================================================
@@ -64,7 +64,7 @@ Step 2 - Configure the local peer
 
     The IP you choose for the Gateway is essentially arbitrary; pretty much any unique IP will do. The suggestion here is for convenience and to avoid conflicts
 
-- **Save** the local peer configuration, and then click **Save** again
+- **Save** the Instance configuration, and then click **Save** again
 
 --------------------------
 Step 3 - Turn on WireGuard
@@ -77,21 +77,18 @@ Step 4 - Assign an interface to WireGuard and enable it
 -------------------------------------------------------
 
 - Go to :menuselection:`Interfaces --> Assignments`
-- In the dropdown next to “New interface:”, select the WireGuard device (:code:`wg0` if this is your first one)
-- Add a description (eg :code:`WAN_VPNProviderName`)
-- Click **+** to add it, then click **Save**
-- Then select your new interface under the Interfaces menu
-- Configure it as follows (if an option is not mentioned below, leave it as the default):
+- Click **Add** and select the WireGuard device (:code:`wg0` if this is your first one)
+- Configure the new assignment as follows (if an option is not mentioned below, leave it as the default):
 
     ============================= ===================================================================
-     **Enable**                    *Checked*
+     **Enabled**                   *Checked*
      **Lock**                      *Checked if you wish to*
-     **Description**               *Same as under Assignments, if this box is not already populated*
+     **Description**               :code:`WAN_VPNProviderName`
      **IPv4 Configuration Type**   *None*
      **IPv6 Configuration Type**   *None*
     ============================= ===================================================================
 
-- **Save** the interface configuration and then click **Apply changes**
+- Click **Save**, then **Apply** on the Assignments page
 
 --------------------------
 Step 5 - Restart WireGuard
@@ -103,7 +100,7 @@ Now restart WireGuard - you can do this from the Dashboard (if you have the serv
 Step 6 - Create a gateway
 -------------------------
 
-- Go to :menuselection:`System --> Gateways --> Single`
+- Go to :menuselection:`System --> Gateways --> Configuration`
 - Click **Add**
 - Configure the gateway as follows (if an option is not mentioned below, leave it as the default):
 
@@ -112,7 +109,7 @@ Step 6 - Create a gateway
      **Description**                  *Add one if you wish to*
      **Interface**                    *Select your newly created interface in the dropdown*
      **Address Family**               *Select IPv4 in the dropdown*
-     **IP address**                   *Insert the gateway IP that you configured under the WireGuard local peer configuration*
+     **IP address**                   *Insert the gateway IP that you configured under the WireGuard Instance configuration*
      **Far Gateway**                  *Checked*
      **Disable Gateway Monitoring**   *Unchecked*
      **Monitor IP**                   *Insert the endpoint VPN tunnel IP (NOT the public IP) of your VPN provider - see note below*
@@ -120,9 +117,9 @@ Step 6 - Create a gateway
 
 .. Note::
 
-    Specifying the endpoint VPN tunnel IP is preferable. As an alternative, you could include an external IP such as 1.1.1.1 or 8.8.8.8, but be aware that this IP will *only* be accessible through the VPN tunnel (OPNsense creates a static route for it), and therefore will not accessible from local hosts that are not using the tunnel
+    Specifying the endpoint VPN tunnel IP is preferable. As an alternative, you could include an external IP such as 1.1.1.1 or 8.8.8.8, but be aware that this IP will *only* be accessible through the VPN tunnel (OPNsense creates a static route for it), and therefore will not be accessible from local hosts that are not using the tunnel. Use the Disable Host Route check box if you wish to use an external IP AND it still be accessible by everything. 
 
-    Some VPN providers will include the VPN tunnel IP of the endpoint in the configuration data they provide. For others (such as Mullvad), you can get the IP by running a traceroute from a host that is using the tunnel - the first hop after OPNsense is the VPN provider's tunnel IP
+    Some VPN providers will include the VPN tunnel IP of the endpoint in the configuration data they provide. For others (such as Mullvad), you can get the IP by running a traceroute from a host that is using the tunnel - the first hop after OPNsense is the VPN provider's tunnel IP. Please note that this IP must be pingable. If the IP does not respond to ping (as is the case for Mullvad), use a different IP in the traceroute chain or disable the gateway monitoring altogether by checking the box **Disable Gateway Monitoring**.
 
 - **Save** the gateway configuration and then click **Apply changes**
 
@@ -173,7 +170,7 @@ The step has two parts - first creating a second Alias for all local (private) n
     ================= ================================================
 
 - **Save** the Alias, and then click **Apply**
-- Then go to :menuselection:`Firewall --> Rules --> [Name of interface for network in which hosts/network resides, eg LAN for LAN hosts]`
+- Then go to :menuselection:`Firewall --> Rules` and select the interface for the network in which the hosts reside (for example, LAN for LAN hosts).
 - Click **Add** to add a new rule
 - Configure the rule as follows (if an option is not mentioned below, leave it as the default):
 
@@ -196,11 +193,13 @@ The step has two parts - first creating a second Alias for all local (private) n
 - **Save** the rule, and then click **Apply Changes**
 - Then make sure that the new rule is **above** any other rule on the interface that would otherwise interfere with its operation. For example, you want your new rule to be above the “Default allow LAN to any rule”
 
---------------------------
-Step 9 - Configure routing
---------------------------
+--------------------------------------------------------------
+Step 9 - Configure routing for traffic generated by the router
+--------------------------------------------------------------
 
-- Then go to :menuselection:`Firewall --> Rules --> Floating`
+Services running on the router and configured to use the VPN interface must have their traffic routed to the VPN gateway in order to use the VPN. Note that locally generated traffic is not affected by NAT or by the firewall rule created in Step 8.
+
+- Go to :menuselection:`Firewall --> Rules` and select Floating.
 - Click **Add** to add a new rule
 - Configure the rule as follows (if an option is not mentioned below, leave it as the default). You need to click the **Show/Hide** button next to "Advanced Options" to reveal the last setting:
 
@@ -224,11 +223,11 @@ Step 9 - Configure routing
 - **Save** the rule, and then click **Apply Changes**
 
 -------------------------------------
-Step 10 - Create an outbound NAT rule
+Step 10 - Create a Source NAT rule
 -------------------------------------
 
-- Go to :menuselection:`Firewall --> NAT --> Outbound`
-- Select "Hybrid outbound NAT rule generation” if it is not already selected, and click **Save** and then **Apply changes**
+- Go to :menuselection:`Firewall --> NAT --> Source NAT (Outbound)`
+- Select "Hybrid Source NAT rule generation” if it is not already selected, and click **Save** and then **Apply changes**
 - Click **Add** to add a new rule
 - Configure the rule as follows (if an option is not mentioned below, leave it as the default):
 
@@ -254,11 +253,11 @@ Step 11 - Add a kill switch (optional)
 
 If the VPN tunnel gateway goes offline, then traffic intended for the VPN may go out the normal WAN gateway. There are a couple of ways to avoid this, one of which is outlined here:
 
-- First, go back to the firewall rule you created under Step 7
+- First, go back to the firewall rule you created under Step 8
 - Click on the **Show/Hide** button next to "Advanced Options"
 - Then, in the **Set local tag** field, add :code:`NO_WAN_EGRESS`
 - **Save** the rule, and then click **Apply changes**
-- Then go to :menuselection:`Firewall --> Rules --> Floating`
+- Then go to :menuselection:`Firewall --> Rules` and select Floating.
 - Click **Add** to add a new rule
 - Configure the rule as follows (if an option is not mentioned below, leave it as the default). You need to click the **Show/Hide** button next to "Advanced Options" to reveal the last setting:
 
@@ -290,24 +289,32 @@ Some VPN providers (such as Mullvad) allow you to send both IPv4 and IPv6 traffi
 
 To configure the tunnel to use IPv6, you essentially need to replicate the steps above for IPv4. That is, you need to:
 
-- add the IPv6 tunnel IP to Tunnel Address on the WireGuard Local configuration (see further below)
+- add the IPv6 tunnel IP to Tunnel Address on the WireGuard Instance configuration (see further below)
 - add :code:`::/0` to the Allowed IPs on the WireGuard Endpoint configuration
 - create an IPv6 gateway (see further below)
 - add to the hosts alias the IPv6 addresses of the hosts/networks that are to use the tunnel
 - if necessary, create a separate local IPs alias for IPv6, so they can be excluded from the IPv6 firewall rule destination
 - create an IPv6 firewall rule (specifying the IPv6 gateway in the rule)
 - configure an IPv6 floating rule for routing (specifying the IPv6 gateway in the rule)
-- create an IPv6 outbound NAT rule
+- create an IPv6 Source NAT rule
 - (optionally) add the kill switch tag to the IPv6 firewall rule and change the associated Floating rule to IPv4+IPv6
 
 Note, however, that there are a couple of differences:
 
-1. First, the WireGuard Local configuration will only accept one entry in the Gateway field. Just leave the IPv4 gateway address there.
+1. First, the WireGuard Instance configuration will only accept one entry in the Gateway field. Just leave the IPv4 gateway address there.
 
 2. Second, there is no concept of a Far Gateway for IPv6. So to successfully set up a gateway for IPv6, you need to do two things:
 
-  - When adding the IPv6 address to Tunnel Address in the WireGuard Local configuration, specify a /127 mask, rather than a /128
+  - When adding the IPv6 address to Tunnel Address in the WireGuard Instance configuration, specify a /127 mask, rather than a /128
   - Then, when creating an IPv6 Gateway for the tunnel, specify the IP address to be another IPv6 address that is within the /127 subnet of the Tunnel Address
+
+IPv6 addresses are a little more picky than IPv4 addresses when it comes to the gateway IP address. Since you selected a /127 mask, this means exactly two IP addresses fit in that mask. However, this does not always mean that the IPv6 address that was supplied to you from your VPN provider is always the first address in the /127 subnet. It could also be the second address in the mask. In either case, you need to specify the IP provided by your VPN provider with a mask of /127 as the Tunnel Address in the WireGuard configuration, and the other IP in the /127 mask will be your IPv6 Gateway address. Use a command-line tool like ipcalc to determine which one is which.
+
+For example, let's assume your VPN provider has instructed you to use the IP address fc00:bbbb:bbbb:bb01::4:fd3a/128 for your WireGuard tunnel. If you use ipcalc and change the mask to /127, you will find that the subnet fc00:bbbb:bbbb:bb01::4:fd3a/127 contains the following two addresses: fc00:bbbb:bbbb:bb01::4:fd3a and fc00:bbbb:bbbb:bb01::4:fd3b. Since you must use the address fc00:bbbb:bbbb:bb01::4:fd3a as the local address for your tunnel (as specified by your provider), configure fc00:bbbb:bbbb:bb01::4:fd3a/127 (with the /127 mask) as the local address in your WireGuard configuration page, and configure fc00:bbbb:bbbb:bb01::4:fd3b (without the /127 mask) as the IP address in your Gateway configuration page.
+
+In another case, if your VPN provider instructed you to use the IP address fc00:bbbb:bbbb:bb01::5:5277/128 for your WireGuard tunnel, ipcalc will tell you that the subnet fc00:bbbb:bbbb:bb01::5:5277/127 contains the following two addresses: fc00:bbbb:bbbb:bb01::5:5276 and fc00:bbbb:bbbb:bb01::5:5277. In this case, the higher address in the /127 subnet is your local IP, and you must use that one or the connection will not work. In this specific case, use fc00:bbbb:bbbb:bb01::5:5277/127 as the local IP address in your WireGuard VPN configuration page, and use fc00:bbbb:bbbb:bb01::5:5276 as the Gateway IP addresses.
+
+For IPv4 the gateway address can always be one number below of the IP address provider by your VPN provider, but for IPv6 you must use the other address in the /127 subnet. Depending on the address you received from your VPN provider, this can be one address below or one address above your VPN IP address.
 
 .. _dns-leaks:
 
@@ -323,7 +330,7 @@ The solutions include:
 
 1. Force the local DNS server to use the tunnel as well. For a local DNS server that is not OPNsense, include the local IPs of that server in the Alias created in Step 7 for the relevant VPN hosts. For OPNsense itself, configure the DNS server to use the tunnel gateway. Implementing this solution will mean that all DNS traffic for your network will go through the tunnel, not just the DNS traffic for the hosts that are in the Alias (and, indeed, for a local DNS server that is not OPNsense, all traffic from that server, not just DNS traffic, will be forced through the tunnel). This may not be desirable for your circumstances
 
-2. If possible, intercept DNS traffic coming from the relevant hosts using the tunnel, and forward that traffic (by using a port forward rule in OPNsense) to a DNS server supplied by your VPN provider (see note below), or to a public DNS server. Note that this will break local DNS resolution. Note also that this will not always be possible to do - if the local DNS server that is configured generally for your network is not OPNsense itself and is on the same subnet as the hosts using the tunnel, then DNS requests will not be routed through OPNsense and so a port forward on OPNsense will not work
+2. If possible, intercept DNS traffic coming from the relevant hosts using the tunnel, and forward that traffic (by using a Destination NAT (Port Forward) rule in OPNsense) to a DNS server supplied by your VPN provider (see note below), or to a public DNS server. Note that this will break local DNS resolution. Note also that this will not always be possible to do - if the local DNS server that is configured generally for your network is not OPNsense itself and is on the same subnet as the hosts using the tunnel, then DNS requests will not be routed through OPNsense and so a Destination NAT (Port Forward) on OPNsense will not work
 
 3. Assuming you have configured DHCP static mappings in OPNsense for the hosts using the tunnel, specify in that configuration either the DNS servers supplied by your VPN provider (see note below), or public DNS servers. This will override the network-wide DNS settings for those hosts
 

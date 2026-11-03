@@ -5,41 +5,56 @@ Captiveportal
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``GET``","captiveportal","access","logoff","$zoneid=0"
+    "``GET``","captiveportal","access","api",""
+    "``POST``","captiveportal","access","logoff","$zoneid=0"
     "``POST``","captiveportal","access","logon","$zoneid=0"
-    "``POST``","captiveportal","access","status","$zoneid=0"
+    "``GET,POST``","captiveportal","access","status","$zoneid=0"
 
 .. csv-table:: Service (ServiceController.php)
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``POST``","captiveportal","service","delTemplate","$uuid"
-    "``GET``","captiveportal","service","getTemplate","$fileid=null"
     "``POST``","captiveportal","service","reconfigure",""
-    "``POST``","captiveportal","service","saveTemplate",""
-    "``GET``","captiveportal","service","searchTemplates",""
+    "``POST``","captiveportal","service","restart",""
+    "``POST``","captiveportal","service","start",""
+    "``GET``","captiveportal","service","status",""
+    "``POST``","captiveportal","service","stop",""
 
 .. csv-table:: Resources (SessionController.php)
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
     "``POST``","captiveportal","session","connect","$zoneid=0"
-    "``POST``","captiveportal","session","disconnect","$zoneid=0"
+    "``POST``","captiveportal","session","disconnect","$zoneid=''"
     "``GET``","captiveportal","session","list","$zoneid=0"
+    "``GET``","captiveportal","session","search",""
     "``GET``","captiveportal","session","zones",""
 
 .. csv-table:: Resources (SettingsController.php)
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``POST``","captiveportal","settings","addZone",""
-    "``POST``","captiveportal","settings","delZone","$uuid"
+    "``POST``","captiveportal","settings","add_zone",""
+    "``POST``","captiveportal","settings","del_zone","$uuid"
     "``GET``","captiveportal","settings","get",""
-    "``GET``","captiveportal","settings","getZone","$uuid=null"
-    "``*``","captiveportal","settings","searchZones",""
-    "``GET``","captiveportal","settings","set",""
-    "``POST``","captiveportal","settings","setZone","$uuid"
-    "``POST``","captiveportal","settings","toggleZone","$uuid,$enabled=null"
+    "``GET``","captiveportal","settings","get_zone","$uuid=null"
+    "``GET,POST``","captiveportal","settings","search_zones",""
+    "``POST``","captiveportal","settings","set",""
+    "``POST``","captiveportal","settings","set_zone","$uuid"
+    "``POST``","captiveportal","settings","toggle_zone","$uuid,$enabled=null"
+
+    "``<<uses>>``", "", "", "", "*model* `CaptivePortal.xml <https://github.com/opnsense/core/blob/master/src/opnsense/mvc/app/models/OPNsense/CaptivePortal/CaptivePortal.xml>`__"
+
+.. csv-table:: Resources (TemplateController.php)
+   :header: "Method", "Module", "Controller", "Command", "Parameters"
+   :widths: 4, 15, 15, 30, 40
+
+    "``POST``","captiveportal","template","del_template","$uuid"
+    "``GET``","captiveportal","template","get",""
+    "``GET``","captiveportal","template","get_template","$fileid=null"
+    "``POST``","captiveportal","template","save_template",""
+    "``GET,POST``","captiveportal","template","search_templates",""
+    "``POST``","captiveportal","template","set",""
 
     "``<<uses>>``", "", "", "", "*model* `CaptivePortal.xml <https://github.com/opnsense/core/blob/master/src/opnsense/mvc/app/models/OPNsense/CaptivePortal/CaptivePortal.xml>`__"
 
@@ -47,10 +62,10 @@ Captiveportal
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``POST``","captiveportal","voucher","dropExpiredVouchers","$provider,$group"
-    "``POST``","captiveportal","voucher","dropVoucherGroup","$provider,$group"
-    "``POST``","captiveportal","voucher","expireVoucher","$provider"
-    "``POST``","captiveportal","voucher","generateVouchers","$provider"
-    "``GET``","captiveportal","voucher","listProviders",""
-    "``GET``","captiveportal","voucher","listVoucherGroups","$provider"
-    "``GET``","captiveportal","voucher","listVouchers","$provider,$group"
+    "``POST``","captiveportal","voucher","drop_expired_vouchers","$provider,$group"
+    "``POST``","captiveportal","voucher","drop_voucher_group","$provider,$group"
+    "``POST``","captiveportal","voucher","expire_voucher","$provider"
+    "``POST``","captiveportal","voucher","generate_vouchers","$provider"
+    "``GET``","captiveportal","voucher","list_providers",""
+    "``GET``","captiveportal","voucher","list_voucher_groups","$provider"
+    "``GET``","captiveportal","voucher","list_vouchers","$provider,$group"

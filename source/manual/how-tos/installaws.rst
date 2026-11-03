@@ -31,7 +31,7 @@ Choose an instance type
 Step 3 - Configure Instance Details
 ------------------------------------
 
-Here you can configure your network details, by default a network is assigned which is accesible from an external IPv4
+Here you can configure your network details, by default a network is assigned which is accessible from an external IPv4
 address.
 
 At the bottom of the page you can also supply "User data" in the "Advanced Details" section, you can use this to
@@ -39,7 +39,7 @@ set an initial password for the `ec2-user`.
 
 .. Note::
 
-    When a password is omited, one will be automatically generated for you and displayed on the console (get system log).
+    When a password is omitted, one will be automatically generated for you and displayed on the console (get system log).
 
 
 .. Note:
@@ -157,6 +157,13 @@ Copy your initial root password (line ** set initial….)
 
 
     login:
+
+
+.. Tip::
+
+    When the ec2 console doesn't show the initial password you can also use the configured ssh shell to reset the root
+    password using  :code:`sudo /usr/local/sbin/opnsense-shell` and option :code:`3` in the menu.
+
 
 --------------------------------------------
 Step 11 - Search current address and login

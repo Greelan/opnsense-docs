@@ -8,7 +8,7 @@ General
 
 For config file generation, we provide a backend service which can bind
 config.xml data to templates written in Jinja2
-(http://jinja.pocoo.org/docs/dev/).
+(https://jinja.palletsprojects.com/en/stable/).
 
 All available templates should be installed at the following location on
 the OPNsense system:
@@ -89,7 +89,7 @@ Templates
 ---------
 
 For more information of the template language itself, please look at
-http://jinja.pocoo.org/docs/dev/ and the examples installed in
+https://jinja.palletsprojects.com/en/stable/ and the examples installed in
 /usr/local/opnsense/service/templates/OPNsense/Sample.
 
 There's one special case when using the template engine, every wildcard
@@ -134,10 +134,10 @@ configd, to use (or test) the system without the daemon, use:
     from modules import config
      
     # construct a new template object, set root to /tmp/
-    tmpl = template.Template(target_root_directory="/tmp/")
+    tmpl = template.Template(target_root_directory='/tmp/')
     # open the config.xml and bind to template object
     conf = config.Config('/config.xml')
-    tmpl.setConfig(conf.get())
+    tmpl.set_config(conf.get())
      
     # generate output for OPNsense/Sample
     generated_filenames = tmpl.generate('OPNsense/Sample')

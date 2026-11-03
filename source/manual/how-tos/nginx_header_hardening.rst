@@ -45,7 +45,7 @@ Well known Test tools are:
 
 
 When it is downloaded, you usually have to unpack it into a fitting directory.``
-When it is unpacked, you need to run it. In case of ZAP, doubleclick the
+When it is unpacked, you need to run it. In case of ZAP, double-click the
 ``zap.sh`` or ``zap.bat`` depending on your operating system.
 
 Next regenerate and export the certificate under
@@ -94,7 +94,7 @@ opening tools also have a tab for networking.
 The network tab works like the main view of the proxy.
 You can see which headers are sent and which ones are received.
 The advantage here is that you get some errors on the console tab (for example
-if the CSP has an error). The disadvantage of the console is, that is is not so
+if the CSP has an error). The disadvantage of the console is, that it is not so
 easy to intercept and modify data.
 
 
@@ -128,5 +128,5 @@ Content Security Policy   Controls resources and JS functions
 
 .. [1] If you switch the certificate without announcing its public key first
     via this header in a rollover time span, you will lock this clients out
-    because they expect being targetted by a MITM attack and refuse the connection
+    because they expect being targeted by a MITM attack and refuse the connection
     and it is hard to reset this pin in the browser.

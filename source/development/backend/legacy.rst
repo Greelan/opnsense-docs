@@ -1,12 +1,12 @@
-====================
-Using legacy plugins
-====================
+============================
+Using plugins
+============================
 
 -------
 General
 -------
 
-Legacy type plugins are located in the following location:
+Plugins are located in the following location:
 
 ::
 
@@ -19,6 +19,12 @@ For example *vpn_configure* would be the *configure* handle in a plugin file nam
 
 With the use of these plugins, you have the ability to hook into different areas of the system, such as registration of
 new interface types and making sure services are shown in the regular service overview.
+
+
+.. Note::
+
+    When plugins fail and cause PHP errors, these will be collected in :code:`/tmp/PHP_errors.log`, these plugins are not
+    registered and executed when emitting such errors
 
 
 -----------------
@@ -41,6 +47,25 @@ To register services, the :code:`<plugin>_services()` function should return a s
         return $services;
     }
 
+
+
+===========================  =================================================================================
+**option**                   **Description**
+===========================  =================================================================================
+name                         Service identifier
+id                           Optional identifier to suffix the service, only used in specific cases where
+                             one "service" can actually be a list of them (e.g. :code:`openvpn`)
+description                  User friendly description
+pidfile                      Validate running based on specified pid file (instead of "name")
+nocheck                      [boolean] ignore pid or process name and always report running
+{type}                       Type could be one of :code:`configd`, :code:`php`, :code:`mwexec`
+{type}.start                 Action to call when starting the service
+{type}.stop                  Action to call when stopping the service
+{type}.restart               Action to call when restarting the service
+===========================  =================================================================================
+
+
+
 To list all available services from the command line, you can use pluginctl (bundled with our core system).
 
 ::
@@ -62,17 +87,19 @@ Configure
 The configure plugin can be used to catch certain events, such as :code:`bootup`, :code:`newwanip` and others.
 
 A small sample of a registration is shown below, which registers the functions :code:`myplugin_configure()` on bootup
-and :code:`myplugin_configure()_vpn` on vpn state change where the latter is accepting two (2) parameters at most.
-
+and :code:`myplugin_configure_vpn()` on vpn state change where the latter is accepting two (:2) parameters at most.
+Note that the default number of arguments passed to the listeners is one (:1) which is the :code:`$verbose`  parameter
+steering whether the function is allowed to print progress or not.  The maximum number of arguments passed depends
+on the particular event provider.  For more details see below.
 
 ::
 
     function myplugin_configure()
     {
-        return array(
-            'bootup' => array('myplugin_configure')
-            'vpn' => array('myplugin_configure_vpn:2')
-        );
+        return [
+            'bootup' => ['myplugin_configure'],
+            'vpn' => ['myplugin_configure_vpn:2'],
+        ];
     }
 
 
@@ -86,15 +113,21 @@ To list all available hooks, you can use :code:`pluginctl` without parameters:
 Below you will find an incomplete list of the most common used events that are handled at the moment:
 
 ===========================  =================================================================================
-Event                        When
+**Event**                    **When**
 ===========================  =================================================================================
 early                        Early in bootup process, before normal services are started
                              (things like ssh and the webconfigurator use this spot)
 bootup                       Bootup, normal legacy service configuration, when not using the :code:`rc(8)` system
                              (for example: unbound, ntpd)
-newwanip                     Triggered after configuration of a new interface address, expects a maximum of two positional
-                             parameters (:code:`$verbose` and :code:`$interface`).
-monitor                      Executed when there are changes that involve (dpinger) gateway monitoring.
+newwanip                     Triggered after configuration of a dynamic interface address, expects a maximum of three positional
+                             parameters (:code:`$verbose` and :code:`$interfaces` and :code:`$family`). :code:`$interfaces`
+                             is an array all relevant interfaces that require reloading or null for all.  $:code:`family` is the
+                             address family type that triggered the event, either :code:`inet` for IPv4 or :code:`inet6` for IPv6.
+updateip                     Triggered after an out of sequence interface reload.  Similar to newwanip, but also triggering
+                             when the interface addressing is static, in which case newwanip is never observed.
+vpn                          Triggered in multiple places that require a reload of the VPN based subsystems, expects a maximum
+                             of two parameters (:code:`$verbose` and :code:`$interfaces`). :code:`$interfaces` is an array of
+                             all relevant interfaces that require reloading or null for all.
 ===========================  =================================================================================
 
 
@@ -103,6 +136,7 @@ monitor                      Executed when there are changes that involve (dping
 ::
 
     pluginctl -c monitor
+
 
 
 ------------------
@@ -145,7 +179,7 @@ To register new (virtual) interfaces, create a function called :code:`<plugin>_i
 Every item should contain the following properties:
 
 +-----------------------+------------------------+--------------------------------------------------------+
-| Property              | Syntax                 | Description                                            |
+| **Property**          | **Syntax**             | **Description**                                        |
 +=======================+========================+========================================================+
 | enable                | boolean                | interface enabled, if so it will be saved in the config|
 +-----------------------+------------------------+--------------------------------------------------------+
@@ -183,6 +217,64 @@ Example:
     }
 
 
+-----------------
+Device
+-----------------
+
+To register virtual network devices types which can be used verbatim or manually assigned to interfaces,
+the :code:`<plugin>_devices()` function should return a structure containing such devices and additional
+definitions.
+
+Device registration covers a number of aspects such as interfaces assignment page presentation, external
+(re)configuration function, automatic configuration of assigned devices, and matching device name pattern
+amongst others. Available settings are described below:
+
+
++-----------------------+------------------------+--------------------------------------------------------------+
+| **Property**          | **Syntax**             | **Description**                                              |
++=======================+========================+==============================================================+
+| function              | text                   | Calls function of that name with device name as argument     |
++-----------------------+------------------------+--------------------------------------------------------------+
+| volatile              | boolean                | This interface can disappear so do not attempt boot recovery |
++-----------------------+------------------------+--------------------------------------------------------------+
+| configurable          | boolean                | Assigned interface can set IPv4/IPv6 mode if true or missing |
++-----------------------+------------------------+--------------------------------------------------------------+
+| pattern               | text                   | Regex to identify device names in bulk                       |
++-----------------------+------------------------+--------------------------------------------------------------+
+| type                  | text                   | Unique type setting required for assignments page            |
++-----------------------+------------------------+--------------------------------------------------------------+
+| names                 | array [ see below ]    | List of devices with individual names as associative keys    |
++-----------------------+------------------------+--------------------------------------------------------------+
+| ...descr              | text                   | Descriptive text of device, e.g. for assignments page        |
++-----------------------+------------------------+--------------------------------------------------------------+
+| ...ifdescr            | text                   | Verbatim description, e.g. as stored in config.xml           |
++-----------------------+------------------------+--------------------------------------------------------------+
+| ...name               | text                   | Device name same as array key for convenient access          |
++-----------------------+------------------------+--------------------------------------------------------------+
+
+
+Example:
+
+::
+
+    function myplugin_devices()
+    {
+        $devices = [];
+
+        $devices[] = [
+            'function' => 'function_name_to_configure',
+            'names' => ['dev0' => [
+                'descr' => 'descriptive text',
+                'ifdescr' => 'verbatim description',
+                'name' => 'dev0',
+            ]],
+            'pattern' => '^dev',
+            'volatile' => true,
+            'type' => 'bridge',
+        ];
+
+        return $devices;
+    }
 
 
 -----------------
@@ -205,8 +297,8 @@ To register syslog targets, the :code:`<plugin>_syslog()` function should return
 
 .. Note::
 
-    As of OPNsense 19.7 Syslog-NG is included in our base system, when not using circular logs, these files will
-    only be used to identify applications for custom syslog remote targets in :menuselection:`System->Settings->Logging / targets`.
+    As of OPNsense 19.7 Syslog-NG is included in our base system, these files will only be used to identify applications
+    for custom syslog remote targets in :menuselection:`System->Settings->Logging / targets`.
 
 
 To test if a service registration functions properly, just restart the syslog facility:
@@ -218,13 +310,21 @@ To test if a service registration functions properly, just restart the syslog fa
 
 .. Note::
 
-    In order to define local targets for Syslog-NG you can just add **local** filters which will be collected into
+    In order to define local targets for Syslog-NG you can just add **local** filters (e.g. by creating
+    :code:`src/opnsense/service/templates/OPNsense/Syslog/local/helloworld.conf`) which will be collected into
     one large syslog configuration.
     The readme on `GitHub <https://github.com/opnsense/core/blob/master/src/opnsense/service/templates/OPNsense/Syslog/local/README>`__
     describes the process.
     When running into issues, always make sure to manually restart syslog-ng first (:code:`service syslog-ng restart`), definition errors won't
-    be written into any log.
+    be written into any log. You will also have to restart the plugin (:code:`pluginctl -s syslog-ng restart`) for the syslog-ng configuration
+    files to be regenerated.
 
+.. Note::
+
+    In case additional source sockets should be used by Syslog-NG you can add files in :code:`/usr/local/opnsense/service/templates/OPNsense/Syslog/sources/`
+    containing definitions.
+    The `001-local.conf <https://github.com/opnsense/core/blob/22.1.7/src/opnsense/service/templates/OPNsense/Syslog/sources/001-local.conf#L5>`__ file
+    contains examples from jailed core services.
 
 -----------------
 XMLRPC (HA) sync

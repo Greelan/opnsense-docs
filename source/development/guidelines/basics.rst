@@ -79,7 +79,7 @@ In reality we forked a system that went without code maintenance for a very long
 time and we needed to transition that into something more structured.
 
 One of the first things (on the programming part of the system) we did was build
-components around an existing framework (`Phalcon <https://phalconphp.com/>`_)
+components around an existing framework (`Phalcon <https://phalcon.io/>`_)
 to create new modules, which could use validated configuration data (from the
 config.xml), supply a RESTful API and generate HTML output using standard
 templates (Volt).
@@ -97,18 +97,21 @@ Knowing we can’t change the world in a single day and having a lot of legacy t
 drag around with us, our strategy consists of three parts:
 
 **1)** Cleanup and maintenance
+
 Restructure old (legacy) code, basically all code in the src/www, src/etc/inc to
 make it better readable, easier to use and remove unused / unnecessary parts. By
 doing so we want to extend the lifetime of the old code a bit and make the
 transition in new code easier eventually.
 
 **2)** Detach
+
 Move system configuration calls to configd where possible, which gives the
 administrator the advantage of running those commands from the command line and
 helps removing the need for root user access in the future. The ipsec VICI
 implementation is one example of this stage.
 
 **3)** Moving on
+
 (re)build new parts, using our new modules, which provide a layered development
 system to automatically support API calls from other systems and XML based model
 templates to describe configuration data.
@@ -125,3 +128,8 @@ standards for PHP code and follow the Python PEPs.
 
 When moving to the legacy part of the system, our goal is to stick as close to
 PSR1/2 as possible, knowing it will never be perfect.
+
+.. Note::
+
+    When building new (MVC based) code, its not allowed to include legacy parts directly. The main reason for this is
+    preventing technical debt being stacked in new components and losing oversight.

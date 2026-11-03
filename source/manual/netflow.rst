@@ -37,18 +37,18 @@ Traffic to or coming from the firewall.
 
 Egress
 ------
-Traffic passing trough the firewall.
+Traffic passing through the firewall.
 
 Ingress + Egress = Double flow count
 ------------------------------------
 When enabling both ingress and egress, traffic gets counted double due to Network
 Address Translation as all packets going to the WAN coming from the LAN pass the
-Network translation of the firewall therefor also creating an ingress flow.
+Network translation of the firewall therefore also creating an ingress flow.
 
 If you are not interested in ingress traffic then OPNsense offers the option to
 filter this traffic. When utilizing a proxy on the same device its important to
 capture the ingress flows as well, otherwise all proxy traffic won't be visible.
-Downside is of course that all traffic not passing the proxy will we counted twice
+Downside is of course that all traffic not passing the proxy will be counted twice
 due to the mentioned NAT effect.
 
 ----------------

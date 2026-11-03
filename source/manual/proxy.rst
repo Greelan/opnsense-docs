@@ -4,6 +4,12 @@ Caching Proxy
 
 .. image:: images/forward_proxy.png
 
+.. Note::
+
+    Make sure to install :code:`os-squid` via :menuselection:`System --> Firmware --> Plugins` in order to use
+    the web proxy. As of OPNsense 24.1, the proxy is no longer included in the default installation.
+
+
 OPNsense is equipped with a fully featured forward caching (transparent) proxy.
 A caching proxy reduces bandwidth and improves response times by caching and
 reusing frequently-requested web pages. The Access Control Lists can be utilized
@@ -99,7 +105,7 @@ configuration via WPAD / PAC.
 .. Warning::
     WPAD via DNS requires the web interface to run on the default HTTP port
     (TCP/80) which is also a security risk (MITM attacks). In such cases you
-    should proxy the connection or avoid configuring the applicance from an
+    should proxy the connection or avoid configuring the appliance from an
     untrusted network.
 
 -----------------------
@@ -129,7 +135,7 @@ There are some rules to take into account when creating custom themed error page
   Not only is this faster to handle than separate image files it also prevents rendering issues in case images can't be accessed.
 * only existing error pages will be processed, if filenames won't match, the files won't be written to disk. you can use the download button
   to inspect what's being deployed (it will return a combined set of custom and standard files)
-* it's best not to include files that are not altered, this saves room in the configurartion and prevents defauls from being overwritten.
+* it's best not to include files that are not altered, this saves room in the configurartion and prevents defaults from being overwritten.
 
 .. Tip::
 
@@ -138,29 +144,24 @@ There are some rules to take into account when creating custom themed error page
 .. Tip::
 
     To convert images to inline base64 tags, there are quite some online tools available, which can easily be found using google.
-    As an example, our logo can be found in the the css file looking like :code:`background: url('data:image/svg+xml;base64,PD9...) no-repeat left;`
+    As an example, our logo can be found in the css file looking like :code:`background: url('data:image/svg+xml;base64,PD9...) no-repeat left;`
 
 -----------------------
 Configuration / How-tos
 -----------------------
+
 More information on how to utilize OPNsense's proxy service can be found in:
 
-Proxy Basic Setup
------------------
-:doc:`how-tos/cachingproxy`
 
-Setup Web Filtering
--------------------
-:doc:`how-tos/proxywebfilter`
+.. toctree::
+   :maxdepth: 2
+   :titlesonly:
 
-Setup Transparent Mode (including SSL)
---------------------------------------
-:doc:`how-tos/proxytransparent`
-
-Setup WPAD/PAC
---------------
-:doc:`how-tos/pac`
-
-Setup ICAP Anti Virus/Malware Engine
-------------------------------------
-:doc:`how-tos/proxyicapantivirus`
+   /manual/opnproxy
+   /manual/how-tos/cachingproxy
+   /manual/how-tos/guestnet
+   /manual/how-tos/pac
+   /manual/how-tos/proxyicapantivirus
+   /manual/how-tos/proxyicapantivirusinternal
+   /manual/how-tos/proxytransparent
+   /manual/how-tos/proxywebfilter

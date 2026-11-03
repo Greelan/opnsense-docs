@@ -12,8 +12,9 @@ Supported devices
 -----------------
 
 In general, OPNsense should support all cellular modems that are supported by the
-respective FreeBSD kernel. However, not all devices behave the same way, you might
-have to tweak your card with specific AT commands, for example in the init string.
+respective FreeBSD kernel (`see latest <https://cgit.freebsd.org/src/tree/sys/dev/usb/serial/u3g.c#n197>`).
+However, not all devices behave the same way, you might have to tweak your card 
+with specific AT commands, for example in the init string.
 
 The screenshots in this guide are for a Huawei ME909u-521 miniPCIe cellular modem.
 
@@ -129,24 +130,18 @@ Click **Save** to apply the settings.
 ---------------------------------
 Step 3 - Assign the WAN interface
 ---------------------------------
-To assign the interface go to :menuselection:`Interfaces --> Assignments` in our case we will make
-this our primary internet connection and change the WAN assignment accordingly.
-
-To do so just change the **Network port** for **WAN** to **ppp0 (/dev/cuaU0.0) - 4G Cellular Network**.
-
-No click **Save** below the form.
+To assign the interface, go to :menuselection:`Interfaces --> Assignments`. In our case we will make
+this our primary internet connection, so edit WAN and set **Device** to
+**ppp0 (/dev/cuaU0.0) - 4G Cellular Network**. Click **Save** and **Apply**.
 
 If everything went fine, then you are all set, and the default gateway will be
-the one of you cellular connection.
-
-.. image:: images/Interface_assignment_4g.png
-   :width: 100%
+the one of your cellular connection.
 
 ------------------------
 Step 4 - Troubleshooting
 ------------------------
 In case it still does not work, first look at the log of the cellular device's PPP connection, to do so go to:
-:menuselection:`Interfaces --> Point-to-Point --> Log File`. If you are
+:menuselection:`System --> Log Files --> General`. If you are
 lucky you can see what went wrong directly in the log. Unfortunately, the PPP log is
 not very informative so it might not help at all.
 

@@ -13,3 +13,5 @@ For this how-to we will look into these scenarios:
    shaper_limit_per_user
    shaper_prioritize_using_queues
    shaper_guestnet
+   shaper_bufferbloat
+   shaper_control_plane

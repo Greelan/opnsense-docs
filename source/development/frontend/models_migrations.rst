@@ -6,7 +6,7 @@ When using the :code:`<version/>` tag in the model xml you automatically allow u
 tag is missing, it will automatically assume your at version :code:`0.0.0` (initial version).
 
 The migration feature provides a pluggable framework to offer new and changed attributes after installation of new software and
-is therefor automatically triggered when performing upgrades or installing packages.
+is therefore automatically triggered when performing upgrades or installing packages.
 
 
 .. Tip::
@@ -20,7 +20,7 @@ This will take care of basic changes, such as adding new fields and applying def
 
 .. Note::
 
-  The current version will always be saved as an attirbute on the model xml (e.g. :code:`<Alias version="1.0.0">`)
+  The current version will always be saved as an attribute on the model xml (e.g. :code:`<Alias version="1.0.0">`)
 
 
 .............................

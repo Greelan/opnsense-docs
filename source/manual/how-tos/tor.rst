@@ -40,24 +40,24 @@ Tor Service Settings
     This Port requires a password, which will not be disclosed to the GUI but
     can be queried via the API. This setting is available for you to handle
     Port conflicts, so you can change this port.
-:Create a logfile, Send log messges to syslog:
+:Create a logfile, Send log messages to syslog:
     Enable this checkbox if you want some logging. Please note that a detailed
     log may lead to privacy issues.
 :Logfile, Syslog level:
     If the corresponding checkbox is enabled, this will be the minimum severity
-    for sending or writing log messges.
+    for sending or writing log messages.
 :Fascist Mode:
     If internet access is filtered, you can try this option.
     Please note that this is not compatible with other features like "Hidden Services".
 :Fascist Firewall Ports:
     These are the unfiltered ports of the firewall. The defaults of 80 and 443 are
-    choosen, because they are commonly open.
+    chosen, because they are commonly open.
 
 Forward Proxy
 -------------
 
 .. Note::
-    The SOCKS proxy is only useable from localhost (127.0.0.1 and ::1)
+    The SOCKS proxy is only usable from localhost (127.0.0.1 and ::1)
     unless an ACL is added in the "SOCKS Proxy ACL" section.
 
 :Listen Interfaces:
@@ -74,7 +74,7 @@ Transparent Forward Proxy
 
 :Transparent Port:
     This port is the target for your NAT rule.
-    Please create a rule for this port in the "Port Forward" section of the firewall.
+    Please create a rule for this port in the "Destination NAT (Port Forward)" section of the firewall.
 :Transparent DNS Port:
     If you are using Tor transparently, you can resolve .onion addresses
     to IPs of the given pool for example. This also allows to keep DNS secret.
@@ -107,7 +107,7 @@ fill out the form:
 
 :Enable:
     The entry will be added to the configuration file.
-    If this checkbox is unckecked, the entry is ignored.
+    If this checkbox is unchecked, the entry is ignored.
 :Protocol:
     Select the protocol in use for this ACL.
     You can choose between IPv4 and IPv6.
@@ -157,7 +157,7 @@ For any port you want to forward, you have to click `+` and fill out the form:
 .. image:: images/tor_hidden_services_route_edit.png
 
 :Hidden Service:
-    The service on which the port forward applies.
+    The service on which the Destination NAT (Port Forward) applies.
     The entries in this list are the services created in the previous step.
 :Port:
     The virtual Port in the Tor network.
@@ -178,7 +178,7 @@ in the Tor network it gets on port 80 to 127.0.0.1:8080
 
 
 In addition to regular onion services, the services can be protected even more
-by requireing the client to know a secret cookie.
+by requiring the client to know a secret cookie.
 
 This setting needs to be configured on both ends. On the server hosting the
 onion service, you need to configure it on the configuration tab for the onion
@@ -251,15 +251,15 @@ Relays And Bridges
 :Nickname:
     A nickname can be used to identify your network but it must only
     consist of alphanumeric characters.
-:Bandwith Rate:
-    You can limit the bandwith Tor will use. By default, Tor will use the
-    maximum amount of bandwith available.
+:Bandwidth Rate:
+    You can limit the bandwidth Tor will use. By default, Tor will use the
+    maximum amount of bandwidth available.
     The value must be at least 72 kilobits per second.
-:Bandwith Burst:
-    See Bandwith Rate.
+:Bandwidth Burst:
+    See Bandwidth Rate.
 :Directory Port:
-    If you have a lot of bandwith, you can also configure a directory port.
-    You should not enable this port if your bandwith is small.
+    If you have a lot of bandwidth, you can also configure a directory port.
+    You should not enable this port if your bandwidth is small.
 :Reject Private IPs:
     **IMPORTANT** DO NOT DISABLE UNLESS YOU KNOW WHAT YOU ARE DOING.
     This option blocks access to RFC1918 addresses regardless of the
@@ -305,4 +305,4 @@ Click on `+` to add a new ACL.
 :Action:
     If you select "Reject", no exit node traffic will be sent to this host
     and it will not be forwarded. If you choose "Accept", your host may
-    be choosen as an exit node in a circuit.
+    be chosen as an exit node in a circuit.

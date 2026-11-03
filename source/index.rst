@@ -1,6 +1,6 @@
 .. OPNsense documentation master file
 
-.. image:: ./images/opnsense_logo-zilver_grijs.png
+.. image:: ./images/docs-deciso-header.jpg
 
 -----------------
 
@@ -22,8 +22,11 @@ Table of Contents
      :maxdepth: 2
 
      intro
+     security
      releases
+     be
      setup
+     vendor
      lobby
      reporting
      system

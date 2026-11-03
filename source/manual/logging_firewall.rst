@@ -8,7 +8,7 @@ with the settings of the component they belong to. The log files can be found he
 
 ================ ======================================================== =============================================================================
  **Live View**    :menuselection:`Firewall --> Log Files --> Live View`    *View firewall logs in realtime, smart filtering can be applied*
- **Plain View**   :menuselection:`Firewall --> Log Files --> Plain View`   *Just the plain contents how **pf** logs into **filter.log** *
+ **Plain View**   :menuselection:`Firewall --> Log Files --> Plain View`   *Just the plain contents how* **pf** *logs into* **filter.log**
 ================ ======================================================== =============================================================================
 
 Live View
@@ -20,7 +20,7 @@ Live view updates itself in realtime if a rule is matched that has logging enabl
 In the top left corner of the page you can build filter conditions for rules to match when inspecting traffic, while
 here you can select different fields (for example `label`, `src` address, `dst` address) and how to match them
 (contains, is, is not, does not contain) combined with a criteria (either a string or a preselected value, depending on type).
-The [+] button adds the the filter to the view.
+The [+] button adds the filter to the view.
 
 By default results should match all criteria (AND), but you can change that to an any of criteria (OR). The latter is sometimes
 practical if you want to track a small list of hosts.
@@ -49,3 +49,14 @@ Detailed information for a specific rule can be provided using the info button a
     Since log lines are stored on the system without an exact match to the rule in question, we do need to translate the sequence
     in the file back to the rule definition stored in the system. Due to this fact, the information is less accurate
     historically if the firewall was reconfigured. (labels may be incorrect when looking at older data)
+
+
+Overview
+--------------------
+
+The logging overview page shows the distribution of the firewall log lines over a set of different properties, but is limited
+in the amount of rules it will evaluate (5000).
+
+Although it may help to spot some clear patterns from the top of your log stash, the number of relevant use-cases
+is likely limited.
+

@@ -3,11 +3,12 @@ Introduction
 ============
 
 Welcome to the OPNsense documentation & wiki project!
-The documentation is work in progress and is updated frequently.
-If you would like to contribute in anyway, please take a look at our guide
-how to :doc:`contribute`.
+The documentation is a work in progress and is updated frequently.
+If you would like to contribute in any way, please take a look at our guide
+on how to :doc:`contribute`.
 
-.. image:: ./images/opnsense_logo-zilver_grijs.png
+.. image:: ./images/opnsense_logo_horizontaal.png
+    :width: 80%
 
 ------------------------------------
 Welcome to OPNsense's documentation!
@@ -29,52 +30,52 @@ Mission Statement
   “Open (source) makes sense.”
 
 
-.. image:: ./images/OPNsense-Deciso-Screenshot.jpg
+.. image:: ./images/OPNsense-Deciso-Screenshot.png
 
 
 -----------------
 Reading guide
 -----------------
 
-While reading the documentation, it's good to know how the various topics are structured, what their purpose is and how
-to find what you're looking for. Maybe even more important is what this documentation doesn't offer.
+While reading the documentation, it is good to know how the various topics are structured, what their purpose is and how
+to find what you are looking for. Maybe even more important is what this documentation does not offer.
 
-If you're looking for deeper insights about networking and best practices in designing them, this might not be the best
+If you are looking for deeper insights about networking and best practices in designing them, this might not be the best
 place to look. Most of our documents and how-to's focus on how to use functionality included in our software and/or one
-of it's plugins. Quite some books are written about networking, there are (online) courses available and wikipedia
+of its plugins. Quite a lot of books are written about networking, there are (online) courses available and Wikipedia
 contains a lot of relevant articles as well. Some interesting reads include the fundamentals about the
 `OSI model <https://en.wikipedia.org/wiki/OSI_model>`__, `IP addressing <https://en.wikipedia.org/wiki/IP_address>`__,
 `routing <https://en.wikipedia.org/wiki/IP_routing>`__ and `network address translation <https://en.wikipedia.org/wiki/Network_address_translation>`__.
-Likely these resources are more suitable for learning about general network concepts.
+These resources are likely more suitable for learning about general network concepts.
 Although we do try to include some context in our documents, there are often assumptions made about the readers
 knowledge on (basic) networking.
 
 Like many products and projects, ours grows over time, functionality extends and changes, which sometimes makes it difficult
-to find what you need for the version your using. Although we try to keep our documentation up to date, sometimes text
-doesn't reflect reality anymore. If that's the case and you think you found an omission, don't hestitate to open
+to find what you need for the version you are using. Although we try to keep our documentation up to date, sometimes its contents
+do not reflect reality anymore. If that is the case and you think you found an omission, do not hesitate to open
 a report using one of our templates on `GitHub <https://github.com/opnsense/docs/issues/new/choose>`__ or a pull request
-of course if you're able to.
+if you are able to.
 
 Always assume the text is intended for the latest version of our product, in time we might
 add a version selector in the documentation, but given OPNsense is a security product, we advise to keep it up to date
-anyway to protect yourself against the latests threats.
+anyway to protect yourself against the latest threats.
 
 The releases section contains the changelogs for all versions we published over the years, if there are remarks
 for an upgrade, this is a useful resource to collect the details.
 
 Installation and setup is all about getting you started using one of the target options available.
 
-The next sections should be quite familiair when working with OPNsense, as they reflect the options in the
-menu of the product. In case you're not yet used to OPNsense, you can always use the search input in the left corner of
+The next sections should be quite familiar when working with OPNsense, as they reflect the options in the
+product's menu. If you are not yet used to OPNsense, you can always use the search input in the top-left corner of
 the screen to find your topic.
 
 Both community and third-party plugins have their own area available, although they eventually register into the
-same menu structure, it's good to know about possible differences between add-ons and standard functionality.
+same menu structure, it is good to know about possible differences between add-ons and standard functionality.
 The level of support may differ between core functionality, as also explained in the "Support options" section,
-feature requests and bugs maybe treated different as well (a lot of questions for a plugin which is being developed
+feature requests and bugs may be treated different as well (a lot of questions for a plugin which is being developed
 by a single person, maybe less active than a group of people improving a plugin together for example).
 
-When it it comes to building software on top of OPNsense or extending existing functionality, the development
+When it comes to building software on top of OPNsense or extending existing functionality, the development
 chapter is the one to read. It explains all about our architecture, coding style, how to hook into available facilities and
 much more.
 
@@ -95,8 +96,7 @@ The feature set of OPNsense includes high-end features such as forward caching
 proxy, traffic shaping, intrusion detection and easy OpenVPN client setup.
 The latest release is based on a recent FreeBSD for long-term support and uses a
 newly developed MVC-framework based on Phalcon. OPNsense’s focus on security
-brings unique features such as the option to use LibreSSL instead of OpenSSL
-(selectable in the GUI).
+brings unique features such as easy to use one time password authentication for various components.
 
 The robust and reliable update mechanism gives OPNsense the ability to provide
 important security updates in a timely fashion.

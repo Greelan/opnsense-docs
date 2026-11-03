@@ -1,10 +1,12 @@
 ================
-Other Types
+Devices
 ================
 
 Besides wired, wireless and VPN interfaces, there are also some other, virtual interfaces, as well as some
-miscellaneous interface-related. These options can be found under :menuselection:`Interfaces --> Other types`.
+miscellaneous interface-related. These options can be found under :menuselection:`Interfaces --> Devices`.
 This document briefly explains these options.
+
+.. _manual_interfaces_bridge:
 
 ------
 Bridge
@@ -12,7 +14,7 @@ Bridge
 
 Bridging allows to create a connection between separate networks, allow traffic on network A destined for network B
 (where both networks are connected to your OPNsense device) to reach it via this bridge. Note that this does not
-include DHCP services—this needs to set using :ref:`DHCP relaying <dhcp-relaying>`.
+include DHCP services—this needs to set using :ref:`DHCP relaying <dhcrelay>`.
 
 A bridge works like a (layer-2) switch, forwarding traffic from one interface to another.
 Multicast and broadcast packets are always forwarded to all interfaces that are part of the bridge.
@@ -30,18 +32,8 @@ STP interfaces                      The interfaces tith [R]STP enabled, from the
 Valid time (maxage)                 Set the time that a Spanning Tree Protocol configuration is valid. The default is 20 seconds.
 Forward time (fwddelay)             Set the time that must pass before an interface begins forwarding packets when
                                     Spanning Tree is enabled. The default is 15 seconds.
-Hello time (hellotime)              Set the time between broadcasting of Spanning Tree Protocol configuration messages.
-                                    The hello time may only be changed when operating in legacy STP mode. The default is 2 seconds.
-Priority                            Set the bridge priority for Spanning Tree.
-                                    The default is 32768. The minimum is 0 and the maximum is 61440.
 Hold count (holdcnt)                Set the transmit hold count for Spanning Tree. This is the number of packets transmitted
                                     before being rate limited. The default is 6. The minimum is 1 and the maximum is 10.
-[interface] Priority (ifpriority)   Set the Spanning Tree priority of interface to value. The default is 128.
-                                    The minimum is 0 and the maximum is 240. Increments of 16.
-[interface] Path cost (ifpathcost)  Set the Spanning Tree path cost of interface to value.
-                                    The default is calculated from the link speed.
-                                    To change a previously selected path cost back to automatic, set the cost to 0.
-                                    The minimum is 1 and the maximum is 200000000.
 ==================================  ==================================================================================================
 
 Other advanced options available in the bottom section of the screen and include the following settings:
@@ -89,7 +81,7 @@ IPv6 tunnel of Hurricane Electric (he.net).
     In :doc:`/manual/how-tos/ipv6_tunnelbroker` you can find information on how to setup a tunnel using Hurricane Electric
 
 
-As with all tunnel types, the most important settings relate to how both ends connect and which addressing will be used to
+As with all tunnel devices, the most important settings relate to how both ends connect and which addressing will be used to
 route traffic over the tunnel. The rest of the settings usually are best left to their defaults.
 
 ==================================  ==================================================================================================
@@ -112,7 +104,7 @@ GRE
 ---
 
 GRE (``gre(4)``, Generic Routing Encapsulation) is used to create a virtual point-to-point connection, through which
-encapsulated packages can be sent. This can be used to utilise (OSI-layer 3) protocols between devices over a connection that
+encapsulated packages can be sent. This can be used to utilize (OSI-layer 3) protocols between devices over a connection that
 does not normally support these protocols.
 
 Since the GRE protocol was designed by Cisco, it is often used as default tunnel technology when using their solutions.
@@ -156,10 +148,14 @@ Use flowid                          Use the RSS hash from the network card if av
 Hash Layers                         Set the packet layers to hash for aggregation protocols which load balance.
 Use strict                          Enable lacp strict compliance on the interface.
                                     The default depends on the system tunable in `net.link.lagg.lacp.default_strict_mode`.
-MTU                                 MTU size, when unset the smallest mtu of this laggs children will be used.
+MTU                                 MTU size, when unset the smallest mtu of the LAGG children will be used.
 ==================================  ==================================================================================================
 
+.. Note::
 
+    Hash Layers, specifies how the device will loadbalance the traffic across physical links in the LAGG bundle.
+    This is done per the 5-tuple if the LACP device implementation allows it.
+    Hash Layers, do not need to be the same between two connecting devices, it can be considered as a best practice but its not a rule of must be.
 
 **Available protocols**
 
@@ -173,7 +169,7 @@ failover                            Sends and receives traffic only through the 
 fec                                 Supports Cisco EtherChannel. This is a static setup and does not negotiate
                                     aggregation with the peer or exchange frames to monitor the link.
 lacp                                Supports the IEEE 802.3ad Link Aggregation Control Protocol (LACP) and the Marker Protocol.
-                                    LACP will negotiate a set of aggregable links with the peer in to one or more
+                                    LACP will negotiate a set of aggregated links with the peer in to one or more
                                     Link Aggregated Groups. Each LAG is composed of ports of the same speed,
                                     set to full-duplex operation. The traffic will be balanced across the ports in the LAG
                                     with the greatest total speed, in most cases there will only be one LAG which contains all ports.
@@ -190,40 +186,87 @@ none                                This protocol is intended to do nothing: It 
                                     disabling the lagg interface itself.
 ==================================  ==================================================================================================
 
+.. Attention::
+
+    The LAGG protocol should match with the one your switch supports. It is best practice to use LACP if possible.
+    Devices connected via LAGG require the same protocol.
+
+**LACP timeout**
+
+LACP timeout has two modes; Slow/normal and Fast. It handles how fast the re-convergence occurs in case of link failure.
+This specifies how often the heartbeats are sent between the two LAGG connected devices.
+
+==================================  =================================  =================================================================
+LACP mode                           Heartbeat/Timeout interval         Enable
+==================================  =================================  =================================================================
+Slow/Normal                         30s                                Fast timeout turned off
+Fast                                1s                                 Fast timeout turned on
+==================================  =================================  =================================================================
+
+The Slow/normal timeout should be the default in most cases.
+Due to possible vendor implementation issues, keeping the LACP timeout on Slow/normal is preferable. Fast timeout can cause connectivity disruption in some cases.
+LACP timeout requires the same value on both devices connected via LAGG. If not, heartbeats can be missed which will cause connectivity disruption.
+
+Read `LAGG Setup </manual/how-tos/vlan_and_lagg.html>`_ for an example configuration.
+
 --------------
 Loopback
 --------------
 
-Loopbacks are logical virtual interfaces which emulate real interfaces and can be used for different setup scenario's,
-which require always-on interfaces. Below you will find some scenario's for which these types of interfaces are used.
+Loopbacks are logical virtual interfaces which emulate real interfaces and can be used for different setup scenarios,
+which require always-on interfaces. Below you will find some scenario's for which these devices are used.
 
 *   Administrative access to services on your machine, which can bind to an address configured on top of the loopback.
 *   Using loopback addresses as router IDs for OSPF or BGP, which helps to identify your nodes and eases administration
+
+---
+TAP
+---
+
+TAP devices are virtual Ethernet (layer 2) interfaces which allow a userspace application to send and receive
+Ethernet frames. They are commonly used to connect virtual machines running on the firewall, for example with
+bhyve or QEMU, to a local network.
+
+Create a device under :menuselection:`Interfaces --> Devices --> TAP` by adding a description and selecting
+**Apply**. The device name is assigned automatically, starting with ``tap01``. The device can then be assigned
+under :menuselection:`Interfaces --> Assignments` and configured like other interfaces.
+
+To place a virtual machine on an existing layer 2 network, assign the TAP device and add it as a member of a
+:ref:`bridge <manual_interfaces_bridge>` together with the interface for that network. Configure the virtual
+machine manager to use the generated TAP device as the virtual network interface.
 
 ----
 VLAN
 ----
 
 VLANs (Virtual LANs) can be used to segment a single physical network into multiple virtual networks. This can be
-done for QoS purposes, among other things. For this reason, most ISP-issued IPTV devices utilise VLANs.
+done for QoS purposes, among other things. For this reason, most ISP-issued IPTV devices utilize VLANs.
 
-The following settings are available for these interface types:
+The following settings are available for these devices:
 
-==================================  ==================================================================================================
+==================================  =======================================================================================================
 Name                                Description
-==================================  ==================================================================================================
+==================================  =======================================================================================================
+Device                              Device name of this virtual interface, usually starts with **vlan** or **qinq** depending on the type
 Parent interface                    The interface to use as parent which it will send/receive vlan tagged traffic on
 VLAN tag                            802.1Q VLAN tag (between 1 and 4094)
 VLAN priority                       802.1Q VLAN PCP (priority code point)
 Description                         User friendly description for this interface
-==================================  ==================================================================================================
+==================================  =======================================================================================================
 
+.. Note::
+
+    `802.1ad <https://en.wikipedia.org/wiki/IEEE_802.1ad>`__ , also known as QinQ, is supported via the VLAN configuration
+    in which case you would stack a :code:`vlan` on top of a :code:`vlan`, the device name should start with qinq in that case.
+
+
+Read `VLAN Setup </manual/how-tos/vlan_and_lagg.html>`_ for an example configuration.
 
 ------
 VXLAN
 ------
 
-Virtual eXtensible Local Area Networks (VXLANs) are used to overlay virtualized layer 2 networks over layer 3 networks
+Virtual eXtensible Local Area Networks (VXLAN) are used to overlay virtualized layer 2 networks over layer 3 networks
 as described by `rfc7348 <https://tools.ietf.org/html/rfc7348>`__.
 
 Tunnels can be setup in point to point (parameter :code:`Remote address`) or multicast (parameters :code:`Multicast group` and :code:`Device`).
@@ -237,3 +280,126 @@ source in the encapsulating IPv4/IPv6 header.
   network MTU be configured to use jumbo frames to accommodate the encapsulated frame size.
   Alternatively, the MTU size on the vxlan interface might be reduced to allow the encapsulated frame to fit in
   the current MTU of the physical network.
+
+
+Read `VXLAN Bridge </manual/how-tos/vxlan_bridge.html>`_ for an example configuration with a common setup.
+
+----------------
+Point-to-Point
+----------------
+
+Point-to-Point (PP) interfaces provide direct connectivity between two endpoints without any intermediary devices. These interfaces are commonly used for WAN connections,
+tunneling, or direct link setups where `broadcast` and `multiple access` are not needed.
+
+The following `Link Types` are available for these interfaces:
+
+.. tabs::
+
+   .. tab:: PPP (Point-to-Point Protocol)
+
+      A widely used protocol for establishing direct connections over serial links, often utilized for
+      dial-up and DSL connections. Supports authentication (PAP/CHAP), compression, and error detection.
+
+      ========================================= ====================================================================================
+      **Option**                                **Description**
+      ========================================= ====================================================================================
+      **Link interfaces**                       Select one interface for normal PPP and least two interfaces for Multilink (MLPPP) connections.
+      **Description**                           You may enter a description here for your reference. Description will appear in the "Interfaces Assign" select lists
+      **Service Provider**                      Select the country, Provider and Plan for the PPP connection.
+      **Username**                              Enter your username for CHAP authentication.
+      **Password**                              Enter your password for CHAP authentication.
+      **Phone Number**                          Typically ``*99#`` for GSM networks and ``#777`` for CDMA networks
+      **Access Point Name (APN)**               Enter the APN for your service provider. E.g., ``internet.t-d1.de`` for T-Mobile.
+      ========================================= ====================================================================================
+
+      ========================================= ====================================================================================
+      **Advanced Option**                       **Description**
+      ========================================= ====================================================================================
+      **APN number (optional)**                 Defaults to 1 if you set APN above. Ignored if you set no APN above.
+      **SIM PIN**                               Enter the SIM PIN if your service provider requires it. Leave blank if not required.
+      **SIM PIN wait**                          Time to wait for SIM to discover network after PIN is sent to SIM (seconds).
+      **Init String**                           Enter the modem initialization string here. Do not include the "AT" string at the beginning of the command.
+                                                Many modern USB 3G modems don't need an initialization string.
+      **Connection Timeout**                    Enter timeout in seconds for connection to be established (sec.) Default is 45 sec.
+      **Uptime Logging**                        This option causes cumulative uptime to be recorded and displayed on the Status Interfaces page.
+      **Dial On Demand**                        This option causes the interface to operate in dial-on-demand mode.
+                                                Do not enable if you want your link to be always up. The interface is configured, but the actual
+                                                connection of the link is delayed until qualifying outgoing traffic is detected.
+      **Idle Timeout**                          (seconds) Default is 0, which disables the timeout feature. If no incoming or outgoing packets are transmitted
+                                                for the entered number of seconds the connection is brought down.
+                                                When the idle timeout occurs, if the dial-on-demand option is enabled, mpd goes back into dial-on-demand mode.
+                                                Otherwise, the interface is brought down and all associated routes removed.
+      **Compression**                           This option enables Van Jacobson TCP header compression, which saves several bytes per TCP data packet.
+                                                You almost always want this option. This compression ineffective for TCP connections with enabled modern extensions
+                                                like time stamping or SACK, which modify TCP options between sequential packets.
+      **TCPmssFix**                             This option causes mpd to adjust incoming and outgoing TCP SYN segments so that the requested maximum segment
+                                                size is not greater than the amount allowed by the interface MTU. This is necessary in many setups to avoid problems
+                                                caused by routers that drop ICMP Datagram Too Big messages. Without these messages, the originating machine sends data,
+                                                it passes the rogue router then hits a machine that has an MTU that is not big enough for the data.
+                                                Because the IP Don't Fragment option is set, this machine sends an ICMP Datagram Too Big message back to the originator
+                                                and drops the packet. The rogue router drops the ICMP message and the originator never gets to discover that
+                                                it must reduce the fragment size or drop the IP Don't Fragment option from its outgoing data.
+      **ShortSeq**                              This option is only meaningful if multi-link PPP is negotiated. It proscribes shorter multi-link fragment headers,
+                                                saving two bytes on every frame. It is not necessary to disable this for connections that are not multi-link.
+      **ACFComp**                               Address and control field compression. This option only applies to asynchronous link types. It saves two bytes per frame.
+      **ProtoComp**                             Protocol field compression. This option saves one byte per frame for most frames.
+      ========================================= ====================================================================================
+
+
+   .. tab:: PPPoE (Point-to-Point Protocol over Ethernet)
+
+      Encapsulates PPP frames within Ethernet frames, enabling authentication and connection management
+      over broadband connections like DSL. Typically used with ISPs for user authentication.
+
+      ========================================= ====================================================================================
+      **Option**                                **Description**
+      ========================================= ====================================================================================
+      **Link interfaces**                       Select one parent interface for PPP encapsulation.
+      **Description**                           You may enter a description here for your reference. Description will appear in the "Interfaces Assign" select lists
+      **Username**                              Enter your username for CHAP authentication.
+      **Password**                              Enter your password for CHAP authentication.
+      **Service name**                          This field can usually be left empty unless specified by the provider.
+      **Host-Uniq**                             This field can usually be left empty unless specified by the provider.
+      ========================================= ====================================================================================
+
+      .. Note:: Check the PPP tab for all advanced options.
+
+
+   .. tab:: PPTP (Point-to-Point Tunneling Protocol)
+
+      A VPN protocol that uses PPP to encapsulate network packets and secure data transmission.
+      While widely supported, PPTP is considered insecure due to weak encryption mechanisms.
+
+      ========================================= ====================================================================================
+      **Option**                                **Description**
+      ========================================= ====================================================================================
+      **Link interfaces**                       Select one parent interface for PPP encapsulation.
+      **Description**                           You may enter a description here for your reference. Description will appear in the "Interfaces Assign" select lists
+      **Username**                              Enter your username for CHAP authentication.
+      **Password**                              Enter your password for CHAP authentication.
+      ========================================= ====================================================================================
+
+      .. Note:: Check the PPP tab for all advanced options.
+
+
+   .. tab:: L2TP (Layer 2 Tunneling Protocol)
+
+      An extension of PPTP that does not provide encryption on its own but was often paired with IPsec
+      for secure tunneling. Used for VPN connections and remote access setups.
+
+      .. Note:: Check the PPTP and PPP tab for all options.
+
+
+.. Note:: The ``ppp`` log files can be found in :menuselection:`System --> Log Files --> General`.
+
+Read `PPPoE ISP Setup </manual/how-tos/pppoe_isp_setup.html>`_ for an example configuration of PPPoE with VLAN Tag for an ISP connection.
+
+.. Tip::
+
+    When using :code:`PPPoE`, a lot of providers these days support `RFC 4638 <https://datatracker.ietf.org/doc/html/rfc4638>`__, in which
+    case the internet provider expects the MTU value for the PPP connection itself to be 1500 bytes, which usually means the parent interface should
+    add the 8 byte tunnel overhead. To use this, your device does need to support "jumbo-frames" to some extend in order to communicate with the next peer.
+
+    To use a 1500 byte MTU on :code:`PPPoE` in OPNsense, edit the interface (usually WAN) under
+    :menuselection:`Interfaces --> Assignments` and set its MTU to :code:`1508`,
+    in which case the tunnel itself will use the full 1500 bytes.

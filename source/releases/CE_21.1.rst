@@ -21,7 +21,7 @@ now supports UEFI as well.
 
 For those wondering, the WireGuard plugin has been available since 2019 and
 receives continuous improvements by its maintainer and various users alike.
-And that is unlikey to change in the future.  ;)
+And that is unlikely to change in the future.  ;)
 
 As we continue to deprecate custom configuration inputs for a number of
 reasons, Dnsmasq has been switched to a pluggable file-based approach `[1] <https://docs.opnsense.org/manual/dnsmasq.html>`__ 
@@ -66,7 +66,7 @@ Here are the full patch notes:
 * plugins: os-zabbix-agent 1.9 `[4] <https://github.com/opnsense/plugins/blob/stable/21.1/net-mgmt/zabbix-agent/pkg-descr>`__ 
 * ports: curl 7.78.0 `[5] <https://curl.se/changes.html#7_78_0>`__ 
 * ports: filterlog adds CARP IPv6 support and moves label to previously reserved spot
-* ports: nss 3.68 `[6] <https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_3.68_release_notes>`__ 
+* ports: nss 3.68 `[6] <https://firefox-source-docs.mozilla.org/security/nss/releases/nss_3_68.html>`__ 
 * ports: php 7.4.21 `[7] <https://www.php.net/ChangeLog-7.php#7.4.21>`__ 
 * ports: python 3.7.11 `[8] <https://docs.python.org/release/3.7.11/whatsnew/changelog.html>`__ 
 * ports: syslog-ng 3.33.2 `[9] <https://github.com/syslog-ng/syslog-ng/releases/tag/syslog-ng-3.33.2>`__ 
@@ -122,16 +122,16 @@ Here are the full patch notes:
 * plugins: os-telegraf 1.11.0 `[4] <https://github.com/opnsense/plugins/blob/stable/21.1/net-mgmt/telegraf/pkg-descr>`__ 
 * plugins: os-tor Phalcon 4 fix
 * plugins: os-zabbix5-proxy is now a plugin variant
-* src: libcasper: fix descriptors numbers `[5] <FREEBSD:EN-21:19.libcasper>`__ 
-* src: linux: prevent integer overflow in futex_requeue `[6] <FREEBSD:EN-21:22.linux_futex>`__ 
+* src: libcasper: fix descriptors numbers `[5] <https://www.freebsd.org/security/advisories/FreeBSD-EN-21:19.libcasper.asc>`__ 
+* src: linux: prevent integer overflow in futex_requeue `[6] <https://www.freebsd.org/security/advisories/FreeBSD-EN-21:22.linux_futex.asc>`__ 
 * ports: clog 1.0.2 fixes garbage header write on init
-* ports: libxml 2.9.12 `[7] <http://www.xmlsoft.org/news.html>`__ 
+* ports: libxml 2.9.12 `[7] <https://gitlab.gnome.org/GNOME/libxml2/-/blob/v2.9.12/NEWS>`__ 
 * ports: nettle 3.7.3
-* ports: nss 3.67 `[8] <https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_3.67_release_notes>`__ 
-* ports: openvpn 2.5.3 `[9] <https://community.openvpn.net/openvpn/wiki/ChangesInOpenvpn25#Changesin2.5.3>`__ 
+* ports: nss 3.67 `[8] <https://firefox-source-docs.mozilla.org/security/nss/releases/nss_3_67.html>`__ 
+* ports: openvpn 2.5.3 `[9] <https://github.com/OpenVPN/openvpn/blob/v2.5.3/Changes.rst>`__ 
 * ports: php 7.4.20 `[10] <https://www.php.net/ChangeLog-7.php#7.4.20>`__ 
 * ports: phpseclib 2.0.32 `[11] <https://github.com/phpseclib/phpseclib/releases/tag/2.0.32>`__ 
-* ports: sudo 1.9.7p1 `[12] <https://www.sudo.ws/stable.html#1.9.7p1>`__ 
+* ports: sudo 1.9.7p1 `[12] <https://www.sudo.ws/releases/stable/#1.9.7p1>`__ 
 * ports: suricata 5.0.7 `[13] <https://redmine.openinfosecfoundation.org/versions/166>`__ 
 
 A hotfix release was issued as 21.1.8_1:
@@ -186,14 +186,14 @@ Here are the full patch notes:
 * plugins: os-nginx 1.23 `[1] <https://github.com/opnsense/plugins/blob/stable/21.1/www/nginx/pkg-descr>`__ 
 * plugins: os-wireguard 1.7 `[2] <https://github.com/opnsense/plugins/blob/stable/21.1/net/wireguard/pkg-descr>`__ 
 * plugins: os-zabbix4-proxy is now a plugin variant
-* src: SMAP bypass `[3] <FREEBSD:FreeBSD-SA-21:11.smap>`__ 
-* src: missing message validation in libradius `[4] <FREEBSD:FreeBSD-SA-21:12.libradius>`__  `[5] <FREEBSD:FreeBSD-EN-21:17.libradius>`__ 
-* src: pms data corruption `[6] <FREEBSD:FreeBSD-EN-21:14.pms>`__ 
+* src: SMAP bypass `[3] <https://www.freebsd.org/security/advisories/FreeBSD-SA-21:11.smap.asc>`__ 
+* src: missing message validation in libradius `[4] <https://www.freebsd.org/security/advisories/FreeBSD-SA-21:12.libradius.asc>`__  `[5] <https://www.freebsd.org/security/advisories/FreeBSD-EN-21:17.libradius.asc>`__ 
+* src: pms data corruption `[6] <https://www.freebsd.org/security/advisories/FreeBSD-EN-21:14.pms.asc>`__ 
 * ports: curl 7.77.0 `[7] <https://curl.se/changes.html#7_77_0>`__ 
 * ports: isc-dhcp 4.4.2-P1 `[8] <https://downloads.isc.org/isc/dhcp/4.4.2-P1/dhcp-4.4.2-P1-RELNOTES>`__ 
-* ports: nss 3.66 `[9] <https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_3.66_release_notes>`__ 
-* ports: openldap 2.4.59 `[10] <https://www.openldap.org/software/release/changes.html>`__ 
-* ports: pcre2 10.37 `[11] <https://www.pcre.org/changelog.txt>`__ 
+* ports: nss 3.66 `[9] <https://firefox-source-docs.mozilla.org/security/nss/releases/nss_3_66.html>`__ 
+* ports: openldap 2.4.59 `[10] <https://www.openldap.org/software/release/changes_lts.html>`__ 
+* ports: pcre2 10.37 `[11] <https://github.com/PCRE2Project/pcre2/releases/tag/pcre2-10.37>`__ 
 * ports: phalcon 4.1.2 `[12] <https://github.com/phalcon/cphalcon/releases/tag/v4.1.2>`__ 
 * ports: py-certifi 2021.5.30
 * ports: py-yaml 5.4.1
@@ -262,18 +262,18 @@ Here are the full patch notes:
 * plugins: os-zabbix5-proxy 1.5 `[9] <https://github.com/opnsense/plugins/blob/stable/21.1/net-mgmt/zabbix5-proxy/pkg-descr>`__ 
 * src: axgbe: check for IFCAP_VLAN_HWTAGGING when reading descriptor
 * src: axgbe: add 1000BASE-BX SFP support
-* src: race condition in aesni(4) encrypt-then-auth operations `[10] <FREEBSD:FreeBSD-EN-21:11.aesni>`__ 
+* src: race condition in aesni(4) encrypt-then-auth operations `[10] <https://www.freebsd.org/security/advisories/FreeBSD-EN-21:11.aesni.asc>`__ 
 * ports: curl 7.76.1 `[11] <https://curl.se/changes.html#7_76_1>`__ 
 * ports: expat 2.4.1
 * ports: filterlog 0.4 adds label support to output if applicable
 * ports: libressl 3.3.3 `[12] <https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.3.3-relnotes.txt>`__ 
-* ports: libxml2 fix for CVE-2021-3541
-* ports: nss 3.65 `[13] <https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_3.65_release_notes>`__ 
+* ports: libxml fix for CVE-2021-3541
+* ports: nss 3.65 `[13] <https://firefox-source-docs.mozilla.org/security/nss/releases/nss_3_65.html>`__ 
 * ports: openssh 8.6p1 `[14] <https://www.openssh.com/txt/release-8.6>`__ 
-* ports: openvpn 2.4.11 `[15] <https://community.openvpn.net/openvpn/wiki/ChangesInOpenvpn24#OpenVPN2.4.11>`__ 
+* ports: openvpn 2.4.11 `[15] <https://github.com/OpenVPN/openvpn/blob/v2.4.11/Changes.rst>`__ 
 * ports: php 7.3.28 `[16] <https://www.php.net/ChangeLog-7.php#7.3.28>`__ 
 * ports: sqlite 3.35.5 `[17] <https://sqlite.org/releaselog/3_35_5.html>`__ 
-* ports: sudo 1.9.7 `[18] <https://www.sudo.ws/stable.html#1.9.7>`__ 
+* ports: sudo 1.9.7 `[18] <https://www.sudo.ws/releases/stable/#1.9.7>`__ 
 * ports: syslog-ng 3.32.1 `[19] <https://github.com/syslog-ng/syslog-ng/releases/tag/syslog-ng-3.32.1>`__ 
 
 
@@ -342,9 +342,9 @@ Here are the full patch notes:
 * plugins: os-wireguard 1.6 `[9] <https://github.com/opnsense/plugins/blob/stable/21.1/net/wireguard/pkg-descr>`__ 
 * plugins: os-zabbix5-proxy 1.4 `[10] <https://github.com/opnsense/plugins/blob/stable/21.1/net-mgmt/zabbix5-proxy/pkg-descr>`__ 
 * src: axgbe: enable receive all mode to bypass the MAC filter to avoid dropping CARP MAC addresses
-* src: accept_filter: fix filter parameter handling `[11] <FREEBSD:FreeBSD-SA-21:09.accept_filter>`__ 
-* src: vm_fault: shoot down multiply mapped COW source page mappings `[12] <FREEBSD:FreeBSD-SA-21:08.vm>`__ 
-* src: mount: disallow mounting over a jail root `[13] <FREEBSD:FreeBSD-SA-21:10.jail_mount>`__ 
+* src: accept_filter: fix filter parameter handling `[11] <https://www.freebsd.org/security/advisories/FreeBSD-SA-21:09.accept_filter.asc>`__ 
+* src: vm_fault: shoot down multiply mapped COW source page mappings `[12] <https://www.freebsd.org/security/advisories/FreeBSD-SA-21:08.vm.asc>`__ 
+* src: mount: disallow mounting over a jail root `[13] <https://www.freebsd.org/security/advisories/FreeBSD-SA-21:10.jail_mount.asc>`__ 
 * src: em: add support for Intel I219 V10 device
 * src: em: fix a null de-reference in em_free_pci_resources
 * src: bsdinstall: switch to OPNsense branding
@@ -419,13 +419,13 @@ Here are the full patch notes:
 * plugins: os-theme-vicuna 1.4 (contributed by Team Rebellion)
 * plugins: os-wireguard 1.5 `[5] <https://github.com/opnsense/plugins/blob/stable/21.1/net/wireguard/pkg-descr>`__ 
 * plugins: os-wol 2.4 fixes dashboard widget (contributed by kulikov-a)
-* src: fix multiple OpenSSL vulnerabilities `[6] <FREEBSD:FreeBSD-SA-21:07.openssl>`__ 
-* ports: ca_root_nss / nss 3.63 `[7] <https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_3.63_release_notes>`__ 
+* src: fix multiple OpenSSL vulnerabilities `[6] <https://www.freebsd.org/security/advisories/FreeBSD-SA-21:07.openssl.asc>`__ 
+* ports: ca_root_nss / nss 3.63 `[7] <https://firefox-source-docs.mozilla.org/security/nss/releases/nss_3_63.html>`__ 
 * ports: libressl 3.2.5 `[8] <https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.2.5-relnotes.txt>`__ 
-* ports: openldap 2.4.58 `[9] <https://www.openldap.org/software/release/changes.html>`__ 
+* ports: openldap 2.4.58 `[9] <https://www.openldap.org/software/release/changes_lts.html>`__ 
 * ports: openssh fix for double free in ssh-agent `[10] <https://ftp.openbsd.org/pub/OpenBSD/patches/6.8/common/015_sshagent.patch.sig>`__ 
-* ports: openssl 1.1.1k `[11] <https://www.openssl.org/news/openssl-1.1.1-notes.html>`__ 
-* ports: sudo 1.9.6p1 `[12] <https://www.sudo.ws/stable.html#1.9.6p1>`__ 
+* ports: openssl 1.1.1k `[11] <https://github.com/openssl/openssl/blob/openssl-3.0/CHANGES.md>`__ 
+* ports: sudo 1.9.6p1 `[12] <https://www.sudo.ws/releases/stable/#1.9.6p1>`__ 
 * ports: suricata 5.0.6 `[13] <https://suricata-ids.org/2021/03/02/suricata-6-0-2-and-5-0-6-released/>`__ 
 * ports: syslog-ng 3.31.2 `[14] <https://github.com/syslog-ng/syslog-ng/releases/tag/syslog-ng-3.31.2>`__ 
 * ports: wpa_supplicant p2p vulnerability `[15] <https://w1.fi/security/2021-1/wpa_supplicant-p2p-provision-discovery-processing-vulnerability.txt>`__ 
@@ -439,7 +439,7 @@ Here are the full patch notes:
 Today we move ahead with the firmware UI and API rework as we are happy
 with the new user experience.  You will also notice the new plugin conflict
 dialog which will report that plugins have been installed previously but
-not registered in the configuration.  This can be easily amended by reseting
+not registered in the configuration.  This can be easily amended by resetting
 the local conflicts, which essentially accepts the current plugin
 configuration as the new default.  This necessary change introduces API
 incompatibilities with existing external tools.
@@ -482,17 +482,17 @@ Here are the full patch notes:
 * plugins: os-haproxy 3.0 `[1] <https://github.com/opnsense/plugins/blob/stable/21.1/net/haproxy/pkg-descr>`__ 
 * plugins: os-nginx 1.21 `[2] <https://github.com/opnsense/plugins/blob/stable/21.1/www/nginx/pkg-descr>`__ 
 * plugins: os-node_exporter 1.1 `[3] <https://github.com/opnsense/plugins/blob/stable/21.1/sysutils/node_exporter/pkg-descr>`__ 
-* src: jail: Handle a possible race between jail_remove(2) and fork(2) `[4] <FREEBSD:FreeBSD-SA-21:04.jail_remove>`__ 
-* src: jail: Change both root and working directories in jail_attach(2) `[5] <FREEBSD:FreeBSD-SA-21:05.jail_chdir>`__ 
-* src: x86: free microcode memory later `[6] <FREEBSD:FreeBSD-EN-21:06.microcode>`__ 
-* src: xen-blkback: fix leak of grant maps on ring setup failure `[7] <FREEBSD:FreeBSD-SA-21:06.xen>`__ 
+* src: jail: Handle a possible race between jail_remove(2) and fork(2) `[4] <https://www.freebsd.org/security/advisories/FreeBSD-SA-21:04.jail_remove.asc>`__ 
+* src: jail: Change both root and working directories in jail_attach(2) `[5] <https://www.freebsd.org/security/advisories/FreeBSD-SA-21:05.jail_chdir.asc>`__ 
+* src: x86: free microcode memory later `[6] <https://www.freebsd.org/security/advisories/FreeBSD-EN-21:06.microcode.asc>`__ 
+* src: xen-blkback: fix leak of grant maps on ring setup failure `[7] <https://www.freebsd.org/security/advisories/FreeBSD-SA-21:06.xen.asc>`__ 
 * src: rtsold: auto-probe point to point interfaces
 * src: growfs: update check-hash when doing large filesystem expansions
 * src: axgbe: change default parameters to prevent manual tunable settings
 * src: arp: avoid segfaulting due to out-of-bounds memory access
 * ports: cpdup 1.22 `[8] <https://github.com/DragonFlyBSD/cpdup/releases/tag/v1.22>`__ 
 * ports: krb5 1.19.1 `[9] <https://web.mit.edu/kerberos/krb5-1.19/>`__ 
-* ports: nss 3.62 `[10] <https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_3.62_release_notes>`__ 
+* ports: nss 3.62 `[10] <https://firefox-source-docs.mozilla.org/security/nss/releases/nss_3_62.html>`__ 
 * ports: pkg now provides fallback for version mismatch on pkg-add
 * ports: python 3.7.10 `[11] <https://docs.python.org/release/3.7.10/whatsnew/changelog.html>`__ 
 * ports: syslog-ng 3.31.1 `[12] <https://github.com/syslog-ng/syslog-ng/releases/tag/syslog-ng-3.31.1>`__ 
@@ -553,7 +553,7 @@ Here are the full patch notes:
 * plugins: os-theme-vicuna 1.3 (contributed by Team Rebellion)
 * ports: curl 7.75.0 `[4] <https://curl.se/changes.html#7_75_0>`__ 
 * ports: libressl 3.2.4 `[5] <https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.2.4-relnotes.txt>`__ 
-* ports: openssl 1.1.1j `[6] <https://www.openssl.org/news/openssl-1.1.1-notes.html>`__ 
+* ports: openssl 1.1.1j `[6] <https://github.com/openssl/openssl/blob/openssl-3.0/CHANGES.md>`__ 
 * ports: php 7.3.27 `[7] <https://www.php.net/ChangeLog-7.php#7.3.27>`__ 
 * ports: squid 4.14 `[8] <http://www.squid-cache.org/Versions/v4/squid-4.14-RELEASENOTES.html>`__ 
 * ports: unbound 1.13.1 `[9] <https://nlnetlabs.nl/projects/unbound/download/#unbound-1-13-1>`__ 
@@ -601,12 +601,12 @@ Here are the full patch notes:
 * plugins: os-nginx upstream TLS verification fix (contributed by kulikov-a)
 * plugins: os-theme-cicada 1.26 (contributed by Team Rebellion)
 * plugins: os-theme-vicuna 1.2 (contributed by Team Rebellion)
-* src: panic when destroying VNET and epair simultaneously `[1] <FREEBSD:FreeBSD-EN-21:03.vnet>`__ 
-* src: uninitialized file system kernel stack leaks `[2] <FREEBSD:FreeBSD-SA-21:01.fsdisclosure>`__ 
-* src: Xen guest-triggered out of memory `[3] <FREEBSD:FreeBSD-SA-21:02.xenoom>`__ 
-* src: update timezone database information `[4] <FREEBSD:FreeBSD-EN-21:01.tzdata>`__ 
+* src: panic when destroying VNET and epair simultaneously `[1] <https://www.freebsd.org/security/advisories/FreeBSD-EN-21:03.vnet.asc>`__ 
+* src: uninitialized file system kernel stack leaks `[2] <https://www.freebsd.org/security/advisories/FreeBSD-SA-21:01.fsdisclosure.asc>`__ 
+* src: Xen guest-triggered out of memory `[3] <https://www.freebsd.org/security/advisories/FreeBSD-SA-21:02.xenoom.asc>`__ 
+* src: update timezone database information `[4] <https://www.freebsd.org/security/advisories/FreeBSD-EN-21:01.tzdata.asc>`__ 
 * ports: dnsmasq 2.84 `[5] <https://www.thekelleys.org.uk/dnsmasq/CHANGELOG>`__ 
-* ports: lighttpd 1.4.59 `[6] <http://www.lighttpd.net/2021/2/2/1.4.59/>`__ 
+* ports: lighttpd 1.4.59 `[6] <https://www.lighttpd.net/2021/2/2/1.4.59/>`__ 
 * ports: krb5 1.19 `[7] <https://web.mit.edu/kerberos/krb5-1.19/>`__ 
 * ports: monit 5.27.2 `[8] <https://mmonit.com/monit/changes/>`__ 
 * ports: perl 5.32.1 `[9] <https://perldoc.perl.org/5.32.1/perldelta>`__ 
@@ -636,7 +636,7 @@ now supports UEFI as well.
 
 For those wondering, the WireGuard plugin has been available since 2019 and
 receives continuous improvements by its maintainer and various users alike.
-And that is unlikey to change in the future.  ;)
+And that is unlikely to change in the future.  ;)
 
 As we continue to deprecate custom configuration inputs for a number of
 reasons, Dnsmasq has been switched to a pluggable file-based approach `[1] <https://docs.opnsense.org/manual/dnsmasq.html>`__ 
@@ -731,10 +731,10 @@ Here are the full patch notes against 20.7.8:
 * src: fix traffic graph not showing bandwidth when IPS is enabled
 * ports: dnsmasq 2.83 `[9] <https://www.thekelleys.org.uk/dnsmasq/CHANGELOG>`__ 
 * ports: igmpproxy 0.3 `[10] <https://github.com/pali/igmpproxy/releases/tag/0.3>`__ 
-* ports: nss 3.61 `[11] <https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_3.61_release_notes>`__ 
-* ports: openldap 2.4.57 `[12] <https://www.openldap.org/software/release/changes.html>`__ 
-* ports: py-netaddr 0.8.0 `[13] <https://pypi.org/project/netaddr/0.8.0/>`__ 
-* ports: sudo 1.9.5p2 `[14] <https://www.sudo.ws/stable.html#1.9.5p2>`__ 
+* ports: nss 3.61 `[11] <https://firefox-source-docs.mozilla.org/security/nss/releases/nss_3_61.html>`__ 
+* ports: openldap 2.4.57 `[12] <https://www.openldap.org/software/release/changes_lts.html>`__ 
+* ports: py-netaddr 0.8.0 `[13] <https://netaddr.readthedocs.io/en/latest/changes.html#release-0-8-0>`__ 
+* ports: sudo 1.9.5p2 `[14] <https://www.sudo.ws/releases/stable/#1.9.5p2>`__ 
 
 The public key for the 21.1 series is:
 
@@ -853,7 +853,7 @@ Here are the full patch notes against 20.7.7_1:
 * ui: move sidebar stage from session to local storage
 * plugins: os-bind 1.15 `[2] <https://github.com/opnsense/plugins/blob/stable/21.1/dns/bind/pkg-descr>`__ 
 * plugins: os-frr 1.21 `[3] <https://github.com/opnsense/plugins/blob/stable/21.1/net/frr/pkg-descr>`__ 
-* src: fix OpenSSL NULL pointer de-reference `[4] <FREEBSD:FreeBSD-SA-20:33.openssl>`__ 
+* src: fix OpenSSL NULL pointer de-reference `[4] <https://www.freebsd.org/security/advisories/FreeBSD-SA-20:33.openssl.asc>`__ 
 * src: fix AES-CCM requests with an AAD size smaller than a single block
 * src: introduce HARDEN_KLD to ensure DTrace functionality
 * src: fix partial scrub of multicast packages
@@ -862,8 +862,8 @@ Here are the full patch notes against 20.7.7_1:
 * ports: libressl 3.2.3 `[5] <https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.2.2-relnotes.txt>`__  `[6] <https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.2.3-relnotes.txt>`__ 
 * ports: nss 3.60.1
 * ports: pkg fix for shell keyword by opening root file descriptor
-* ports: radvd 2.19 `[7] <https://radvd.litech.org/CHANGES.txt>`__ 
-* ports: sudo 1.9.4p2 `[8] <https://www.sudo.ws/stable.html#1.9.4p2>`__ 
+* ports: radvd 2.19 `[7] <https://radvd.litech.org/>`__ 
+* ports: sudo 1.9.4p2 `[8] <https://www.sudo.ws/releases/stable/#1.9.4p2>`__ 
 
 Known issues and limitations:
 

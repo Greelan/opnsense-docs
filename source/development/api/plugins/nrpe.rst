@@ -5,23 +5,23 @@ Nrpe
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``POST``","nrpe","command","addCommand",""
-    "``POST``","nrpe","command","delCommand","$uuid"
+    "``POST``","nrpe","command","add_command",""
+    "``POST``","nrpe","command","del_command","$uuid"
     "``GET``","nrpe","command","get",""
-    "``GET``","nrpe","command","getCommand","$uuid=null"
-    "``*``","nrpe","command","searchCommand",""
-    "``GET``","nrpe","command","set",""
-    "``POST``","nrpe","command","setCommand","$uuid"
-    "``POST``","nrpe","command","toggleCommand","$uuid"
+    "``GET``","nrpe","command","get_command","$uuid=null"
+    "``GET,POST``","nrpe","command","search_command",""
+    "``POST``","nrpe","command","set",""
+    "``POST``","nrpe","command","set_command","$uuid"
+    "``POST``","nrpe","command","toggle_command","$uuid"
 
     "``<<uses>>``", "", "", "", "*model* `Command.xml <https://github.com/opnsense/plugins/blob/master/net-mgmt/nrpe/src/opnsense/mvc/app/models/OPNsense/Nrpe/Command.xml>`__"
 
-.. csv-table:: Service (GeneralController.php)
+.. csv-table:: Resources (GeneralController.php)
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
     "``GET``","nrpe","general","get",""
-    "``GET``","nrpe","general","set",""
+    "``POST``","nrpe","general","set",""
 
     "``<<uses>>``", "", "", "", "*model* `General.xml <https://github.com/opnsense/plugins/blob/master/net-mgmt/nrpe/src/opnsense/mvc/app/models/OPNsense/Nrpe/General.xml>`__"
 
@@ -29,10 +29,8 @@ Nrpe
    :header: "Method", "Module", "Controller", "Command", "Parameters"
    :widths: 4, 15, 15, 30, 40
 
-    "``GET``","nrpe","service","reconfigure",""
-    "``GET``","nrpe","service","restart",""
-    "``GET``","nrpe","service","start",""
+    "``POST``","nrpe","service","reconfigure",""
+    "``POST``","nrpe","service","restart",""
+    "``POST``","nrpe","service","start",""
     "``GET``","nrpe","service","status",""
-    "``GET``","nrpe","service","stop",""
-
-    "``<<uses>>``", "", "", "", "*model* `General.xml <https://github.com/opnsense/plugins/blob/master/net-mgmt/nrpe/src/opnsense/mvc/app/models/OPNsense/Nrpe/General.xml>`__"
+    "``POST``","nrpe","service","stop",""

@@ -7,6 +7,11 @@ traffic to be routed between the two networks. This is most commonly used to
 connect an organization's branch offices back to its main office, so branch users
 can access network resources in the main office.
 
+.. Note::
+
+    When using the site to site example with :code:`SSL/TLS` instead of a shared key, make sure to configure "client specific overrides"
+    as well to correctly bind the remote networks to the correct client.
+
 ----------------
 Before you start
 ----------------
@@ -19,10 +24,8 @@ network).
 
    For the sample we will use a private IP for our WAN connection.
    This requires us to disable the default block rule on WAN to allow private traffic.
-   To do so, go to :menuselection:`Interfaces --> [WAN]` and uncheck "Block private networks".
+   To do so, go to :menuselection:`Interfaces --> Assignments`, edit WAN and uncheck "Block private networks".
    *(Don't forget to save and apply)*
-
-   .. image:: images/block_private_networks.png
 
 -----------------------------
 
@@ -48,7 +51,7 @@ tunnel, with the following configuration:
           network LANA {
             switchlana [label="",shape = "cisco.workgroup_switch"];
             label = " LAN Site A";
-            address ="192.168.1.1.x/24";
+            address ="192.168.1.x/24";
             fw1 [address="192.168.1.1/24"];
             tunnel [label=" SSLVPN Tunnel",shape = cisco.cloud];
           }
@@ -93,7 +96,7 @@ Site A - Server
 
           network LANB {
             label = " LAN Site B";
-            address ="192.168.2.1.x/24";
+            address ="192.168.2.x/24";
             fw2 [address="192.168.2.1/24"];
             tunnel [label=" SSLVPN Tunnel",shape = cisco.cloud];
             switchlanb [label="",shape = "cisco.workgroup_switch"];
@@ -144,7 +147,7 @@ Full Network Diagram Including SSL VPN Tunnel
       network LANA {
         switchlana [label="",shape = "cisco.workgroup_switch"];
         label = " LAN Site A";
-        address ="192.168.1.1.x/24";
+        address ="192.168.1.x/24";
         fw1 [address="192.168.1.1/24"];
         tunnel [label=" SSLVPN Tunnel",shape = cisco.cloud];
       }
@@ -163,7 +166,7 @@ Full Network Diagram Including SSL VPN Tunnel
 
       network LANB {
         label = " LAN Site B";
-        address ="192.168.2.1.x/24";
+        address ="192.168.2.x/24";
         fw2 [address="192.168.2.1/24"];
         tunnel;
         switchlanb [label="",shape = "cisco.workgroup_switch"];
@@ -186,10 +189,6 @@ of the form.
 
 For our example will use the following settings (leave everything else on its default):
 
-.. Note::
-
-   The setting **Hardware Crypto** is not used for new systems equipped with **AESNI**,
-   when the aesni module is loaded it will be used automatically.
 
 ===================================== ===============================================
  **Server Mode**                       *Peer to Peer (Shared Key)*
@@ -202,7 +201,6 @@ For our example will use the following settings (leave everything else on its de
  **DH Parameters Length**              *4096*
  **Encryption algorithm**              *AES-256-CBC (256-bit)*
  **Auth Digest Algorithm**             *SHA512 (512-bit)*
- **Hardware Crypto**                   *No Hardware Crypto Acceleration*
  **IPv4 Tunnel Network**               *10.10.0.0/24*
  **IPv4 Local Network/s**              *192.168.1.0/24*
  **IPv4 Remote Network/s**             *192.168.2.0/24*
@@ -226,7 +224,7 @@ You will see the shared key, copy this and keep it safe!
 
 Sample key:
 
-.. code-block:: guess
+.. code-block::
 
   #
   # 2048 bit OpenVPN static key

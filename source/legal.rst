@@ -3,7 +3,7 @@ Legal notices
 =============
 
 
-.. image:: ./images/opnsense_logo-zilver_grijs.png
+.. image:: ./images/opnsense_logo_horizontaal.png
     :width: 300px
 
 The OPNsense project wants to be a project that is friendly for users,
@@ -27,7 +27,7 @@ want to do with the code, even fork it and take it from there.
 
 OPNsense is available under the BSD 2-Clause “Simplified” license:
 
-`OPNsense® <http://opnsense.org>`__ is Copyright © 2014 – 2019 by
+`OPNsense® <http://opnsense.org>`__ is Copyright © 2014 – 2024 by
 Deciso B.V.
 All rights reserved.
 Redistribution and use in source and binary forms, with or without

@@ -78,11 +78,24 @@ Action properties
 | type                  | script|script_output   |  type of call:                                         |
 |                       |                        |    - script (only return exit status)                  |
 |                       |                        |    - script_output (return result)                     |
+|                       |                        |    - stream_output (return result in streaming mode)   |
++-----------------------+------------------------+--------------------------------------------------------+
+| errors                | text [no]              | :code:`errors:no` ignores the scripts exit code        |
++-----------------------+------------------------+--------------------------------------------------------+
+| allowed_groups.       | text	                 | list of groups allowed to execute                      |
+|                       |                        | this action (e.g. wheel)                               |
 +-----------------------+------------------------+--------------------------------------------------------+
 | message               | text                   | Message to send to syslog (you can use %s parameters)  |
 +-----------------------+------------------------+--------------------------------------------------------+
+| cache_ttl             | int                    | time in seconds  to cache the results of this call.    |
++-----------------------+------------------------+--------------------------------------------------------+
 | description           | text                   | User-friendly description, also allows GUI usage       |
 +-----------------------+------------------------+--------------------------------------------------------+
+
+.. Note::
+
+    when using :code:`cache_ttl` results can be intermediatly cleared by adding an exclamation mark (`!`) to the call.
+    (e.g. :code:`!filter rule stats` clears the stats and requests a fresh set of data)
 
 
 -----------
@@ -100,3 +113,41 @@ Next use the supplied helper command to execute our action:
 ::
 
     configctl sshd restart
+
+
+-----------------------------
+Extending the Environment
+-----------------------------
+
+Configd's own configuration can be found in the `configd.conf <https://github.com/opnsense/core/blob/master/src/opnsense/service/conf/configd.conf>`__ file.
+In some cases it can be practical to extend the environment with additional settings for the configd actions to use.
+
+To add environment variables, create a new config file in the :code:`conf/configd.conf.d/` directory
+using the :code:`.conf` extension containing an :code:`[environment]` section.
+For example, to add a proxy server (for the firmware updater), use settings like these:
+
+.. code-block::
+    :caption: /usr/local/opnsense/service/conf/configd.conf.d/proxy.conf
+
+    [environment]
+    HTTP_PROXY=http://proxy-adddress:8080
+    HTTPS_PROXY=http://proxy-adddress:8080
+    NO_PROXY=192.168.1.2
+
+
+
+.. Note::
+
+    After changing the configd configuration, don't forget to restart the configd service via the gui or `service configd restart` (as root).
+
+.. Warning::
+
+    When using the same settings as already specified in the base configuration, these settings will be overwritten. The parsing order
+    of configuration files is to read all vendor shipped properties first and read additional files next. Last property found is the one
+    being used (e.g. specifying a new :code:`PATH` in the environment, will overwrite the one being shipped in our :code:`configd.conf`.)
+
+.. Note::
+
+   The :code:`NO_PROXY` setting may be used to exclude hosts from using a proxy, which is usually practical for xmlrpc sync
+
+

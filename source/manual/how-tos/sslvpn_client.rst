@@ -31,10 +31,8 @@ and give you configuration examples for:
 
    For the sample we will use a private IP for our WAN connection.
    This requires us to disable the default block rule on wan to allow private traffic.
-   To do so, go to :menuselection:`Interfaces --> [WAN]` and uncheck "Block private networks".
+   To do so, go to :menuselection:`Interfaces --> Assignments`, edit WAN and uncheck "Block private networks".
    *(Dont forget to save and apply)*
-
-   .. image:: images/block_private_networks.png
 
 -----------------------------
 
@@ -103,7 +101,7 @@ and click **Add** in the top right corner of the form.
 
 .. TIP::
 
-  You can also use the quick-search to jump right into the the Access Server
+  You can also use the quick-search to jump right into the Access Server
   configuration. Try it by typing *Ac...* and see for yourself:
 
   .. image:: images/qs-access_server.png
@@ -120,57 +118,26 @@ When using other tokens you may need to change the **Token length**.
 
 Click **Save** to add the new server.
 
+.. Note::
+
+   To prompt separately for TOTP, add ``static-challenge "Enter OTP token:" 1`` to `Custom config` in
+   :menuselection:`VPN --> OpenVPN --> Client Export`. Since this is a client side option, it will not be automatically pushed. Clients must import
+   or configure it.
+   Read more about this challenge type here: `"--static-challenge args" <https://openvpn.net/community-resources/reference-manual-for-openvpn-2-6/>`_
+
 
 Add Certificate Authority
 -------------------------
-The VPN server needs a certificate authority to sign client or server certificates.
 
-To setup a new certificate authority go to :menuselection:`System --> Trust --> Authorities` and click
-**Add** in the top right corner of the form.
+Create a certificate chain using the following tutorial:
 
-For our example we will use the following setting:
+`Setup Self-Signed Certificate Chains </manual/how-tos/self-signed-chain.html>`_
 
-========================= ================================================
- **Descriptive name**       *SSL VPN CA*
- **Method**                 *Create an internal  Certificate Authority*
- **Key length (bits)**      *4096*
- **Digest Algorithm**       *SHA512*
- **Lifetime (days)**        *365*
- **Country Code**           *NL*
- **State or Province**      *ZH*
- **City**                   *Middelharnis*
- **Organization**           *OPNsense*
- **Email Address**          *spam@opnsense.org*
- **Common Name**            *internal-sslvpn-ca*
-========================= ================================================
+- `Root CA`: ``SSL VPN CA``
+- `Leaf Certificate`: ``SSLVPN Server Certificate``
 
-Click **Save** to add the new Certificate Authority.
+The root CA issues the leaf certificate directly; we do not need an intermediate CA.
 
-Create a Server Certificate
-----------------------------
-After creating the Authority we will also need a certificate.
-To create a new certificate, go to :menuselection:`System --> Trust --> Certificates` and click
-**Add** in the upper right corner of the form.
-
-Fill in the form with (leave the rest default):
-
-=========================== ================================================
- **Method**                 *Create an internal Certificate*
- **Descriptive name**       *SSLVPN Server Certificate*
- **Certificate authority**  *SSL VPN CA*
- **Type**                   *Server Certificate*
- **Key length (bits)**      *4096*
- **Digest Algorithm**       *SHA512*
- **Lifetime (days)**        *365*
- **Country Code**           *NL*
- **State or Province**      *ZH*
- **City**                   *Middelharnis*
- **Organization**           *OPNsense*
- **Email Address**          *spam@opnsense.org*
- **Common Name**            *SSLVPN Server Certificate*
-=========================== ================================================
-
-Click **Save** to create the certificate.
 
 Adding a User
 -------------
@@ -186,26 +153,28 @@ For the first step we enter:
 
 ================== ==============================================
  **Username**       *Donald*
- **Password** (2x)  *S3cr3tP@ssw0rd*
- **Full name**      *Donald Duck*
- **Certificate**    *Check “Click to create a user certificate”*
+ **Password**       *Choose a strong password*
+ **Full name**      *Donald*
  **OTP seed**       *Check “Generate new secret”*
 ================== ==============================================
 
- Click **Save** and you will be redirected to create the User Certificate.
- Fill in the Certificate form with the following for our example (leave anything
- not listed on its presented defaults):
+ After pressing **Save**, click on the button ``Search certificates by username``
+ in the same row as the created user to be redirected to the certificate page. Press
+ *+* to create a new certificate with the common name of this user.
+ Fill in the certificate form with the following (leave anything
+ not listed on default):
 
 =========================== ========================================
  **Method**                  *Create an internal Certificate*
- **Descriptive Name**        *Leave default (Donald)*
- **Certificate authority**   *SSL VPN CA*
+ **Descriptive Name**        *Donald*
  **Type**                    *Client Certificate*
- **Key length**              *4096*
+ **Key type**                *RSA-4096*
  **Digest Algorithm**        *SHA512*
+ **Issuer**                  *SSL VPN CA*
+ **Common Name**             *Donald*
 =========================== ========================================
 
-Click **Save** and you will be redirected to the User page.
+Click **Save** and go back to the user page.
 Now we will activate your newly created seed with your Google Authenticator
 compatible app. To do so click in the **Click to unhide** button in the
 **OTP QR code** row and you will get a QR code to scan with your smartphone.
@@ -214,7 +183,7 @@ See also: :doc:`/manual/how-tos/two_factor`
 
 .. Note::
 
-    Always make sure to use the same **Certificate authority** as the certificate authority created earlier, as
+    Always make sure to use the same **Issuer** as the certificate authority created earlier, as
     this links the clients / users to the correct openvpn server.
 
 -----------------------------
@@ -231,11 +200,6 @@ of the form.
 
 For our example will use the following settings:
 
-.. Note::
-
-   The setting **Hardware Crypto** is not used for new systems equipped with **AES-NI**,
-   when the aesni module is loaded it will be used automatically.
-
 ===================================== ===============================================
  **Description**                       *My SSL VPN Server*
  **Server Mode**                       *Remote Access (SSL/TLS + User Auth)*
@@ -250,7 +214,6 @@ For our example will use the following settings:
  **DH Parameters Length**              *4096 bit*
  **Encryption algorithm**              *AES-256-CBC (256-bit key, 128-bit block)*
  **Auth Digest Algorithm**             *SHA512 (512-bit)*
- **Hardware Crypto**                   *No Hardware Crypto Acceleration*
  **Certificate Depth**                 *One (Client+Server)*
  **IPv4 Tunnel Network**               *10.10.0.0/24*
  **IPv6 Tunnel Network**               *Leave Empty*
@@ -331,7 +294,7 @@ attached users.
 macOS & Windows
 -----------------
 For macOS & Windows users we recommend using Viscosity from Sparklabs (https://www.sparklabs.com/viscosity/).
-Viscosity is very easy to setup and use and works well on both platforms.
+Viscosity is very easy to setup and works well on both platforms.
 
 Go to :menuselection:`VPN --> OpenVPN --> Client Export` and select the newly created VPN server from
 the list. Leave everything default and Download the **Viscosity** type from the
@@ -340,6 +303,10 @@ list of export options under **Export type**.
 Now on your Mac or Windows PC unpack the bundle and import the Viscosity.visc file.
 Double clicking it should be enough to get it imported. When asked for an application
 to open the file with search and select Viscosity.
+
+.. Note::
+
+   If users should be prompted separately for TOTP, add the following option: `"static-challenge-password" <https://www.sparklabs.com/support/kb/article/advanced-configuration-commands/#static-challenge-password>`_
 
 Some sample screenshots (macOS):
 

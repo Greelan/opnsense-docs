@@ -1,0 +1,95 @@
+.. _api_plugins_firewall:
+
+{{ title }}
+{{ title_underline }}
+
+The firewall API offers a way for machine to machine interaction between custom applications and OPNsense, it
+is part of the core system.
+
+Although the module does contains a basic user interface (in :menuselection:`Firewall --> Automation`), it's mirely intended
+as a reference and testbed. There's no relation to any of the rules being managed via the core system.
+
+.. Tip::
+
+    Use your browsers "inspect" feature to compare requests easily, the user interface in terms of communication is exactly the same
+    as offered by the API . Rules not visible in the web interface (:menuselection:`Firewall --> Automation`) will not be returned by the API either.
+
+
+{% for controller in controllers %}
+.. csv-table:: {{controller.type}} ({{controller.filename}}) {% if not controller.is_abstract %} -- extends : {{controller.base_class}} {% endif %}
+   :header: "Method", "Module", "Controller", "Command", "Parameters"
+   :widths: 4, 15, 15, 30, 40
+{%     for endpoint in controller.endpoints %}
+    "``{{endpoint.methods|join(',')}}``","{{controller.module}}","{{controller.controller}}","{{endpoint.command}}","{{endpoint.parameters}}"
+{%-    endfor %}
+{%-    if controller.uses %}
+{%         for use in controller.uses %}
+    "``<<uses>>``", "", "", "", "*{{use.type}}* `{{use.name}} <{{use.link}}>`__"
+{%-        endfor %}
+{%-    endif %}
+{% endfor %}
+
+
+-----------------------
+Concept
+-----------------------
+
+The firewall plugin injects rules in the standard OPNsense firewall while maintaining visibility on them in the
+standard user interface.
+
+We use our standard :code:`ApiMutableModelControllerBase` to allow crud operations on rule entries and offer an
+:code:`apply` action to activate the new configuration.
+
+.. blockdiag::
+    :scale: 100%
+
+    diagram init {
+        administration [label = "administration"];
+        apply [label = "apply()"];
+        administration -> apply ;
+    }
+
+
+The diagram above contains the basic steps to change rules and activate them.
+Changes made through the administrative endpoints are staged in the configuration; calling :code:`apply()` reloads
+the firewall so the new ruleset becomes active.
+
+
+.. Note::
+
+    The examples in this document disable certificate validation, make sure when using this in a production environment to
+    remove the :code:`verify=False` from the :code:`requests` calls
+
+
+-----------------------
+Administration example
+-----------------------
+
+Administrative endpoints are pretty standard use of :code:`ApiMutableModelControllerBase`, the example below searches for
+a rule named "OPNsense_fw_api_testrule_1", when not found one will be added otherwise it will print the internal uuid.
+Inline you will find a brief description of the steps performed.
+
+
+.. literalinclude:: firewall.sample_create.py
+    :language: python
+    :linenos:
+    :caption: administrative_example.py
+
+
+.. Tip::
+
+      Since our model contains default values for most attributes, we only need to feed the changes if we would like to keep the
+      defaults. In this case the TCP/IP version was IPv4 by default for example. In most cases one would like to set all relevant properties
+      in case defaults change over time.
+
+-----------------------
+Apply example
+-----------------------
+
+This example will disable the rule created in the previous example and apply the changes so they become active.
+
+
+.. literalinclude:: firewall.apply.py
+    :language: python
+    :linenos:
+    :caption: apply_example.py

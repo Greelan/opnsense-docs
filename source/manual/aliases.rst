@@ -8,6 +8,30 @@ changes.
 
 Aliases can be added, modified and removed via :menuselection:`Firewall --> Aliases`.
 
+-----------------------------------
+Overview
+-----------------------------------
+
+The page opens with an overview of the aliases available, including some internal ones available from installed software.
+At the top of the page you can search for aliases or preselect various types or categories to which they belong.
+
+In order to gain some insights into the current status of the plugins, two additional (meta) fields are being displayed, being:
+
+* Loaded#
+
+  * Shows the amount of entries planned to install into the table, in case there's not enough memory available to load the
+    item in question, one can easily find the alias causing the overflow in table entries (bar at the right top of the page)
+
+* Last updated
+
+  * Shows the last timestamp from the entries saved to disk.
+
+.. Note::
+
+    The fields above are only used for aliases that contain either networks or hosts. Port type aliases are part of the
+    rule and thus not visible in any table.
+
+
 -----------
 Alias Types
 -----------
@@ -32,11 +56,23 @@ OPNsense offers the following alias types:
 | URL Tables (IPs) | A table of IP addresses that are fetched on regular  |
 |                  | intervals.                                           |
 +------------------+------------------------------------------------------+
+| URL Table in     | A table of IP addresses that are fetched on regular  |
+| JSON format      | intervals.                                           |
+| (IPs)            | (using a json structure)                             |
++------------------+------------------------------------------------------+
 | GeoIP            | Select countries or whole regions                    |
 +------------------+------------------------------------------------------+
 | Network group    | Combine different network type aliases into one      |
 +------------------+------------------------------------------------------+
 | Dynamic IPv6 Host| A Host entry that will auto update on a prefixchange |
++------------------+------------------------------------------------------+
+| BGP ASN          | Maps autonomous system (AS) numbers to networks      |
+|                  | where they are responsible for.                      |
++------------------+------------------------------------------------------+
+| OpenVPN group    | Map user groups to logged in OpenVPN users           |
++------------------+------------------------------------------------------+
+| Internal         | Internal aliases which are managed by the product    |
+| (automatic)      |                                                      |
 +------------------+------------------------------------------------------+
 | External         | Externally managed alias, this only handles the      |
 | (advanced)       | placeholder. Content is set from another source      |
@@ -78,7 +114,7 @@ Exclusion addresses starts with "!" sign (eg !192.168.0.1) and can be used to ex
 
 .. Warning::
 
-    Please note thet the **Flush** action is not persistent!
+    Please note that the **Flush** action is not persistent!
 
     **"flush"** means flush the current contents of the alias, which will be repopulated when it's not an external type,
     so flush in most cases isn't very useful.
@@ -89,7 +125,7 @@ Exclusion addresses starts with "!" sign (eg !192.168.0.1) and can be used to ex
 Networks
 ..................
 Networks are specified in Classless Inter-Domain Routing format (CIDR). Use the
-the correct CIDR mask for each entry. For instance a /32 specifies a single IPv4 host,
+correct CIDR mask for each entry. For instance a /32 specifies a single IPv4 host,
 or /128 specifies a single IPv6 host, whereas /24 specifies 255.255.255.0 and
 /64 specifies a normal IPv6 network.
 Network type Aliases can contain exclusion hosts or networks.
@@ -136,53 +172,129 @@ intervals from the :code:`arp` and :code:`ndp` tables.
 URL Tables
 ..................
 URL tables can be used to fetch a list of IP addresses from a remote server.
-There are several IP lists available for free, most notably are the "Don't Route
-Or Peer" lists from Spamhaus.
+You can specify a :code:`Refresh frequency` to determine how often this information should be updated.
+
+.. Note::
+
+    The content of the file being fetched should contain one IPv[4|6] address per line, lines that start with a :code:`whitespace`
+    , colon (:code:`,`), semicolon (:code:`;`), pipe (:code:`|`) or hash (:code:`#`) will be ignored.
+
+
+....................................
+URL Table in JSON format (IPs)
+....................................
+
+URL tables can be used to fetch a list of IP addresses from a remote server and parse their contents when in
+`JSON <https://en.wikipedia.org/wiki/JSON>`__ format, similar to our standard (text based) url table.
+
+
+You can use a :code:`Path expression` to select data from the container, in some cases, when content is "flat" you just need a
+single path reference. For example the spamhause `drop <https://www.spamhaus.org/drop/drop_v4.json>`__ list contains a json
+file per row with a field :code:`cidr`.
+
+More advanced scenarios are also possible as our parser supports `jq <https://jqlang.org/>`__,
+some (simple) examples can be found below in the table below.
+
+
+======================================================================================================== ======================================================================================== ==============================================================
+Content                                                                                                  Path Expression                                                                          Topic
+======================================================================================================== ======================================================================================== ==============================================================
+https://ip-ranges.amazonaws.com/ip-ranges.json                                                           .prefixes[] | select(.region=="us-east-1") | select(.service=="EC2") | .ip_prefix        All ip addresses belonging to service EC2 in region us-east-1
+https://api.github.com/meta                                                                              .web + .api + .git | .[]                                                                 All of GitHubs web, api and git addresses
+https://endpoints.office.com/endpoints/worldwide?clientrequestid=b10c5ed1-bad1-445f-b386-b919946339a7    .[] | select(.serviceArea=="Exchange") | select(".ips")| .ips | .[]?                     Exchange networks from Microsoft
+======================================================================================================== ======================================================================================== ==============================================================
+
+
+
+.. Tip::
+
+    Use `https://play.jqlang.org/ <https://play.jqlang.org/>`__ to fiddle with the jq language before pasting content and
+    path expression in an alias.
+
 
 
 
 ..................
 GeoIP
 ..................
-With GeoIP alias you can select one or more countries or whole continents to block
+With GeoIP aliases you can select one or more countries or whole continents to block
 or allow. Use the *toggle all* checkbox to select all countries within the given
 region.
 
-  .. image:: images/firewall_geoip_alias.png
-      :width: 100%
 
-To use GeoIP, you need to configure a source in the :menuselection:`Firewall --> Aliases -> GeoIP settings` tab, the most commonly
-used source is MaxMind, for which we have a how-to available : :doc:`how-tos/maxmind_geo_ip`
+To use GeoIP, when not using our business edition, you need to configure a source in the :menuselection:`Firewall --> Aliases -> GeoIP settings` tab,
+our software supports formats offered by IPinfo and MaxMind.
 
-The configured url should point to a zip file containing the following csv files:
+.. Note::
+    In our experience IPinfo offers a much bigger and more detailed dataset, do make sure you increase
+    :menuselection:`Firewall --> Settings --> Advanced : Firewall Maximum Table Entries` to a higher number
+    when using different countries from the list. As of this writing, the total size of the list is ~7 million entries.
 
-.. list-table:: Title
-   :widths: 50 25 25 25
-   :header-rows: 1
 
-   * - Filename
-     - Purpose
-     - Format
-     - Example
-   * - %prefix%-locations-en.csv
-     - maps geo locations to iso countries
-     - geoname_id,,,,country_iso_code
-     - 1,,,,NL
-   * - %prefix%-IPv4.csv
-     - IPv4 networks
-     - network,geoname_id
-     - 2.21.241.0/28,1
-   * - %prefix%-IPv6.csv
-     - IPv6 networks
-     - network,geoname_id
-     - 2001:470:1f15:210::/64,1
+Although you're not obligated to use one of the defined services, the following documents explain how to use the option of your choice:
 
-The :code:`%prefix%` can be used to identify the product and/or vendor, in MaxMind's case these files are named
-:code:`GeoLite2-Country-Locations-en.csv`, :code:`GeoLite2-Country-Blocks-IPv4.csv`, :code:`GeoLite2-Country-Blocks-IPv6.csv` for example.
+    *   :doc:`how-tos/ipinfo_geo_ip`
+    *   :doc:`how-tos/maxmind_geo_ip`
+
+
 
 .. Tip::
 
-    Geo ip lists can be rather large, especially when using IPv6. When creating rules, always try to minimize the number of
+    When using the Business Edition, you can leave the :code:`Url` field empty so the firewall will download the IPinfo database provided
+    from our mirrors automatically.
+
+
+Below you will find a detailed specification our software can detect and process automatically.
+
+.. tabs::
+
+    .. tab:: gzip format (IPinfo)
+
+        This format is a simple comma separated file containing the following elements in this order:
+
+        * network
+        * country
+        * country_code
+        * continent
+        * continent_code
+        * asn
+        * as_name
+        * as_domain
+
+        Our software only uses :code:`network` and :code:`country_code`, these should be mentioned in the header
+        of the csv. The file itself should be compressed using :code:`gzip`
+
+    .. tab:: zip format (MaxMind)
+
+        This format requires a [zip] file containing the following csv files:
+
+        .. list-table:: Title
+           :widths: 50 25 25 25
+           :header-rows: 1
+
+           * - Filename
+             - Purpose
+             - Format
+             - Example
+           * - %prefix%-locations-en.csv
+             - maps geo locations to iso countries
+             - geoname_id,,,,country_iso_code
+             - 1,,,,NL
+           * - %prefix%-IPv4.csv
+             - IPv4 networks
+             - network,geoname_id
+             - 2.21.241.0/28,1
+           * - %prefix%-IPv6.csv
+             - IPv6 networks
+             - network,geoname_id
+             - 2001:470:1f15:210::/64,1
+
+        The :code:`%prefix%` can be used to identify the product and/or vendor, in MaxMind's case these files are named
+        :code:`GeoLite2-Country-Locations-en.csv`, :code:`GeoLite2-Country-Blocks-IPv4.csv`, :code:`GeoLite2-Country-Blocks-IPv6.csv` for example.
+
+.. Tip::
+
+    Geo IP lists can be rather large, especially when using IPv6. When creating rules, always try to minimize the number of
     addresses needed in your selection. A selection of all countries in the world not being the Netherlands can usually be
     rewritten as only addresses from the Netherlands for example.
 
@@ -212,7 +324,7 @@ containing an address of a client such as a server on the LAN would no longer be
 For example, you obtain a prefix 2001:db8:2222:2800::/56.  You have a /56 prefix and if the tracking id was set to 0 for your
 LAN, you would have an address range on your LAN of 2001:db8:2222:2800:: to 2001:db8:2222:2800:FFFF:FFFF:FFFF:FFFF.
 
-You want to run a server on your LAN that is accessable from the WAN so you give it a static address of
+You want to run a server on your LAN that is accessible from the WAN so you give it a static address of
 2001:db8:2222:2800:1000:1000::1 and create a rule allowing traffic to access the server.
 
 When your prefix changes, that static address is no longer valid, so you must use the Dynamic IPv6 Host to create an alias
@@ -225,7 +337,7 @@ Create a new IPv6 Dynamic Host alias and enter only the suffix of the address, i
 bits of the address, you would enter ::1000:1000:0000:1, note the '::' at the start of the address, you MUST always start
 the address with a '::'. You do not need to enter a size after the address i.e. /128 as that is automatically assumed.
 
-Select the interface you wish to use for the source of the uppper 64 bits, in this case we will select the LAN interface.
+Select the interface you wish to use for the source of the upper 64 bits, in this case we will select the LAN interface.
 
 When the prefix changes, the alias address will then be updated in the firewall rules, let's say your prefix changes to
 2001:db8:2222:3200::/56 the rule updates and the entry for your server in the firewall would update automatically to be
@@ -263,6 +375,15 @@ In the example below we have three servers.
   .. image:: images/alias_dynamic_ipv6_host.png
       :width: 100%
 
+..................
+BGP ASN
+..................
+
+With this alias type you are able to select networks by their responsible parties.
+Using BGP parties announce the addresses they are responsible for to each other.
+For example Cloudflare uses AS number :code:`13335`, Microsoft is known to use :code:`8075`.
+
+More background and how addresses are assigned is explained on `wikipedia <https://en.wikipedia.org/wiki/Autonomous_system_(Internet)>`__.
 
 ..................
 External
@@ -284,6 +405,37 @@ alias and add or remove entries immediately.
 
     Since external alias types won't be touched by OPNsense, you can use :code:`pfctl` directly in scripts to manage
     its contents. (e.g. :code:`pfctl -t MyAlias -T add 10.0.0.3` to add **10.0.0.3** to **MyAlias**)
+
+
+....................................
+OpenVPN group
+....................................
+
+This alias type offers the possibility to build firewall policies for logged in OpenVPN users by the group they belong to
+as configured in :menuselection:`System --> Access --> Groups`.
+
+The current users that are logged into OpenVPN can be inspected via :menuselection:`VPN --> OpenVPN --> Connection Status`, the alias
+just follows this information and flushes the attached addresses to the item in question.
+
+For example, when a user named **fred** which is a member of group **remote_users** logs into OpenVPN and received a tunnel address
+of :code:`10.10.10.2`, the alias containing "remote_users" would include this address as well.
+
+.. Note::
+
+    For this mechanism to work, the common-name of the user certificate must match the username exactly, which is the case by
+    default if the certificate has been created from the user manager.
+
+.. Tip::
+
+    When using LDAP (Active directory), you can synchronise group membership to avoid double administration in OPNsense.
+
+....................................
+Internal (automatic)
+....................................
+
+Internal aliases are prefixed with :code:`__` so they are easy to identify and can't overlap with any user defined ones.
+These aliases help you to determine what the content is for some internal concepts such as "LAN network". Using
+the :menuselection:`Firewall->Diagnostics->Aliases` menu item you can inspect their contents at any time.
 
 
 ----------------------------------
@@ -399,10 +551,10 @@ It's always good to check if an address is included in the Alias via :menuselect
 Spamhaus
 ---------------------------------
 
-The Spamhaus Don't Route Or Peer Lists DROP (Don't Route Or Peer) and EDROP are advisory "drop all traffic" lists,
+The Spamhaus Don't Route Or Peer Lists DROP (Don't Route Or Peer) and DROPv6 are advisory "drop all traffic" lists,
 consisting of netblocks that are "hijacked" or leased by professional spam or
 cyber-crime operations (used for dissemination of malware, trojan downloaders,
-botnet controllers). The DROP and EDROP lists are a tiny subset of the SBL,
+botnet controllers). The DROP and DROPv6 lists are a tiny subset of the SBL,
 designed for use by firewalls and routing equipment to filter out the malicious
 traffic from these netblocks.
 
@@ -410,7 +562,7 @@ traffic from these netblocks.
 
 Downloads
  * `DROP list <https://www.spamhaus.org/drop/drop.txt>`__
- * `EDROP list <https://www.spamhaus.org/drop/edrop.txt>`__
+ * `DROPv6 list <https://www.spamhaus.org/drop/dropv6.txt>`__
 
-To setup the DROP and EDROP lists in combination with the firewall rules, read:
-:doc:`how-tos/edrop`
+To setup the DROP and DROPv6 lists in combination with the firewall rules, read:
+:doc:`how-tos/drop`

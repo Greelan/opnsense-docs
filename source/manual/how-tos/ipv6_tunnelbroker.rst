@@ -1,6 +1,6 @@
-============================
-Configure IPv6 Tunnel Broker
-============================
+==============================
+IPv6 Tunnel Broker
+==============================
 **Original Author:** Shawn Webb
 
 ------------
@@ -41,7 +41,7 @@ Step 1 - Add GIF tunnel
 -----------------------
 
 To configure OPNsense start with adding a new gif interface.
-Go to :menuselection:`Interfaces --> Other Types --> GIF` and click on **Add** in the upper tight corner
+Go to :menuselection:`Interfaces --> Devices --> GIF` and click on **Add** in the upper tight corner
 of the form.
 
 Use the following settings and copy in the IPv4&6 addresses from your TunnelBroker's UI.
@@ -64,15 +64,11 @@ Step 2 - Configure the GIF tunnel as a new interface
 ----------------------------------------------------
 
 The newly created GIF tunnel must now be assigned as a new interface.
-Go to :menuselection:`Interfaces --> Assignments`, select the GIF tunnel for **New interface**
-and click the **+** sign next to it.
-
-Then under :menuselection:`Interfaces --> [OPTX]` (or :menuselection:`Interfaces --> [TunnelBroker]` 
-depending on what you selected) check **Enable Interface** and change the
-description to e.g., TUNNELBROKER before hitting **Save**.
+Go to :menuselection:`Interfaces --> Assignments`, click **Add** and select the GIF tunnel as the **Device**.
+Check **Enabled**, change the description to e.g., TUNNELBROKER, then click **Save** and **Apply**.
 
 The newly created interface must now be set as the default IPv6 gateway
-under :menuselection:`System --> Gateways --> Single` by editing the new gateway entry
+under :menuselection:`System --> Gateways --> Configuration` by editing the new gateway entry
 TUNNELBROKER_TUNNELV6 and checking **Upstream Gateway** before saving.
 
 -----------------------------
@@ -95,9 +91,6 @@ Now configure your LAN interface. The static IPv6 address we'll give it is a
 **/64** address from your assigned **/48**. I won't show the WLAN settings simply
 because it's the very same. You'll repeat the same process for further networks,
 but assigning the next interface a separate **/64** address.
-
-.. image:: images/tunnelbroker_configure_lan.png
-   :width: 100%
 
 -------------------------------
 Step 5 - Configure DHCPv6 SLAAC
@@ -122,4 +115,40 @@ You should now be set up for IPv6. To test your configuration, bring online an
 IPv6 machine, use your favorite tool to determine you have an IPv6 address. If
 you're using SLAAC, it may take up to 30 seconds or more to get an IPv6 address.
 If you see that your interface has an IPv6 address, you can try going to an
-IPv6 only test site, such as http://6.ifconfig.pro/
+IPv6 only test site, such as https://www.doesnotwork.eu/
+
+-----------------------------------
+Step 7 - Configure Endpoint Updates
+-----------------------------------
+
+If your IPv4 address is dynamic, it is important to keep your tunnel endpoint
+up to date to maintain IPv6 connectivity through the tunnel. We will configure
+automatic updates using ddclient.
+
+First, install the **os-ddclient** plug-in under :menuselection:`System --> Firmware --> Plugins`.
+Once installed, refresh the UI and go to :menuselection:`Services --> Dynamic DNS --> Settings`.
+Add a new account, the fill in the following information, pulling from your Tunnelbroker's tunnel
+settings where needed.
+
+===================== ===================================
+ **Service**           he-net-tunnel
+ **Username**          *Tunnelbroker account username*
+ **Password**          *Update Tunnel Key*
+ **Hostname(s)**       *Tunnel ID*
+===================== ===================================
+
+.. image:: images/tunnelbroker_configuration_ddclient.png
+   :width: 100%
+
+.. image:: images/tunnelbroker_tunneldetails_id.png
+   :width: 100%
+   
+.. image:: images/tunnelbroker_tunneldetails_key.png
+   :width: 100%
+
+For **Check ip method**, select any method that will return an *IPv4* address (e.g., ipify-ipv4,
+Interface [IPv4], or ipv4only.me). If using "Interface [IPv4]", also select the appropriate WAN
+interface to monitor.
+
+Add a **Description** for your own use and leave all other options unchanged. Enable and save this
+account configuration, then enable and start the Dynamic DNS service.

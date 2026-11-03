@@ -13,6 +13,21 @@ the OPNsense team, a lot are supported by the community.
 This section houses the documentation available for some of these plugins, not all come with documentation, some might
 not even need it given the complexity of the functionality.
 
+--------------------
+Routing
+--------------------
+
+.. toctree::
+   :maxdepth: 2
+   :titlesonly:
+
+   manual/dynamic_routing
+   manual/how-tos/dynamic_routing_rip
+   manual/how-tos/dynamic_routing_ospf
+   manual/how-tos/dynamic_routing_bgp
+   manual/how-tos/dynamic_routing_bfd
+   manual/how-tos/tayga
+   manual/ndp-proxy-go
 
 --------------------
 DNS
@@ -28,23 +43,16 @@ DNS
    manual/how-tos/multicast-dns
 
 --------------------
-VPN & Connectivity
+VPN
 --------------------
+
 .. toctree::
    :maxdepth: 2
    :titlesonly:
 
    manual/how-tos/openconnect
    manual/how-tos/stunnel
-   manual/how-tos/wireguard-s2s
-   manual/how-tos/wireguard-client
-   manual/how-tos/wireguard-selective-routing
-   manual/how-tos/wireguard-client-azire
-   manual/how-tos/wireguard-client-mullvad
    manual/how-tos/zerotier
-   manual/dynamic_routing
-   manual/how-tos/tor
-   manual/how-tos/tayga
 
 ----------------
 Web
@@ -58,8 +66,6 @@ Web
    manual/antivirus
    manual/how-tos/c-icap
    manual/how-tos/clamav
-   manual/how-tos/haproxy
-   manual/how-tos/haproxy_howtos
    manual/how-tos/nginx
    manual/how-tos/nginx_header_hardening
    manual/how-tos/nginx_hosting
@@ -69,6 +75,7 @@ Web
    manual/how-tos/nginx_tls_auth
    manual/how-tos/nginx_waf
    manual/how-tos/nginx_streams
+   manual/how-tos/caddy
 
 ----------------
 Other
@@ -78,11 +85,17 @@ Other
    :maxdepth: 2
    :titlesonly:
 
+   manual/cpu-microcode
+   manual/proxy
    manual/how-tos/freeradius
    manual/how-tos/accounting
    manual/how-tos/mailgateway
+   manual/how-tos/netbird
    manual/git-backup
    manual/relayd
+   manual/wazuh-agent
+   manual/how-tos/cloudflared
+   manual/how-tos/tor
 
 ----------------
 Reporting

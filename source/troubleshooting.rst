@@ -71,8 +71,13 @@ be found in the list below.
    :titlesonly:
    :glob:
 
+   troubleshooting/password_reset
+   troubleshooting/reset_firmware
+   troubleshooting/config_reset
+   troubleshooting/webgui
    troubleshooting/boot
    troubleshooting/hardening
    troubleshooting/gateways
    troubleshooting/network
    troubleshooting/openvpn
+   troubleshooting/performance

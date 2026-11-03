@@ -40,7 +40,7 @@ We installed the Engine for Web Proxy purpose and enabled ICAP with its default 
 
 Step 4 - Connect the Engine
 ---------------------------
-Now connect the server that the engine is installed on to OPNsense trough either
+Now connect the server that the engine is installed on to OPNsense through either
 a switch or a direct cable connection. Preferable use a separate network for this
 traffic to make sure the unencrypted ICAP traffic can't be tapped.
 
@@ -67,8 +67,9 @@ Now click on **Apply**
 
 Step 6 - Test using EICAR
 -------------------------
-To test if the engine is operational and functional go to http://www.eicar.org/?page_id=3950
-on this page you will find several files you can test.
+To test if the engine is operational and functional go to http://pkg.opnsense.org/test/eicar.com.txt
+on this page you will find a file with the eiacar test string.
+
 
 First test the HTTP protocol version. If that works, test the HTTPS version if you
 have also configured the transparent SSL proxy mode.
@@ -80,7 +81,7 @@ have also configured the transparent SSL proxy mode.
 
 If everything went well you should see something similar to this in you browser:
 
-.. code-block:: guess
+.. code-block::
 
   The content you just requested contains EICAR Test String and was blocked by the
   Symantec Protection Engine based on local administrator settings. Contact your

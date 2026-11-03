@@ -13,11 +13,20 @@ classes to ensure basic functionality such as authorisation and CSRF
 protection.
 
 Controllers are placed in the directory /usr/local/opnsense/mvc/app/controllers/<Vendor\_name>/<Module\_name>/
-and should use the standard Phalcon naming conventions, suffix Controller.php on
+and should use the following naming conventions, suffix Controller.php on
 every class file and suffix Action on all action methods.
 
-For a detailed description of how Controllers work in Phalcon, please
-look at the Phalcon documentation at http://docs.phalconphp.com/en/latest/reference/controllers.html
+----------------------
+Class structure
+----------------------
+
+Most components inherit from a set of standard controllers, which are specified in the diagram below including their primary
+usage scope (/ui or /api)
+
+
+.. image:: ../images/Controller_class_hierarchy.svg
+    :width: 100%
+
 
 ----------------------
 View based controllers
@@ -54,7 +63,8 @@ A full example can be found in the OPNsense\\Sample controller
 directory.
 
 More information on how to write Volt pages can be found here :
-http://docs.phalconphp.com/en/latest/reference/volt.html
+https://docs.phalcon.io/latest/volt/
+
 
 ---------------------
 User forms
@@ -64,7 +74,7 @@ When designers need forms for users to input data, they can use the :code:`getFo
 to feed a simple xml file as definition for the template engine to use. The example section contains a step by step
 guide how to use these.
 
-The getForm() method itself merily passes the structure to thew view, which can use this information to render
+The :code:`getForm()` method itself merely passes the structure to the view, which can use this information to render
 forms on page load (statically).
 In our standard layout `partials <https://github.com/opnsense/core/blob/master/src/opnsense/mvc/app/views/layout_partials/form_input_tr.volt>`__ we offer some different record types which we will detail below:
 
@@ -94,7 +104,7 @@ readonly      if true, input fields will be readonly
 ==================  ===========================================================================================
 Name                Description
 ==================  ===========================================================================================
-header              Header row 
+header              Header row
 text                Single line of text
 password            Password field for sensitive input. The contents will not be displayed.
 textbox             Multiline text box
@@ -103,6 +113,7 @@ dropdown            Single item selection from dropdown
 select_multiple     Multiple item select from dropdown
 hidden              Hidden fields not for user interaction
 info                Static text (help icon, no input or editing)
+info_link           Static text as a link (converted to clickable links)
 ==================  ===========================================================================================
 
 
@@ -132,7 +143,7 @@ A simple index controller to echo a request back looks like this:
                 $message = " " ;
             }
      
-            return array("message" => $message);
+            return ["message" => $message];
         }
     }
 
@@ -158,3 +169,89 @@ post request to /api/sample/test/echo, using jQuery:
     and are named :code:`ApiMutableModelControllerBase`, :code:`ApiMutableServiceControllerBase`. Both extend :code:`ApiControllerBase`
     as described in this chapter. The mutable model controller is explained in more detail in :doc:`using grids <../examples/using_grids>`, the
     service controller is explained in :doc:`api enable services <../examples/api_enable_services>`
+
+
+--------------------------------------------------
+Searchable recordsets
+--------------------------------------------------
+
+The tip in the previous chapter described how to use grids when using models, but in some cases there are datasets
+without being bound to a model. For example when traversing legacy data or gathering system statistics.
+
+For this reason we added the method :code:`searchRecordsetBase()` in :code:`ApiControllerBase`.
+Using this method offers the ability to hook a recordset into the same search functionality as being available
+in model grids.
+
+The following parameters are being offered:
+
+==================  ===========================================================================================
+Name                Description
+==================  ===========================================================================================
+$records            array as record set, e.g. [ ['id' => '1'], ['id' => '2'], ... ]
+$fields             Optional list of fields when not all data should be returned
+$defaultSort        Optional default sort order (fielndname in recordset)
+$filter_funct       Optional pluggable filter function, which is call with the record in question
+$sort_flags         Default set to :code:`SORT_NATURAL | SORT_FLAG_CASE`
+==================  ===========================================================================================
+
+.. Note::
+
+    In order to filter sets on fields, make sure all records contain the requested field. Currently it's not possible
+    to omit fields when being sorted.
+
+
+Implementing this into your own controller should be as simple as:
+
+.. code-block:: php
+
+    class TestController extends ApiControllerBase
+    {
+        /**
+         * @return array
+         */
+        public function searchAction()
+        {
+            $records = [];
+            $records[] = ['id' => '1', 'description' => 'test 1'];
+            $records[] = ['id' => '2', 'description' => 'test 2'];
+            $records[] = ['id' => '3', 'description' => 'test 3'];
+            return $this->searchRecordsetBase($records);
+        }
+    }
+
+
+--------------------------------------------------
+Easy csv export/import helpers
+--------------------------------------------------
+
+In order to export or import csv structured data, some helpers are available to ease these operations.
+The :code:`ApiControllerBase` adds a simple recordset export method (:code:`exportCsv()`)
+and :code:`ApiMutableModelControllerBase` contains a method to import data (:code:`importCsv()`).
+
+When data is being exported from a model using an :code:`ArrayField` type, the :code:`asRecordSet()` method can be used
+to extract the data easily.
+
+The smallest functional example to download a file from a controller implemented with :code:`ApiMutableModelControllerBase`
+would look like:
+
+.. code-block:: php
+
+    public function downloadAction()
+    {
+        $this->exportCsv($this->getModel()->path->to->items->asRecordSet());
+    }
+
+Feeding data back into the model:
+
+.. code-block:: php
+
+    public function uploadReservationsAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost('payload')) {
+            return $this->importCsv(
+                'path.to.items',
+                $this->request->getPost('payload'),
+                ['my_key']
+            );
+        }
+    }

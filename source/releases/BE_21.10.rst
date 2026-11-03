@@ -14,6 +14,66 @@ https://downloads.opnsense.com/
 
 
 --------------------------------------------------------------------------
+21.10.3 (February 10, 2022)
+--------------------------------------------------------------------------
+
+This business release is based on the OPNsense 21.7.8 community version
+with additional reliability improvements.
+
+Here are the full patch notes:
+
+* system: remove spurious XML validation that cannot cope with attributes from backup restore
+* system: prevent syslog-ng from crashing after update due to "syslog-ng-ctl reload" use
+* system: changing interface gateway was ignored during route reconfiguration
+* system: cron command drop down size was extending below screen
+* reporting: fix display of total in/out traffic values
+* firewall: removed the $aliastable cache
+* firewall: correctly handle IPv6 NAT in states view
+* firewall: skip rule ID for NAT type log entries (contributed by kulikov-a)
+* firewall: support "no scrub" option in normalisation rules
+* firewall: exclude external alias for nesting
+* network time: remove PID file use as it can be unreliable
+* intrusion detection: update to ET-Open to version 6
+* intrusion detection: prevent config migration from crashing
+* lang: update translations for Chinese, French, German, Italian, Japanese, Norwegian, Spanish, and Turkish
+* captive portal: prevent session removal crashing when no IP address was registered
+* mvc: add getInterfaceConfig endpoint to interface API (contributed by Paolo Asperti)
+* mvc: fix logging of configd errors (contributed by kulikov-a)
+* plugins: os-acme-client 3.8 `[1] <https://github.com/opnsense/plugins/blob/stable/21.7/security/acme-client/pkg-descr>`__ 
+* plugins: os-frr 1.26 `[2] <https://github.com/opnsense/plugins/blob/stable/21.7/net/frr/pkg-descr>`__ 
+* plugins: os-openconnect 1.4.2 `[3] <https://github.com/opnsense/plugins/blob/stable/21.7/security/openconnect/pkg-descr>`__ 
+* plugins: os-postfix 1.21 `[4] <https://github.com/opnsense/plugins/blob/stable/21.7/mail/postfix/pkg-descr>`__ 
+* plugins: os-telegraf 1.12.4 `[5] <https://github.com/opnsense/plugins/blob/stable/21.7/net-mgmt/telegraf/pkg-descr>`__ 
+* plugins: os-wireguard 1.10 `[6] <https://github.com/opnsense/plugins/blob/stable/21.7/net/wireguard/pkg-descr>`__ 
+* src: axgbe: validate contents of gpio expander
+* src: incorrect XSAVE state size `[7] <https://www.freebsd.org/security/advisories/FreeBSD-EN-22:02.xsave.asc>`__ 
+* src: vPCI compatibility improvements with certain Hyper-V releases `[8] <https://www.freebsd.org/security/advisories/FreeBSD-EN-22:03.hyperv.asc>`__ 
+* src: vt console buffer overflow `[9] <https://www.freebsd.org/security/advisories/FreeBSD-SA-22:01.vt.asc>`__ 
+* ports: expat 2.4.2 `[10] <https://github.com/libexpat/libexpat/blob/R_2_4_2/expat/Changes>`__ 
+* ports: filterlog 0.6 `[11] <https://github.com/opnsense/ports/commit/2e27655d84>`__ 
+* ports: flock 2.37.2
+* ports: hostapd 2.10 `[12] <https://w1.fi/cgit/hostap/plain/hostapd/ChangeLog>`__ 
+* ports: lighttpd 1.4.63 `[13] <https://www.lighttpd.net/2021/12/4/1.4.63/>`__ 
+* ports: nss 3.74 `[14] <https://firefox-source-docs.mozilla.org/security/nss/releases/nss_3_74.html>`__ 
+* ports: openssl 1.1.1m `[15] <https://github.com/openssl/openssl/blob/openssl-3.0/CHANGES.md>`__ 
+* ports: openvpn 2.5.5 `[16] <https://github.com/OpenVPN/openvpn/blob/v2.5.5/Changes.rst>`__ 
+* ports: php 7.4.27 `[17] <https://www.php.net/ChangeLog-7.php#7.4.27>`__ 
+* ports: sqlite 3.37.2 `[18] <https://sqlite.org/releaselog/3_37_2.html>`__ 
+* ports: strongswan 5.9.5 `[19] <https://github.com/strongswan/strongswan/releases/tag/5.9.5>`__ 
+* ports: syslog-ng 3.35.1 `[20] <https://github.com/syslog-ng/syslog-ng/releases/tag/syslog-ng-3.35.1>`__ 
+* ports: unbound 1.14.0 `[21] <https://nlnetlabs.nl/projects/unbound/download/#unbound-1-14-0>`__ 
+* ports: wpa_supplicant 2.10 `[22] <https://w1.fi/cgit/hostap/plain/wpa_supplicant/ChangeLog>`__ 
+
+A hotfix release was issued as 21.10.3_1:
+
+* firmware: enable upgrade path to 22.4
+* plugins: os-OPNcentral 1.4 adds improved provisioning to allow unique local content `[23] <https://docs.opnsense.org/vendor/deciso/opncentral.html>`__ 
+* plugins: os-OPNBEcore 1.0.1 supplemental update for os-OPNcentral
+* ports: cyrus-sasl 2.1.28
+
+
+
+--------------------------------------------------------------------------
 21.10.2 (January 13, 2022)
 --------------------------------------------------------------------------
 
@@ -70,7 +130,7 @@ Here are the full patch notes:
 * plugins: os-zabbix-proxy 1.6 `[10] <https://github.com/opnsense/plugins/blob/stable/21.7/net-mgmt/zabbix-proxy/pkg-descr>`__ 
 * ports: curl 7.80.0 `[11] <https://curl.se/changes.html#7_80_0>`__ 
 * ports: dnsmasq fixes multiple regressions
-* ports: nss 3.73 `[12] <https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_3.73_release_notes>`__ 
+* ports: nss 3.73 `[12] <https://firefox-source-docs.mozilla.org/security/nss/releases/nss_3_73.html>`__ 
 * ports: php 7.4.26 `[13] <https://www.php.net/ChangeLog-7.php#7.4.26>`__ 
 * ports: phpseclib 2.0.35 `[14] <https://github.com/phpseclib/phpseclib/releases/tag/2.0.35>`__ 
 * ports: suricata 6.0.4 `[15] <https://forum.suricata.io/t/suricata-6-0-4-and-5-0-8-released/1942>`__ 
@@ -173,19 +233,19 @@ Here are the full patch notes:
 * src: aesni: avoid a potential out-of-bounds load in aes_encrypt_icm()
 * src: axgbe: correctly enable RSS driver support by default
 * src: ixgbe: prevent subsequent I2C bus read timeouts
-* src: fix kernel panic in vmci driver initialization `[16] <FREEBSD:FreeBSD-EN-21:28.vmci>`__ 
-* src: timezone database information update `[17] <FREEBSD:FreeBSD-EN-21:29.tzdata>`__ 
+* src: fix kernel panic in vmci driver initialization `[16] <https://www.freebsd.org/security/advisories/FreeBSD-EN-21:28.vmci.asc>`__ 
+* src: timezone database information update `[17] <https://www.freebsd.org/security/advisories/FreeBSD-EN-21:29.tzdata.asc>`__ 
 * ports: dnspython 2.1.0 `[18] <https://dnspython.readthedocs.io/en/stable/whatsnew.html>`__ 
-* ports: jinja 3.0.1 `[19] <https://jinja.palletsprojects.com/en/3.0.x/changes/#version-3-0-1>`__ 
-* ports: lighttpd 1.4.61 `[20] <https://www.lighttpd.net/2021/10/28/1.4.61/>`__ 
-* ports: nss 3.72 `[21] <https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_3.72_release_notes>`__ 
-* ports: openssh 8.8p1 `[22] <https://www.openssh.com/txt/release-8.8>`__ 
-* ports: openvpn 2.5.4 `[23] <https://community.openvpn.net/openvpn/wiki/ChangesInOpenvpn25#Changesin2.5.4>`__ 
-* ports: pcre2 10.39 `[24] <https://www.pcre.org/changelog.txt>`__ 
-* ports: php 7.4.25 `[25] <https://www.php.net/ChangeLog-7.php#7.4.25>`__ 
-* ports: phpseclib 2.0.34 `[26] <https://github.com/phpseclib/phpseclib/releases/tag/2.0.34>`__ 
+* ports: lighttpd 1.4.61 `[19] <https://www.lighttpd.net/2021/10/28/1.4.61/>`__ 
+* ports: nss 3.72 `[20] <https://firefox-source-docs.mozilla.org/security/nss/releases/nss_3_72.html>`__ 
+* ports: openssh 8.8p1 `[21] <https://www.openssh.com/txt/release-8.8>`__ 
+* ports: openvpn 2.5.4 `[22] <https://github.com/OpenVPN/openvpn/blob/v2.5.4/Changes.rst>`__ 
+* ports: pcre2 10.39 `[23] <https://github.com/PCRE2Project/pcre2/releases/tag/pcre2-10.39>`__ 
+* ports: php 7.4.25 `[24] <https://www.php.net/ChangeLog-7.php#7.4.25>`__ 
+* ports: phpseclib 2.0.34 `[25] <https://github.com/phpseclib/phpseclib/releases/tag/2.0.34>`__ 
+* ports: py-jinja 3.0.1 `[26] <https://jinja.palletsprojects.com/en/stable/changes/#version-3-0-1>`__ 
 * ports: strongswan 5.9.4 `[27] <https://github.com/strongswan/strongswan/releases/tag/5.9.4>`__ 
-* ports: sudo 1.9.8p2 `[28] <https://www.sudo.ws/stable.html#1.9.8p2>`__ 
+* ports: sudo 1.9.8p2 `[28] <https://www.sudo.ws/releases/stable/#1.9.8p2>`__ 
 
 
 
@@ -261,7 +321,7 @@ Here are the full patch notes:
 * firmware: opnsense-update -c option now honours the -f option
 * firmware: opnsense-update improvements for mirror manipulation options
 * firmware: replace php version_compare() call with pkg-version shell command
-* firmware: revoke 21.1 fingerprint
+* firmware: revoke 21.4 fingerprint
 * firmware: static template for firmware upgrade message
 * firmware: sync plugins in console update
 * ipsec: add auto type for identities
@@ -292,7 +352,6 @@ Here are the full patch notes:
 * unbound: renamed "blacklist" to "blocklist" for clarity
 * unbound: support insecure-domain directive
 * unbound: switch model to integrate full DNS over TLS support
-* console: throw error when opnsense-importer encounters an encrypted config.xml
 * mvc: allow to unset attribute via setAttributeValue()
 * mvc: reduce differentials in config.xml when saving models
 * rc: opnsense-beep melody database directory
@@ -326,9 +385,9 @@ Here are the full patch notes:
 * src: compatibility shim for upcoming rtsold "-M" command line option
 * src: dhclient support for VLAN 0 decapsulation
 * src: dhclient: skip_to_semi() consumes semicolon already
-* src: fix libfetch out of bounds read `[15] <FREEBSD:FreeBSD-SA-21:15.libfetch>`__ 
-* src: fix missing error handling in bhyve(8) device models `[16] <FREEBSD:FreeBSD-SA-21:13.bhyve>`__ 
-* src: fix remote code execution in ggatec(8) `[17] <FREEBSD:FreeBSD-SA-21:14.ggatec>`__ 
+* src: fix libfetch out of bounds read `[15] <https://www.freebsd.org/security/advisories/FreeBSD-SA-21:15.libfetch.asc>`__ 
+* src: fix missing error handling in bhyve(8) device models `[16] <https://www.freebsd.org/security/advisories/FreeBSD-SA-21:13.bhyve.asc>`__ 
+* src: fix remote code execution in ggatec(8) `[17] <https://www.freebsd.org/security/advisories/FreeBSD-SA-21:14.ggatec.asc>`__ 
 * src: iflib: fix partial length accounting error in netmap mode
 * src: lib: add libnetmap and related patches
 * src: rtsold: slightly change address read
@@ -341,16 +400,16 @@ Here are the full patch notes:
 * ports: ifinfo 13.0
 * ports: krb5 1.19.2 `[20] <https://web.mit.edu/kerberos/krb5-1.19/>`__ 
 * ports: monit 5.29.0 `[21] <https://mmonit.com/monit/changes/>`__ 
-* ports: mpd5 adds L2TP interoperability fix from upstream
+* ports: mpd adds L2TP interoperability fix from upstream
 * ports: nettle 3.7.3
-* ports: nss 3.70 `[22] <https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/NSS_3.70_release_notes>`__ 
-* ports: openvpn 2.5.3 `[23] <https://community.openvpn.net/openvpn/wiki/ChangesInOpenvpn25#Changesin2.5.3>`__ 
+* ports: nss 3.70 `[22] <https://firefox-source-docs.mozilla.org/security/nss/releases/nss_3_70.html>`__ 
+* ports: openvpn 2.5.3 `[23] <https://github.com/OpenVPN/openvpn/blob/v2.5.3/Changes.rst>`__ 
 * ports: pcre 8.45 `[24] <https://www.pcre.org/original/changelog.txt>`__ 
 * ports: php 7.4.23 `[25] <https://www.php.net/ChangeLog-7.php#7.4.23>`__ 
 * ports: phpseclib 2.0.32 `[26] <https://github.com/phpseclib/phpseclib/releases/tag/2.0.32>`__ 
 * ports: python 3.8.12 `[27] <https://docs.python.org/release/3.8.12/whatsnew/changelog.html>`__ 
 * ports: strongswan 5.9.3 `[28] <https://github.com/strongswan/strongswan/releases/tag/5.9.3>`__ 
-* ports: sudo 1.9.8p1 `[29] <https://www.sudo.ws/stable.html#1.9.8p1>`__ 
+* ports: sudo 1.9.8p1 `[29] <https://www.sudo.ws/releases/stable/#1.9.8p1>`__ 
 * ports: suricata 6.0.3 `[30] <https://suricata.io/2021/06/30/new-suricata-6-0-3-and-5-0-7-releases/>`__ 
 * ports: syslog-ng 3.34.1 `[31] <https://github.com/syslog-ng/syslog-ng/releases/tag/syslog-ng-3.34.1>`__ 
 * ports: unbound 1.13.2 `[32] <https://nlnetlabs.nl/projects/unbound/download/#unbound-1-13-2>`__ 

@@ -32,7 +32,7 @@ authentication, which is more secure but comes with more (connect) overhead (htt
     }
 
 The above diagram shows the basic functionality as provided by this plugin, the client part (not delivered by this plugin) connects to
-to the server at a predefined port and starts forwarding local received packets to the other end of the tunnel.
+the server at a predefined port and starts forwarding local received packets to the other end of the tunnel.
 
 Securing http proxy traffic is one of the more common use-cases of stunnel.
 
@@ -52,6 +52,8 @@ Just go to :menuselection:`System -> Trust -> Certificates` and create an intern
 The common name identifies both ends of the tunnel, you can choose a fully qualified domain name here for the server and
 a username for the client  (for example).
 
+For more information read `Setup Self-Signed Certificate Chains </manual/how-tos/self-signed-chain.html>`_
+
 
 .. Note::
 
@@ -69,7 +71,7 @@ To add a new tunnel, go to :menuselection:`VPN -> Stunnel -> Configuration` and 
 
 :Listen address:
 
-    The address to listen on, we generally advice to use a loopback interface here and forward traffic to it using a :doc:`port forward <../nat>`.
+    The address to listen on, we generally advice to use a loopback interface here and forward traffic to it using a :doc:`Destination NAT (Port Forward) <../nat>`.
     Leave this default (127.0.0.1) for our example.
 
 .. Note::
@@ -117,7 +119,7 @@ To add a new tunnel, go to :menuselection:`VPN -> Stunnel -> Configuration` and 
 
 .. Tip::
 
-    To forward traffic to the loopback address from your :code:`wan` interface, go to :menuselection:`Firewall -> NAT -> Port Forward`
+    To forward traffic to the loopback address from your :code:`wan` interface, go to :menuselection:`Firewall -> NAT -> Destination NAT (Port Forward)`
     and add a new rule with the following settings: Interface :code:`WAN`, Protocol :code:`TCP`, Destination :code:`WAN address`,
     Destination port range :code:`31280`, Redirect target IP :code:`127.0.0.1` and Redirect target port :code:`31280`
 
@@ -126,7 +128,7 @@ To add a new tunnel, go to :menuselection:`VPN -> Stunnel -> Configuration` and 
 
     For additional security you can enable :code:`chroot` mode in :menuselection:`VPN -> Stunnel -> General`, there is
     however a downside in using this feature. If for some reason the system logging facility (syslog) is restarted, stunnel
-    will loose connection to that facility, causing a lack of visibilty afterwards.
+    will loose connection to that facility, causing a lack of visibility afterwards.
 
 
 Configure the client

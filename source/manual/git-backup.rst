@@ -9,7 +9,7 @@ In order to use this feature, one has to install the git-backup plugin first (in
 
 .. Warning:
 
-    Since backups using git are stored unecrypted and contain sensitive data, we generally advise not to use public cloud
+    Since backups using git are stored unencrypted and contain sensitive data, we generally advise not to use public cloud
     providers to store this data. Only use this option if you can guarantee the security of your git backup server.
 
 --------------------------
@@ -55,14 +55,15 @@ we choose this loosely coupled method. Events which are yet unprocessed are bein
     remains active.
 
 Git backup will push collected commits to the upstream repository nightly.
-To shorten this default interval, a custom cronjob (see :doc:`Settings </manual/settingsmenu#cron>`) can be
+To shorten this default interval, a custom cronjob (see :doc:`Settings </manual/settingsmenu>`) can be
 set up, selecting `Remote Backup` as the Command. The regular backup procedure (which is also being triggered using the test
 button in the user interface) is responsible for initialising the empty local repository and configuring the upstream target.
 
 .. Note::
 
-    One can always change the upstream target, as long as the newly configured one is either "bare" (empty) or containing the
-    exact same content (/change history) as the one used on this firewall.
+    One can always change the upstream target, as long as the newly configured one is either empty (has absolutely no history
+    - otherwise said, be a new one, absolutely untouched), or has the exact same history (otherwise said, be an exact copy, git
+    history included) as the one used on this firewall.
 
 --------------------------
 Initial setup
@@ -80,12 +81,51 @@ URL                                   Target location, which defined transport p
 Branch                                The branch to push your commits to on the configured url
 SSH private key                       When using ssh, make sure to add a private key here
 User Name                             Username, when using gitlab and ssh, the default is :code:`git` here
-                                      (most of these providers use a single user and identify the user by it's key)
+                                      (most of these providers use a single user and identify the user by its key)
 password                              When using https authentication, choose a password here.
+Force Push                            Enable force push to overwrite the remote repository with the local state.
+                                      See "Conflict resolution" below for details.
 ====================================  ===============================================================================
 
-Make sure to push to a "bare" upstream repository, when pressing "Setup/Test Git" the initial commits should be send to
-your git server.
+Make sure to push to an empty (as in, new and never used) upstream repository, when pressing "Setup/Test Git" the initial
+commits should be sent to your git server.
+
+--------------------------
+SSH Setup
+--------------------------
+
+If you use GitHub, then your only option for git-backup, is to configure it for SSH access since GitHub has removed the ability for external applications to log into your account via your username and password.
+
+The fields in OPNSense under :code:`System / Configuration / Backups / Git` should contain the following:
+
+* URL absolutely MUST follow this format when using GitHub and GitLab: :code:`ssh://github.com/user_name/repo_name.git`. Any  URL string that does not follow this pattern will not work.
+
+
+* SSH Private key (discussed below)
+
+
+* User Name should ONLY contain the word :code:`git`
+
+
+* password: leave this field empty
+
+You need to create your repository BEFORE enabling git-backup. Do not add any files or READMEs to the repository. In other words, create a BLANK repository.
+
+Next, `create a new SSH key <https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent>`__ specifically for git-backup (only generate the private / public keys per that document and skip the rest). **It is imperative that you do not add a password to your key**, or your backups will fail with authentication errors.
+
+You should set up SSH access to just your repository by assigning your SSH public key to the repository instead of assigning it to your GitHub / GitLab account. Doing this ensures that you don't arbitrarily expose more of your git resources to OPNSense than is absolutely necessary for git-backup to work properly.
+
+If you use GitHub, you can add your SSH public key by going to your repository, then click on :code:`settings`, then :code:`Deploy keys`. Or you can go straight to the URL using this format: :code:`https://github.com/USER_NAME/REPOSITORY_NAME/settings/keys/new`.
+
+* Check the box :code:`Allow write Access`.
+
+Make sure the fields are populated as stated above and that the Enable box is checked, then click on :code:`Setup / Test Git` and you should see a message come back at the top of the page indicating that the first backup was successful.
+
+
+.. Tip::
+
+    When choosing an non-existing remote branch one will be created automatically. An existing one needs to be empty (blank) on order
+    to use it, which in practice is only possible when creating the repository for the first time.
 
 
 --------------------------
@@ -94,7 +134,7 @@ Conflict resolution
 
 From the user interface no conflict resolution is offered, you need to configure an upstream repository and stick
 to it for the lifetime of the firewall. When for some reason a backup needs to be restored and one would like to
-stick to the same git repository, manual conflict resolution might be an option. Support on these scenario's is
+stick to the same git repository, manual conflict resolution might be an option. Support on these scenarios is
 not offered.
 
 The repository is available on the OPNsense machine in the following directory :code:`/conf/backup/git`.
@@ -104,6 +144,30 @@ The repository is available on the OPNsense machine in the following directory :
 
     Conflict resolution can complicate the solution a lot (merging, fast-forward, ....), for this reason we will not
     accept feature requests trying to push to existing (used) repositories.
+
+
+Using Force Push
+^^^^^^^^^^^^^^^^^
+
+When the local and remote repositories diverge (for example after restoring a configuration via the GUI),
+synchronization will fail with a **git out of sync** error. The Force Push option can be used to resolve
+this by overwriting the remote with the local repository state.
+
+.. Warning::
+
+    Force pushing permanently overwrites the remote repository history with your local state.
+    Any commits that exist remotely but not locally will be lost.
+
+To resolve a divergence:
+
+1. Navigate to :menuselection:`System --> Configuration --> Backups --> Git`
+2. Enable the **Force Push** option
+3. Click **Setup/Test Git** to push the current state
+4. (Optional) Disable **Force Push** and click **Setup/Test Git** again to verify normal operation
+
+The Force Push option can also be left enabled permanently to ensure the remote always mirrors the local state.
+
+For manual conflict resolution, access the repository in :code:`/conf/backup/git` and use standard git commands.
 
 
 --------------------------
@@ -126,7 +190,7 @@ Cleanup
 --------------------------
 
 The repository is saved locally on the firewall in :code:`/conf/backup/git`, if for some reason one would like to remove the
-collected history and start over from scratch, one can safetly remove this directory.
+collected history and start over from scratch, one can safely remove this directory.
 
 Login using a (ssh) console and remove the git directory in that case (:code:`rm -rf /conf/backup/git`)
 

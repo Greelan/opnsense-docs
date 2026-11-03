@@ -2,13 +2,16 @@
 Intrusion Prevention System
 ===========================
 
+.. contents:: Index
+
+
 The Intrusion Prevention System (IPS) system of OPNsense is based on Suricata_
 and utilizes Netmap_ to enhance performance and minimize CPU utilization. This
 deep packet inspection system is very powerful and can be used to detect and
 mitigate security threats at wire speed.
 
 .. _Netmap: https://www.freebsd.org/cgi/man.cgi?query=netmap&sektion=4&manpath=FreeBSD+12.2-RELEASE+and+Ports
-.. _Suricata: https://suricata-ids.org/
+.. _Suricata: https://suricata.io/
 
 IDS and IPS
 -----------
@@ -65,8 +68,10 @@ drop the packet that would have also been dropped by the firewall.
 
 .. Note::
 
-    IDS mode is available on almost all (virtual) network types. IPS mode is
-    *only* available with `supported physical adapters`_.
+    IDS mode is available on almost all (virtual) network types.
+    When your network card is not (fully) supported, you can set the tunable :code:`dev.netmap.admode` to the value :code:`2`
+    in which case emulated mode will be enforced (Configurable in :menuselection:`System --> Settings --> Tunables`). A list of natively
+    `supported physical adapters`_ is available in the FreeBSD man page.
 
 .. _RFC 1918: https://tools.ietf.org/html/rfc1918
 .. _supported physical adapters: https://www.freebsd.org/cgi/man.cgi?query=netmap&sektion=4&manpath=FreeBSD+12.1-RELEASE+and+Ports#SUPPORTED_DEVICES
@@ -81,11 +86,14 @@ and running.
 
 ====================================  ===============================================================================
 Enabled                               Enable Suricata
-IPS mode                              When enabled, the system can drop suspicious packets. In order for this to
-                                      work, your network card needs to support netmap.
+Capture mode                          Choose between "PCAP live move (IDS)" for alerts only,
+                                      "Netmap (IPS)" for alerts and discards via netmap driver,
+                                      or "Divert (IPS)" to redirect packets via firewall rules.
                                       The action for a rule needs to be "drop" in order to discard the packet,
                                       this can be configured per rule or ruleset (using an input filter)
-Promiscuous mode                      Listen to traffic in promiscuous mode. (all packets in stead of only the
+Listeners                             When "Divert (IPS)" mode is used, specify the number of listeners to initiate,
+                                      usually this equals the number of CPUs in your system.
+Promiscuous mode                      Listen to traffic in promiscuous mode. (all packets instead of only the
                                       ones addressed to this network interface)
 Enable syslog alerts                  Send alerts to syslog, using fast log format
 Enable eve syslog output              Send alerts in EVE_ format to syslog, using log level info.
@@ -95,13 +103,17 @@ Enable eve syslog output              Send alerts in EVE_ format to syslog, usin
 Pattern matcher                       Controls the pattern matcher algorithm.
                                       Aho–Corasick is the default. On supported platforms, Hyperscan is the best option.
                                       On commodity hardware if Hyperscan is not available the suggested setting is "Aho–Corasick Ken                                           Steele variant" as it performs better than "Aho–Corasick".
-Interfaces                            Interfaces to protect. When in IPS mode, this need to be real interfaces
-                                      supporting netmap. (when using VLAN's, enable IPS on the parent)
+Interfaces                            Interfaces to protect. When in IPS mode, this needs to be real interfaces
+                                      supporting netmap. (when using VLANs, enable IPS on the parent)
 Rotate log                            Log rotating frequency, also used for the internal event logging
                                       (see Alert tab)
 Save logs                             Number of logs to keep
 ====================================  ===============================================================================
 
+.. Note::
+
+    To use the "Divert (IPS)" mode, open :menuselection:`Firewall --> Rules` and create firewall rules
+    that contain the "Divert-to" setting. Check the :doc:`/manual/firewall` manual for more information.
 
 .. Tip::
 
@@ -131,7 +143,7 @@ Some less frequently used options are hidden under the "advanced" toggle.
 Home networks                         Define custom home networks, when different than an RFC1918 network.
                                       In some cases, people tend to enable IDPS on a wan interface behind NAT
                                       (Network Address Translation), in which case Suricata would only see
-                                      translated addresses in stead of internal ones. Using this option, you can
+                                      translated addresses instead of internal ones. Using this option, you can
                                       define which addresses Suricata should consider local.
 default packet size                   With this option, you can set the size of the packets on your network.
                                       It is possible that bigger packets have to be processed sometimes.
@@ -166,7 +178,7 @@ Policies
 The **policy** menu item contains a grid where you can define policies to apply
 to installed rules. Here you can add, update or remove policies as well as
 disabling them. Policies help control which rules you want to use in which
-manner and are the prefered method to change behaviour. Although you can still
+manner and are the preferred method to change behaviour. Although you can still
 update separate rules in the rules tab, adding a lot of custom overwrites there
 is more sensitive to change and has the risk of slowing down the
 user-interface.
@@ -176,7 +188,7 @@ such as the description and if the rule is enabled as well as a priority.
 Overlapping policies are taken care of in sequence, the first match with the
 lowest priority number is the one to use.
 
-Secondly there are the matching criterias, these contain the **rulesets** a
+Secondly there are the matching criteria, these contain the **rulesets** a
 policy applies on as well as the action configured on a rule (disabled by
 default, alert or drop), finally there is the **rules** section containing the
 metadata collected from the installed rules, these contain options as affected
@@ -207,12 +219,25 @@ properties available in the policies view.
 
 
 
+
+User defined rules
+---------------------
+
+Most of the rules being used on your IDPS system will be supplied by third party vendors like Proofpoint,
+but in some cases it can be convenient to build some (limited) rules yourself. The "User defined" tab offers
+this functionality.
+
 Fingerprinting
---------------
+...........................
 
 OPNsense includes a very polished solution to block protected sites based on
 their SSL fingerprint. You can manually add rules in the "User defined" tab.
 
+Bypassing the engine
+...........................
+
+The :code:`Bypass` toggle offers the ability to skip traffic inspection, our How-tos section
+contains a good example to exclude local traffic passing your network and increase routing performance.
 
 Alerts
 ------
@@ -220,16 +245,29 @@ Alerts
 In the "Alerts" tab you can view the alerts triggered by the IDS/IPS system.
 Use the info button here to collect details about the detected event or threat.
 
+Advanced configuration
+------------------------
+
+OPNsense supports custom Suricata configurations in `suricata.yaml <https://suricata.readthedocs.io/en/suricata-6.0.0/configuration/suricata-yaml.html>`__
+format. In order to add custom options, create a template file named :code:`custom.yaml` in the :code:`/usr/local/opnsense/service/templates/OPNsense/IDS/` directory.
+
+Since this file is parsed by our template system, you are able to use template tags using the :doc:`Jinja2 </development/backend/templates/>` language.
+
 Available rulesets
 ------------------
 
 Emerging Threats
 ................
 
-`Emerging Threats`_ (ET) has a variety of IDS/IPS rulesets. There is a free,
+Emerging Threats (ET) has a variety of IDS/IPS rulesets. There is a free,
 BSD-licensed version and a paid version available.
 
-.. _Emerging Threats: https://doc.emergingthreats.net/bin/view/Main/AboutEmergingThreats
+.. Tip::
+
+    Proofpoint offers a community portal which provides access to documentation and updates about rules,
+    you can visit it at https://community.emergingthreats.net/ . The `Frequently asked questions <https://community.emergingthreats.net/t/frequently-asked-questions/56>`__
+    might be a good place to start reading.
+
 
 ET Open
 +++++++
@@ -240,16 +278,22 @@ ruleset.
 
 OPNsense has integrated support for ETOpen rules.
 
-*   For details and Guidelines see:
-    http://doc.emergingthreats.net/bin/view/Main/EmergingFAQ
-
-*   For rules documentation: http://doc.emergingthreats.net/
 
 ETPro Telemetry
 +++++++++++++++
 
 Proofpoint offers a free alternative for the well known
 :doc:`etpro_telemetry` ruleset.
+
+ETPro (commercial)
+++++++++++++++++++++++++++++++
+
+When in possession of a Proofpoint `ET Pro <https://www.proofpoint.com/us/threat-insight/et-pro-ruleset>`__ oink code, you can
+install the :code:`os-intrusion-detection-content-et-pro` plugin via :menuselection:`System --> Firmware --> Plugins`.
+
+As soon as the plugin is installed, you will find an option :code:`etpro.oinkcode` under settings in :menuselection:`Services --> Intrusion Detection --> Administration / Download`
+where you can enter this code.
+
 
 Abuse.ch
 ........
@@ -326,3 +370,4 @@ How-tos
 
    how-tos/ips-feodo
    how-tos/ips-sslfingerprint
+   how-tos/ips-bypass

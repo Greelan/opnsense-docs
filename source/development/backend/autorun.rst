@@ -34,14 +34,18 @@ They can contain any executable file (e.g. shell scripts) in the following subdi
 
 - early
     - start script before system network startup
+- import
+    - run very early to allow overriding the opnsense-import functionality either by providing a /conf/config.xml beforehand or modifying the default import afterwards
 - monitor
-    - scripts handling gateway monitoring events
+    - scripts run during monitoring alerts triggered by state transitions.  First argument is a comma-separated list of names of the affected gateways.
 - start
     - start script after system network startup
 - stop
     - stop script before normal system shutdown
 - update
-    - update script after core package update
+    - update script after core package update (post-update)
+- upgrade
+    - upgrade script migration tool for major upgrade (pre-upgrade)
 
 File names can use a number prefix "XX-" to retain a particular order.  "20-" is typically used for core scripts, while "50-" is used for plugins.
 
@@ -72,8 +76,8 @@ Example (from a configured squid proxy server using */etc/rc.conf.d/squid*):
 
 ::
 
-    squid_enable=YES
-    squid_opnsense_bootup_run="/usr/local/opnsense/scripts/proxy/setup.sh"
+    squid_setup="/usr/local/opnsense/scripts/proxy/setup.sh"
+    squid_enable="YES"
 
 
 The configd template system can be used to generate the necessary configuration file(s).
